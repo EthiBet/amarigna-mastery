@@ -50,13 +50,27 @@ const Audio = (() => {
   // ── Amharic Unicode normalizer ────────────────────────────────
   // Collapses visually-distinct homophones to a single base character
   // so learner answers aren't penalised for alternate spellings.
+  // Used only in calculateScore() for SPEAKING comparisons (phonetic equivalence).
+  // NOT used in Typing for written answers (different letters = different answers).
   function normalizeAmharic(text) {
     if (!text) return '';
     return text
-      // "ha" variants → ሀ
+      // "ha" variants → ሀ row
       .replace(/[ሐሑሒሓሔሕሖ]/g, s => {
         const map = ['ሐ','ሑ','ሒ','ሓ','ሔ','ሕ','ሖ'];
         const base = ['ሀ','ሁ','ሂ','ሃ','ሄ','ህ','ሆ'];
+        const i = map.indexOf(s); return i > -1 ? base[i] : s;
+      })
+      // "kha" variants (ኀ family) → ሀ row
+      .replace(/[ኀኁኂኃኄኅኆ]/g, s => {
+        const map = ['ኀ','ኁ','ኂ','ኃ','ኄ','ኅ','ኆ'];
+        const base = ['ሀ','ሁ','ሂ','ሃ','ሄ','ህ','ሆ'];
+        const i = map.indexOf(s); return i > -1 ? base[i] : s;
+      })
+      // "kha" variants (ኸ family, excluding first letter) → ሀ row
+      .replace(/[ኹኺኻኼኽኾ]/g, s => {
+        const map = ['ኹ','ኺ','ኻ','ኼ','ኽ','ኾ'];
+        const base = ['ሁ','ሂ','ሃ','ሄ','ህ','ሆ'];
         const i = map.indexOf(s); return i > -1 ? base[i] : s;
       })
       // "se" variants → ሰ row
@@ -118,7 +132,12 @@ const Audio = (() => {
 
   function startRecognition({ lang = 'en-US', onResult, onEnd, onError } = {}) {
     if (!SR) { onError && onError('not-supported'); return null; }
-    if (activeRec) { activeRec.abort(); }
+    if (activeRec) { 
+      // Clear listeners before aborting to prevent memory leak
+      activeRec.onend = null;
+      activeRec.onerror = null;
+      activeRec.abort(); 
+    }
 
     const rec = new SR();
     rec.continuous    = false;
@@ -139,7 +158,13 @@ const Audio = (() => {
   }
 
   function stopRecognition() {
-    if (activeRec) { activeRec.stop(); activeRec = null; }
+    if (activeRec) { 
+      // Clear listeners before stopping to prevent memory leak
+      activeRec.onend = null;
+      activeRec.onerror = null;
+      activeRec.stop(); 
+      activeRec = null; 
+    }
   }
 
   // ── Public API ────────────────────────────────────────────────
