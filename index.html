@@ -1,524 +1,823 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>አማርኛን መምራት - Mastering Amharic</title>
-    <link href="https://fonts.googleapis.com/css2?family=Abyssinica+SIL&family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        @font-face {
-            font-family: 'Abyssinica SIL';
-            src: local('Abyssinica SIL'), url('https://fonts.gstatic.com/s/abyssinicasil/v1/AbyssinicaSIL-Regular.ttf');
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="description" content="Learn Amharic online — alphabet, vocabulary, speaking, and verb conjugation.">
+  <title>ቋንቋ | Learn Amharic</title>
 
-        :root {
-            --gold-primary: #D4AF37;
-            --gold-light: #F9E29C;
-            --gold-dark: #996515;
-            --bg-overlay: rgba(10, 8, 0, 0.92);
-            --text-light: #F9E29C;
-            --card-bg: rgba(212, 175, 55, 0.1);
-            --font-main: 'Abyssinica SIL', 'Noto Serif Ethiopic', serif;
-            --error: #e74c3c;
-            --success: #2ecc71;
-        }
+  <!-- ── Fonts ────────────────────────────────────────────────── -->
+  <!-- Abyssinica SIL — authentic Ethiopic script display       -->
+  <!-- DM Sans        — closest freely available to Google Sans  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Abyssinica+SIL&family=Noto+Serif+Ethiopic:wdth,wght@100..125,400;100..125,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:wght@400;500&display=swap" rel="stylesheet">
 
-        body, html {
-            margin: 0; padding: 0; height: 100%;
-            font-family: var(--font-main);
-            color: var(--text-light);
-            overflow: hidden;
-            background-color: #000;
-            background-size: cover;
-            background-position: center;
-            transition: background-image 0.8s ease-in-out;
-        }
+  <!-- ── Base styles ──────────────────────────────────────────── -->
+  <link rel="stylesheet" href="css/style.css">
 
-        #overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-overlay);
-            display: flex; flex-direction: column; align-items: center;
-            overflow-y: auto; padding: 40px 20px; box-sizing: border-box;
-        }
+  <!-- ── Inline overrides ─────────────────────────────────────── -->
+  <style>
+    /* Use Abyssinica SIL for all Amharic script rendering */
+    :root {
+      --font-amh:  'Abyssinica SIL', 'Noto Serif Ethiopic', serif;
+      --font-head: 'DM Sans', 'Playfair Display', sans-serif;
+      --font-body: 'DM Sans', 'Lora', sans-serif;
+    }
 
-        .container { width: 100%; max-width: 1000px; text-align: center; margin: 0 auto; }
-        .screen { display: none; width: 100%; }
-        .active { display: block; }
+    /* Speaking mic button — JS sets text so it cannot be a fixed circle */
+    .sp-mic-btn {
+      width: auto !important;
+      height: auto !important;
+      min-width: 210px !important;
+      border-radius: 40px !important;
+      padding: 15px 32px !important;
+      font-size: 16px !important;
+      font-family: var(--font-body) !important;
+      letter-spacing: 0.4px !important;
+    }
 
-        h1 { 
-            font-size: 4.5rem; 
-            color: var(--gold-primary); 
-            margin: 0 auto; 
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-            text-align: center;
-            width: 100%;
-        }
-        .subtitle { font-size: 1.5rem; letter-spacing: 4px; color: white; margin-bottom: 40px; text-align: center; }
+    /* Make conjugation reference visible on all screen sizes */
+    @media (max-width: 900px) {
+      .cj-layout  { grid-template-columns: 1fr !important; }
+      .cj-ref-panel { display: block !important; margin-top: 20px; }
+    }
 
-        /* Setup Grid */
-        .setup-container {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--gold-dark);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            text-align: left;
-        }
-        .pos-block { margin-bottom: 25px; }
-        .pos-row { 
-            display: flex; align-items: center; 
-            font-size: 1.3rem; font-weight: bold; color: var(--gold-primary);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-            padding-bottom: 8px; margin-bottom: 12px;
-        }
-        .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; padding-left: 30px; }
-        .cat-item { display: flex; align-items: center; font-size: 1rem; cursor: pointer; color: #ccc; }
-        .cat-item.active-text { color: var(--gold-light); }
-        
-        input[type="checkbox"] { transform: scale(1.3); margin-right: 12px; accent-color: var(--gold-primary); cursor: pointer; }
+    /* Home card keyboard focus ring */
+    .home-card:focus-visible {
+      outline: 2px solid var(--gold-l);
+      outline-offset: 3px;
+    }
 
-        .btn {
-            background: linear-gradient(135deg, var(--gold-dark), var(--gold-primary));
-            color: #000; font-weight: bold; border: none; padding: 15px 30px;
-            margin: 10px; cursor: pointer; font-size: 1rem; border-radius: 50px;
-            transition: 0.3s;
-        }
-        .btn:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--gold-primary); }
-        .btn-secondary { background: transparent; color: var(--gold-light); border: 1px solid var(--gold-primary); }
+    /* Consistent focus ring across all interactive elements */
+    button:focus-visible, a:focus-visible, [tabindex]:focus-visible {
+      outline: 2px solid var(--gold-l);
+      outline-offset: 2px;
+    }
 
-        /* WIDER FLASHCARD STYLING */
-        .fc-stage { overflow: hidden; width: 450px; height: 460px; margin: 0 auto 20px; position: relative; }
-        .card-container { 
-            width: 100%; height: 100%; 
-            perspective: 1000px;
-            position: absolute;
-            transition: transform 0.5s ease-out, opacity 0.5s;
-        }
-        .card-slide-in { animation: slideIn 0.5s forwards; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    /* Sentence section: wider reference box on desktop */
+    .sn-reference { max-width: 760px; }
 
-        .card { 
-            width: 100%; height: 100%; position: relative; 
-            transform-style: preserve-3d; transition: transform 0.6s; cursor: pointer; 
-        }
-        .card.flipped { transform: rotateY(180deg); }
-        .card-face {
-            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: #111; border: 2px solid var(--gold-primary); border-radius: 25px; padding: 30px; box-sizing: border-box;
-        }
-        .card-back { transform: rotateY(180deg); border-color: var(--gold-light); }
-        .main-txt { font-size: 3.5rem; color: var(--gold-light); text-align: center; word-wrap: break-word; width: 100%; }
-        .sub-txt { font-size: 1.2rem; color: #777; margin-top: 15px; font-style: italic; text-align: center; }
+    /* Better fidel info panel on small screens */
+    @media (max-width: 520px) {
+      .fidel-info-panel { flex-direction: column; text-align: center; gap: 10px; }
+    }
+  </style>
 
-        /* Matching Grid */
-        .matching-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .match-card {
-            background: rgba(255,255,255,0.05); padding: 25px; border-radius: 12px;
-            border: 1px solid var(--gold-dark); cursor: pointer; transition: 0.3s; font-size: 1.3rem;
-        }
-        .match-card.selected { border-color: white; background: var(--gold-dark); color: #000; }
-        .match-card.correct { background: var(--success) !important; color: white; border-color: #fff; box-shadow: 0 0 20px var(--success); }
-        .match-card.wrong { background: var(--error) !important; color: white; border-color: #fff; box-shadow: 0 0 20px var(--error); }
-        .match-card.hidden { opacity: 0; pointer-events: none; transform: scale(0.8); }
-
-        select.mode-select {
-            background: #222; color: var(--gold-light); border: 1px solid var(--gold-primary);
-            padding: 10px 20px; border-radius: 10px; font-size: 1rem; margin-bottom: 20px;
-        }
-    </style>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇪🇹</text></svg>">
 </head>
 <body>
 
-<div id="overlay">
-    <div class="container">
-        <div id="screen-welcome" class="screen active">
-            <h1>አማርኛ ማጥናት</h1>
-            <div class="subtitle">MASTERING AMHARIC</div>
-            <button class="btn" onclick="showScreen('screen-setup')">ENTER STUDY HALL</button>
-        </div>
+<!-- ═══════════════════════════════════════════════════════════════
+     BACKGROUND CROSSFADE LAYERS
+═══════════════════════════════════════════════════════════════════ -->
+<div id="bg-a"></div>
+<div id="bg-b"></div>
+<div id="bg-overlay"></div>
 
-        <div id="screen-setup" class="screen">
-            <h2 style="color: var(--gold-primary)">Curate Your Vocabulary</h2>
-            
-            <div style="margin-bottom: 20px;">
-                <label>Study Mode: </label>
-                <select id="challenge-mode" class="mode-select">
-                    <option value="eng-amh">English to Amharic</option>
-                    <option value="amh-eng">Amharic to English</option>
-                    <option value="random">Challenge (Both)</option>
-                </select>
-            </div>
+<!-- ═══════════════════════════════════════════════════════════════
+     APP LAYOUT
+═══════════════════════════════════════════════════════════════════ -->
+<div id="layout">
 
-            <div class="setup-container" id="selection-root"></div>
+  <!-- ─────────────────────────────────────────────────────────────
+       SIDEBAR NAVIGATION (desktop)
+  ───────────────────────────────────────────────────────────────── -->
+  <nav class="sidebar" aria-label="Main navigation">
 
-            <button class="btn" onclick="launch('flashcards')">FLASHCARDS</button>
-            <button class="btn" onclick="launch('matching')">MATCHING</button>
-            <button class="btn" onclick="launch('typing')">WRITING</button>
-            <button class="btn btn-secondary" onclick="showScreen('screen-welcome')">BACK</button>
-        </div>
-
-        <div id="screen-flashcards" class="screen">
-            <div class="fc-stage">
-                <div id="fc-anchor"></div>
-            </div>
-            <p style="color: #666; margin-bottom: 20px;">Click card to translate</p>
-            <button class="btn" onclick="nextFC()">NEXT CARD</button>
-            <button class="btn btn-secondary" onclick="showScreen('screen-setup')">QUIT</button>
-        </div>
-
-        <div id="screen-matching" class="screen">
-            <h2 style="color: var(--gold-primary)">Match the Pairs</h2>
-            <div class="matching-grid" id="m-grid"></div>
-            <button class="btn btn-secondary" onclick="showScreen('screen-setup')" style="margin-top:20px">QUIT</button>
-        </div>
-
-        <div id="screen-typing" class="screen">
-            <h2 id="t-dir" style="color: var(--gold-primary)">Translate</h2>
-            <div id="t-quest" style="font-size: 3.5rem; margin: 30px;"></div>
-            <input type="text" id="t-input" placeholder="Type here..." 
-                   style="background:rgba(0,0,0,0.5); border:2px solid var(--gold-primary); color:white; padding:15px; font-size:1.5rem; border-radius:10px; width:80%; text-align:center;">
-            <div id="t-feedback" style="margin: 20px; font-size: 1.2rem; font-weight: bold;"></div>
-            <button class="btn" onclick="checkType()">SUBMIT</button>
-            <button class="btn btn-secondary" onclick="nextType()">SKIP</button>
-        </div>
+    <div class="sidebar-brand" onclick="navTo('home')" role="button" tabindex="0"
+         onkeydown="if(event.key==='Enter')navTo('home')" aria-label="Go to home page">
+      <span class="brand-eth">ቋንቋ</span>
+      <span class="brand-en">Learn Amharic</span>
     </div>
-</div>
 
-<script>
-    // Original backgrounds restored
-    const backgrounds = [
-        "https://cdn.britannica.com/23/93423-004-EA6EF02B.jpg",
-        "https://nextisafrica.com/sites/default/files/styles/galerie/public/2025-09/AFRIQUEMAGAZINE_466_20250708%20%283%29.pdf-image-020.jpg?h=1fc136cd&itok=mzis_7Xe",
-        "https://momaa.org/wp-content/uploads/2019/10/15941556007_443e1d0fe9_b.png",
-        "https://content.palacemuseum.gov.et/uploads/486614647_122120640440751386_6905596083102292556_n_7e8b38fba2.webp"
-    ];
+    <div class="sidebar-nav">
+      <a class="nav-item active" data-target="home"
+         onclick="navTo('home')" tabindex="0" role="menuitem">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Home</span>
+      </a>
+      <a class="nav-item" data-target="fidel"
+         onclick="navTo('fidel')" tabindex="0" role="menuitem">
+        <span class="nav-icon" style="font-family:var(--font-amh)">ሀ</span>
+        <span class="nav-label">Fidel Alphabet</span>
+      </a>
+      <a class="nav-item" data-target="flashcards"
+         onclick="navTo('flashcards')" tabindex="0" role="menuitem">
+        <span class="nav-icon">🃏</span>
+        <span class="nav-label">Flashcards</span>
+      </a>
+      <a class="nav-item" data-target="matching"
+         onclick="navTo('matching')" tabindex="0" role="menuitem">
+        <span class="nav-icon">🔗</span>
+        <span class="nav-label">Matching</span>
+      </a>
+      <a class="nav-item" data-target="typing"
+         onclick="navTo('typing')" tabindex="0" role="menuitem">
+        <span class="nav-icon">✍️</span>
+        <span class="nav-label">Writing</span>
+      </a>
+      <a class="nav-item" data-target="sentences"
+         onclick="navTo('sentences')" tabindex="0" role="menuitem">
+        <span class="nav-icon">💬</span>
+        <span class="nav-label">Sentences</span>
+      </a>
+      <a class="nav-item" data-target="speaking"
+         onclick="navTo('speaking')" tabindex="0" role="menuitem">
+        <span class="nav-icon">🎙️</span>
+        <span class="nav-label">Speaking</span>
+      </a>
+      <a class="nav-item" data-target="conjugation"
+         onclick="navTo('conjugation')" tabindex="0" role="menuitem">
+        <span class="nav-icon">🔤</span>
+        <span class="nav-label">Conjugation</span>
+      </a>
+    </div>
 
-    // ALL 171 ENTRIES
-    const rawData = [
-        {id:1,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"ሰላም",trans:"selam",eng:"Hello"},
-        {id:2,pos:"Noun",cat:"Numbers",amh:"ዜሮ",trans:"zero",eng:"Zero"},
-        {id:3,pos:"Noun",cat:"Numbers",amh:"አንድ",trans:"and",eng:"One"},
-        {id:4,pos:"Noun",cat:"Numbers",amh:"ሁለት",trans:"hulet",eng:"Two"},
-        {id:5,pos:"Noun",cat:"Numbers",amh:"ሶስት",trans:"sost",eng:"Three"},
-        {id:6,pos:"Noun",cat:"Numbers",amh:"አራት",trans:"arat",eng:"Four"},
-        {id:7,pos:"Noun",cat:"Numbers",amh:"አምስት",trans:"amist",eng:"Five"},
-        {id:8,pos:"Noun",cat:"Numbers",amh:"ስድስት",trans:"sidist",eng:"Six"},
-        {id:9,pos:"Noun",cat:"Numbers",amh:"ሰባት",trans:"sebat",eng:"Seven"},
-        {id:10,pos:"Noun",cat:"Numbers",amh:"ስምንት",trans:"simint",eng:"Eight"},
-        {id:11,pos:"Noun",cat:"Numbers",amh:"ዘጠኝ",trans:"zeTeñ",eng:"Nine"},
-        {id:12,pos:"Noun",cat:"Numbers",amh:"አስር",trans:"asir",eng:"Ten"},
-        {id:13,pos:"Noun",cat:"Numbers",amh:"አስራ አንድ",trans:"asra and",eng:"Eleven"},
-        {id:14,pos:"Noun",cat:"Numbers",amh:"አስራ ሁለት",trans:"asra hulet",eng:"Twelve"},
-        {id:15,pos:"Noun",cat:"Numbers",amh:"ሃያ",trans:"haya",eng:"Twenty"},
-        {id:16,pos:"Noun",cat:"Numbers",amh:"ሰላሳ",trans:"selasa",eng:"Thirty"},
-        {id:17,pos:"Noun",cat:"Numbers",amh:"አርባ",trans:"arba",eng:"Forty"},
-        {id:18,pos:"Noun",cat:"Numbers",amh:"አምሳ",trans:"amsa",eng:"Fifty"},
-        {id:19,pos:"Noun",cat:"Numbers",amh:"ስድሳ",trans:"sidsa",eng:"Sixty"},
-        {id:20,pos:"Noun",cat:"Numbers",amh:"ሰባ",trans:"seba",eng:"Seventy"},
-        {id:21,pos:"Noun",cat:"Numbers",amh:"ሰማንያ",trans:"semanya",eng:"Eighty"},
-        {id:22,pos:"Noun",cat:"Numbers",amh:"ዘጠና",trans:"zeTena",eng:"Ninety"},
-        {id:23,pos:"Noun",cat:"Numbers",amh:"መቶ",trans:"meto",eng:"One Hundred"},
-        {id:24,pos:"Noun",cat:"Numbers",amh:"ሁለት መቶ",trans:"hulet meto",eng:"Two Hundred"},
-        {id:25,pos:"Noun",cat:"Numbers",amh:"ሺህ",trans:"shih",eng:"One Thousand"},
-        {id:26,pos:"Noun",cat:"Numbers",amh:"ሁለት ሽህ",trans:"hulet shih",eng:"Two Thousand"},
-        {id:27,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"እንዴት ነህ?",trans:"indet neh",eng:"How are you? (m)"},
-        {id:28,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"እንዴት ነሽ?",trans:"indet nesh",eng:"How are you? (f)"},
-        {id:29,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"እንዴት ነዎት?",trans:"indet nawot",eng:"How are you? (formal)"},
-        {id:30,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"እንዴት ናችሁ?",trans:"indet nachu",eng:"How are you? (plural)"},
-        {id:31,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"ደህና እግዚአብሔር ይመስገን",trans:"dehna igziabher yimesgen",eng:"Good, thank God"},
-        {id:32,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"ደህና አደርክ",trans:"dehna aderk",eng:"Good morning (m)"},
-        {id:33,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"ደህና አደርሽ",trans:"dehna adersh",eng:"Good morning (f)"},
-        {id:34,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"ደህና አደሩ",trans:"dehna aderu",eng:"Good morning (formal)"},
-        {id:35,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"ደህና አደሪችሁ",trans:"dehna aderachu",eng:"Good morning (plural)"},
-        {id:36,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"ደኅና ዋልክ",trans:"dehna walk",eng:"Good afternoon (m)"},
-        {id:37,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"ደህና ዋልሽ",trans:"dehna walsh",eng:"Good afternoon (f)"},
-        {id:38,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"ደህና ዋሉ",trans:"dehna walu",eng:"Good afternoon (formal)"},
-        {id:39,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"ደህና ዋላችሁ",trans:"dehna walachu",eng:"Good afternoon (plural)"},
-        {id:40,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"ደህና እደር",trans:"dehna ider",eng:"Good night (m)"},
-        {id:41,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"ደህና እደሪ",trans:"dehna ideri",eng:"Good night (f)"},
-        {id:42,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"ደህና እደሩ",trans:"dehna ideru",eng:"Good night (formal/plural)"},
-        {id:44,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"ደህና ሁን",trans:"dehna hun",eng:"Good bye (m)"},
-        {id:45,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"ደህና ሁኝ",trans:"dehna huñ",eng:"Good bye (f)"},
-        {id:46,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"ደህና ሁኑ",trans:"dehna hunu",eng:"Good bye (formal/plural)"},
-        {id:48,pos:"Interjection",cat:"Greetings & Goodbyes",amh:"ቻው",trans:"chow",eng:"Good bye (casual)"},
-        {id:49,pos:"Adjective",cat:"Color",amh:"ቀይ",trans:"qey",eng:"Red"},
-        {id:50,pos:"Adjective",cat:"Color",amh:"ብርቱካናማ",trans:"birtukanama",eng:"Orange"},
-        {id:51,pos:"Adjective",cat:"Color",amh:"ቢጫ",trans:"bicha",eng:"Yellow"},
-        {id:52,pos:"Adjective",cat:"Color",amh:"አረንጓዴ",trans:"arengwade",eng:"Green"},
-        {id:53,pos:"Adjective",cat:"Color",amh:"ሰማያዊ",trans:"semayawi",eng:"Blue"},
-        {id:54,pos:"Adjective",cat:"Color",amh:"ሐምራዊ",trans:"hamrawi",eng:"Purple"},
-        {id:55,pos:"Adjective",cat:"Color",amh:"ጥቁር",trans:"Tiqur",eng:"Black"},
-        {id:56,pos:"Adjective",cat:"Color",amh:"ነጭ",trans:"nech",eng:"White"},
-        {id:57,pos:"Adjective",cat:"Color",amh:"ቡኒ",trans:"buni",eng:"Brown"},
-        {id:58,pos:"Adjective",cat:"Color",amh:"ግራጫ",trans:"gracha",eng:"Gray"},
-        {id:59,pos:"Noun",cat:"Family",amh:"ወንድ",trans:"wend",eng:"Man"},
-        {id:60,pos:"Noun",cat:"Family",amh:"ሴት",trans:"set",eng:"Woman"},
-        {id:61,pos:"Noun",cat:"Family",amh:"ቤተሰብ",trans:"beteseb",eng:"Family"},
-        {id:62,pos:"Noun",cat:"Family",amh:"ልጅ",trans:"lij",eng:"Child"},
-        {id:63,pos:"Noun",cat:"Family",amh:"ልጆች",trans:"lijoch",eng:"Children"},
-        {id:64,pos:"Noun",cat:"Family",amh:"ሕጻን",trans:"hitsan",eng:"Baby"},
-        {id:65,pos:"Noun",cat:"Family",amh:"ወንድ ልጅ",trans:"wend lij",eng:"Son"},
-        {id:66,pos:"Noun",cat:"Family",amh:"ሴት ልጅ",trans:"set lij",eng:"Daughter"},
-        {id:67,pos:"Noun",cat:"Family",amh:"እናት",trans:"enat",eng:"Mother"},
-        {id:68,pos:"Noun",cat:"Family",amh:"አባት",trans:"abat",eng:"Father"},
-        {id:69,pos:"Noun",cat:"Family",amh:"የአጎት ልጅ",trans:"ye'agot lij",eng:"Cousin"},
-        {id:70,pos:"Noun",cat:"Family",amh:"አክስት",trans:"akist",eng:"Aunt"},
-        {id:71,pos:"Noun",cat:"Family",amh:"አጎት",trans:"agot",eng:"Uncle"},
-        {id:72,pos:"Noun",cat:"Family",amh:"የወንድም ልጅ",trans:"yewendim lij",eng:"Nephew"},
-        {id:73,pos:"Noun",cat:"Family",amh:"የእህት ልጅ",trans:"ye'ihit lij",eng:"Niece"},
-        {id:74,pos:"Noun",cat:"Family",amh:"አያት",trans:"ayat",eng:"Grandfather"},
-        {id:75,pos:"Noun",cat:"Family",amh:"ሴት አያት",trans:"set ayat",eng:"Grandmother"},
-        {id:76,pos:"Noun",cat:"Family",amh:"ባል",trans:"bal",eng:"Husband"},
-        {id:77,pos:"Noun",cat:"Family",amh:"ሚስት",trans:"mist",eng:"Wife"},
-        {id:78,pos:"Pronoun",cat:"Pronoun",amh:"እኔ",trans:"ine",eng:"I"},
-        {id:79,pos:"Pronoun",cat:"Pronoun",amh:"አንተ",trans:"ante",eng:"You (m)"},
-        {id:80,pos:"Pronoun",cat:"Pronoun",amh:"አንቺ",trans:"anchi",eng:"You (f)"},
-        {id:81,pos:"Pronoun",cat:"Pronoun",amh:"እርስዎ",trans:"irswo",eng:"You (formal/elder)"},
-        {id:82,pos:"Pronoun",cat:"Pronoun",amh:"እናንተ",trans:"inante",eng:"You (plural)"},
-        {id:83,pos:"Pronoun",cat:"Pronoun",amh:"እሱ",trans:"issu",eng:"He"},
-        {id:84,pos:"Pronoun",cat:"Pronoun",amh:"እሷ",trans:"issua",eng:"She"},
-        {id:85,pos:"Pronoun",cat:"Pronoun",amh:"እሳቸው",trans:"issachew",eng:"He/She (elder)"},
-        {id:86,pos:"Pronoun",cat:"Pronoun",amh:"እኛ",trans:"iña",eng:"We"},
-        {id:87,pos:"Pronoun",cat:"Pronoun",amh:"እነሱ",trans:"innessu",eng:"They"},
-        {id:88,pos:"Verb",cat:"Irregular",amh:"መሄድ",trans:"mehaed",eng:"to go"},
-        {id:89,pos:"Verb",cat:"Regular",amh:"መላክ",trans:"melak",eng:"to send"},
-        {id:90,pos:"Verb",cat:"Irregular",amh:"መምጣት",trans:"memTat",eng:"to come"},
-        {id:91,pos:"Verb",cat:"Regular",amh:"መሞት",trans:"memot",eng:"to die"},
-        {id:92,pos:"Verb",cat:"Regular",amh:"መታየት",trans:"metayet",eng:"to appear"},
-        {id:93,pos:"Verb",cat:"Regular",amh:"መኖር",trans:"menor",eng:"to live"},
-        {id:94,pos:"Verb",cat:"Regular",amh:"መድረስ",trans:"medires",eng:"to reach"},
-        {id:95,pos:"Verb",cat:"Regular",amh:"መጠየቅ",trans:"meTeyeq",eng:"to ask"},
-        {id:96,pos:"Verb",cat:"Regular",amh:"መጨመር",trans:"meCHemer",eng:"to add"},
-        {id:97,pos:"Verb",cat:"Irregular",amh:"ማለት",trans:"malet",eng:"to mean"},
-        {id:98,pos:"Verb",cat:"Regular",amh:"ማግኘት",trans:"magñet",eng:"to find"},
-        {id:99,pos:"Verb",cat:"Regular",amh:"ስሜት",trans:"smaet",eng:"to feel"},
-        {id:100,pos:"Verb",cat:"Irregular",amh:"መሆን",trans:"mehon",eng:"to be"},
-        {id:101,pos:"Verb",cat:"Regular",amh:"መልቀቅ",trans:"melqeq",eng:"to leave"},
-        {id:102,pos:"Verb",cat:"Regular",amh:"መመልከት",trans:"memelket",eng:"to look"},
-        {id:103,pos:"Verb",cat:"Regular",amh:"መመዝገብ",trans:"memezgeb",eng:"to report"},
-        {id:104,pos:"Verb",cat:"Regular",amh:"መማር",trans:"memar",eng:"to learn"},
-        {id:105,pos:"Verb",cat:"Regular",amh:"መምራት",trans:"memrat",eng:"to lead"},
-        {id:106,pos:"Verb",cat:"Regular",amh:"መምሰል",trans:"memsel",eng:"to seem"},
-        {id:107,pos:"Verb",cat:"Regular",amh:"መሞከር",trans:"memoker",eng:"to try"},
-        {id:108,pos:"Verb",cat:"Regular",amh:"መረዳት",trans:"meredat",eng:"to understand"},
-        {id:109,pos:"Verb",cat:"Regular",amh:"መራመድ",trans:"meramed",eng:"to walk"},
-        {id:110,pos:"Verb",cat:"Regular",amh:"መርዳት",trans:"merdat",eng:"to help"},
-        {id:111,pos:"Verb",cat:"Regular",amh:"መሮጥ",trans:"meroT",eng:"to run"},
-        {id:112,pos:"Verb",cat:"Regular",amh:"መሳብ",trans:"mesab",eng:"to pull"},
-        {id:113,pos:"Verb",cat:"Regular",amh:"መስማት",trans:"mesmat",eng:"to hear"},
-        {id:114,pos:"Verb",cat:"Regular",amh:"መስራት",trans:"mesrat",eng:"to work"},
-        {id:115,pos:"Verb",cat:"Regular",amh:"መስጠት",trans:"mesTet",eng:"to give"},
-        {id:116,pos:"Verb",cat:"Regular",amh:"መሸጥ",trans:"mesheT",eng:"to sell"},
-        {id:117,pos:"Verb",cat:"Regular",amh:"መቀመጥ",trans:"meqemeT",eng:"to sit"},
-        {id:118,pos:"Verb",cat:"Regular",amh:"መቀየር",trans:"meqeyer",eng:"to change"},
-        {id:119,pos:"Verb",cat:"Regular",amh:"መቀጠል",trans:"meqeTel",eng:"to continue"},
-        {id:120,pos:"Verb",cat:"Regular",amh:"መቁረጥ",trans:"mequreT",eng:"to cut"},
-        {id:121,pos:"Verb",cat:"Regular",amh:"መቅረት",trans:"meqret",eng:"to stay"},
-        {id:122,pos:"Verb",cat:"Regular",amh:"መቆም",trans:"meqom",eng:"to stand"},
-        {id:123,pos:"Verb",cat:"Regular",amh:"መቆየት",trans:"meqoyet",eng:"to wait"},
-        {id:124,pos:"Verb",cat:"Regular",amh:"መታጠፍ",trans:"metaTef",eng:"to turn"},
-        {id:125,pos:"Verb",cat:"Regular",amh:"መናገር",trans:"menager",eng:"to speak"},
-        {id:126,pos:"Verb",cat:"Regular",amh:"መንቀሳቀስ",trans:"menqesaqes",eng:"to move"},
-        {id:127,pos:"Verb",cat:"Regular",amh:"መንገር",trans:"menger",eng:"to tell"},
-        {id:128,pos:"Verb",cat:"Regular",amh:"መከሰት",trans:"mekeset",eng:"to happen"},
-        {id:129,pos:"Verb",cat:"Regular",amh:"መከተል",trans:"meketel",eng:"to follow"},
-        {id:130,pos:"Verb",cat:"Regular",amh:"መክፈል",trans:"mekfel",eng:"to pay"},
-        {id:131,pos:"Verb",cat:"Regular",amh:"መክፈት",trans:"mekfet",eng:"to open"},
-        {id:132,pos:"Verb",cat:"Regular",amh:"መወሰን",trans:"mewesen",eng:"to decide"},
-        {id:133,pos:"Verb",cat:"Regular",amh:"መውሰድ",trans:"mewsed",eng:"to take"},
-        {id:134,pos:"Verb",cat:"Regular",amh:"መውደቅ",trans:"mewdeq",eng:"to fall"},
-        {id:135,pos:"Verb",cat:"Regular",amh:"መውደድ",trans:"mewded",eng:"to like"},
-        {id:136,pos:"Verb",cat:"Regular",amh:"መያዝ",trans:"meyaz",eng:"to hold"},
-        {id:137,pos:"Verb",cat:"Regular",amh:"መጀመር",trans:"mejemer",eng:"to begin"},
-        {id:138,pos:"Verb",cat:"Regular",amh:"መገንባት",trans:"megenbat",eng:"to build"},
-        {id:139,pos:"Verb",cat:"Regular",amh:"መግዛት",trans:"megzat",eng:"to buy"},
-        {id:140,pos:"Verb",cat:"Regular",amh:"መግደል",trans:"megdel",eng:"to kill"},
-        {id:141,pos:"Verb",cat:"Regular",amh:"መጠቀም",trans:"meTeqem",eng:"to use"},
-        {id:142,pos:"Verb",cat:"Regular",amh:"መጠቆም",trans:"meTeqom",eng:"to suggest"},
-        {id:143,pos:"Verb",cat:"Regular",amh:"መጠበቅ",trans:"meTebeq",eng:"to keep"},
-        {id:144,pos:"Verb",cat:"Regular",amh:"መጥራት",trans:"meTrat",eng:"to call"},
-        {id:145,pos:"Verb",cat:"Regular",amh:"መጫወት",trans:"meCHawet",eng:"to play"},
-        {id:146,pos:"Verb",cat:"Regular",amh:"መፃፍ",trans:"metsaf",eng:"to write"},
-        {id:147,pos:"Verb",cat:"Regular",amh:"መፈለግ",trans:"mefeleg",eng:"to want"},
-        {id:148,pos:"Verb",cat:"Regular",amh:"መፍቀድ",trans:"mefqed",eng:"to let"},
-        {id:149,pos:"Verb",cat:"Regular",amh:"መፍጠር",trans:"mefTer",eng:"to create"},
-        {id:150,pos:"Verb",cat:"Regular",amh:"ማለፍ",trans:"malef",eng:"to pass"},
-        {id:151,pos:"Verb",cat:"Regular",amh:"ማመን",trans:"mamen",eng:"to believe"},
-        {id:152,pos:"Verb",cat:"Regular",amh:"ማምጣት",trans:"mamTat",eng:"to bring"},
-        {id:153,pos:"Verb",cat:"Regular",amh:"ማሟላት",trans:"mamalat",eng:"to meet"},
-        {id:154,pos:"Verb",cat:"Regular",amh:"ማሰብ",trans:"maseb",eng:"to think"},
-        {id:155,pos:"Verb",cat:"Regular",amh:"ማሳየት",trans:"masayet",eng:"to show"},
-        {id:156,pos:"Verb",cat:"Regular",amh:"ማሳደግ",trans:"masadeg",eng:"to raise"},
-        {id:157,pos:"Verb",cat:"Regular",amh:"ማስቀመጥ",trans:"masqemeT",eng:"to put"},
-        {id:158,pos:"Verb",cat:"Regular",amh:"ማስታወስ",trans:"mastawes",eng:"to remember"},
-        {id:159,pos:"Verb",cat:"Regular",amh:"ማሸነፍ",trans:"mashenef",eng:"to win"},
-        {id:160,pos:"Verb",cat:"Regular",amh:"ማቅረብ",trans:"maqreb",eng:"to provide"},
-        {id:161,pos:"Verb",cat:"Regular",amh:"ማንበብ",trans:"manbeb",eng:"to read"},
-        {id:162,pos:"Verb",cat:"Regular",amh:"ማካተት",trans:"makatet",eng:"to include"},
-        {id:163,pos:"Verb",cat:"Regular",amh:"ማወቅ",trans:"maweq",eng:"to know"},
-        {id:164,pos:"Verb",cat:"Regular",amh:"ማውጣት",trans:"mawTat",eng:"to spend"},
-        {id:165,pos:"Verb",cat:"Regular",amh:"ማዘጋጀት",trans:"mazegajet",eng:"to set"},
-        {id:166,pos:"Verb",cat:"Regular",amh:"ማየት",trans:"mayet",eng:"to see"},
-        {id:167,pos:"Verb",cat:"Regular",amh:"ማደግ",trans:"madeg",eng:"to grow"},
-        {id:168,pos:"Verb",cat:"Regular",amh:"ማድረግ",trans:"madreg",eng:"to do"},
-        {id:169,pos:"Verb",cat:"Regular",amh:"ማገልገል",trans:"magelgel",eng:"to serve"},
-        {id:170,pos:"Verb",cat:"Regular",amh:"ማጣት",trans:"maTat",eng:"to lose"},
-        {id:171,pos:"Verb",cat:"Regular",amh:"ማፍቀር",trans:"mafqer",eng:"to love"}
-    ];
+    <div class="sidebar-footer">
+      <div>🇪🇹 Ethiopia's ancient tongue</div>
+      <div style="margin-top:6px;font-size:10px;line-height:1.6">
+        Full audio &amp; speech features<br>require <strong>Chrome</strong> or <strong>Edge</strong>.
+      </div>
+    </div>
+  </nav>
 
-    let state = { filtered: [], index: 0, mSelected: null, mLock: false };
+  <!-- ─────────────────────────────────────────────────────────────
+       MAIN CONTENT
+  ───────────────────────────────────────────────────────────────── -->
+  <main class="main" id="main-content">
 
-    function init() {
-        changeBg();
-        const root = document.getElementById('selection-root');
-        const hierarchy = {};
-        rawData.forEach(item => {
-            if (!hierarchy[item.pos]) hierarchy[item.pos] = new Set();
-            hierarchy[item.pos].add(item.cat);
-        });
+    <!-- ═══════════════════════════════════════════════════════════
+         ① HOME
+    ════════════════════════════════════════════════════════════ -->
+    <section id="sec-home" class="section active" aria-label="Home">
 
-        Object.keys(hierarchy).sort().forEach(pos => {
-            const block = document.createElement('div');
-            block.className = 'pos-block';
-            block.innerHTML = `<div class="pos-row"><input type="checkbox" class="pos-chk" data-pos="${pos}" onchange="syncPos('${pos}', this.checked)">${pos}</div><div class="cat-grid" id="grid-${pos}"></div>`;
-            root.appendChild(block);
+      <div class="home-hero">
+        <span class="home-eth" aria-label="Amharic word for language">ቋንቋ</span>
+        <span class="home-sub">Learn Amharic</span>
+        <div class="home-rule"></div>
+        <p class="home-tagline">Ethiopia's ancient tongue — spoken by over 57 million people</p>
+      </div>
 
-            const grid = block.querySelector('.cat-grid');
-            Array.from(hierarchy[pos]).sort().forEach(cat => {
-                const label = document.createElement('label');
-                label.className = 'cat-item';
-                label.innerHTML = `<input type="checkbox" class="cat-chk" data-pos="${pos}" data-cat="${cat}" onchange="syncCat('${pos}')">${cat}`;
-                grid.appendChild(label);
-            });
-        });
-    }
+      <div class="home-grid">
 
-    function changeBg() {
-        const url = backgrounds[Math.floor(Math.random() * backgrounds.length)];
-        document.body.style.backgroundImage = `url('${url}')`;
-    }
+        <div class="home-card" onclick="navTo('fidel')" role="button" tabindex="0"
+             onkeydown="if(event.key==='Enter')navTo('fidel')">
+          <div class="home-card-icon" style="font-family:var(--font-amh)">ሀ</div>
+          <div class="home-card-title">Fidel Alphabet</div>
+          <div class="home-card-desc">Learn the 231-character Ethiopic syllabary with audio and an interactive quiz</div>
+        </div>
 
-    function syncPos(pos, isChecked) {
-        document.querySelectorAll(`.cat-chk[data-pos="${pos}"]`).forEach(c => {
-            c.checked = isChecked;
-            c.parentElement.classList.toggle('active-text', isChecked);
-        });
-    }
+        <div class="home-card" onclick="navTo('flashcards')" role="button" tabindex="0"
+             onkeydown="if(event.key==='Enter')navTo('flashcards')">
+          <div class="home-card-icon">🃏</div>
+          <div class="home-card-title">Flashcards</div>
+          <div class="home-card-desc">190+ vocabulary cards with audio — greetings, family, numbers, colors, verbs &amp; places</div>
+        </div>
 
-    function syncCat(pos) {
-        const cats = document.querySelectorAll(`.cat-chk[data-pos="${pos}"]`);
-        const posBox = document.querySelector(`.pos-chk[data-pos="${pos}"]`);
-        posBox.checked = Array.from(cats).some(c => c.checked);
-        cats.forEach(c => c.parentElement.classList.toggle('active-text', c.checked));
-    }
+        <div class="home-card" onclick="navTo('matching')" role="button" tabindex="0"
+             onkeydown="if(event.key==='Enter')navTo('matching')">
+          <div class="home-card-icon">🔗</div>
+          <div class="home-card-title">Matching</div>
+          <div class="home-card-desc">Race to match 8 Amharic words to their English translations with instant audio feedback</div>
+        </div>
 
-    function showScreen(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        changeBg();
-    }
+        <div class="home-card" onclick="navTo('typing')" role="button" tabindex="0"
+             onkeydown="if(event.key==='Enter')navTo('typing')">
+          <div class="home-card-icon">✍️</div>
+          <div class="home-card-title">Writing</div>
+          <div class="home-card-desc">Type translations in English or Amharic script using the built-in Ethiopic keyboard</div>
+        </div>
 
-    function launch(mode) {
-        const activeCats = Array.from(document.querySelectorAll('.cat-chk:checked')).map(c => c.dataset.cat);
-        state.filtered = rawData.filter(i => activeCats.includes(i.cat)).sort(() => Math.random() - 0.5);
-        if (state.filtered.length === 0) return alert("Please select categories first!");
-        state.index = 0;
-        showScreen(`screen-${mode}`);
-        if (mode === 'flashcards') nextFC();
-        if (mode === 'matching') nextMatch();
-        if (mode === 'typing') nextType();
-    }
+        <div class="home-card" onclick="navTo('sentences')" role="button" tabindex="0"
+             onkeydown="if(event.key==='Enter')navTo('sentences')">
+          <div class="home-card-icon">💬</div>
+          <div class="home-card-title">Sentences</div>
+          <div class="home-card-desc">Translate infinitely generated Amharic sentences using the present progressive tense</div>
+        </div>
 
-    function nextFC() {
-        if (state.index >= state.filtered.length) state.index = 0;
-        const item = state.filtered[state.index++];
-        const mode = document.getElementById('challenge-mode').value;
-        const anchor = document.getElementById('fc-anchor');
-        anchor.innerHTML = '';
-        const container = document.createElement('div');
-        container.className = 'card-container card-slide-in';
-        let isAmhFront = (mode === 'amh-eng') || (mode === 'random' && Math.random() > 0.5);
-        container.innerHTML = `
-            <div class="card" onclick="this.classList.toggle('flipped')">
-                <div class="card-face card-front">
-                    <div class="main-txt">${isAmhFront ? item.amh : item.eng}</div>
-                    <div class="sub-txt">${isAmhFront ? item.trans : ""}</div>
-                </div>
-                <div class="card-face card-back">
-                    <div class="main-txt">${isAmhFront ? item.eng : item.amh}</div>
-                    <div class="sub-txt">${isAmhFront ? "" : item.trans}</div>
-                </div>
-            </div>`;
-        anchor.appendChild(container);
-    }
+        <div class="home-card" onclick="navTo('speaking')" role="button" tabindex="0"
+             onkeydown="if(event.key==='Enter')navTo('speaking')">
+          <div class="home-card-icon">🎙️</div>
+          <div class="home-card-title">Speaking</div>
+          <div class="home-card-desc">Hear Amharic words and speak the English translation — scored in real time</div>
+        </div>
 
-    function nextMatch() {
-        const grid = document.getElementById('m-grid');
-        grid.innerHTML = '';
-        const set = state.filtered.slice(0, 4);
-        let cards = [];
-        set.forEach(i => {
-            cards.push({ id: i.id, text: i.amh, type: 'amh' });
-            cards.push({ id: i.id, text: i.eng, type: 'eng' });
-        });
-        cards.sort(() => Math.random() - 0.5);
-        cards.forEach(c => {
-            const div = document.createElement('div');
-            div.className = 'match-card';
-            div.innerText = c.text;
-            div.onclick = () => handleMatch(div, c);
-            grid.appendChild(div);
-        });
-    }
+        <div class="home-card" onclick="navTo('conjugation')" role="button" tabindex="0"
+             onkeydown="if(event.key==='Enter')navTo('conjugation')">
+          <div class="home-card-icon">🔤</div>
+          <div class="home-card-title">Conjugation</div>
+          <div class="home-card-desc">Master the present progressive verb form across all 8 subject pronouns</div>
+        </div>
 
-    function handleMatch(div, data) {
-        if (state.mLock || div.classList.contains('correct')) return;
-        if (!state.mSelected) {
-            state.mSelected = { div, data };
-            div.classList.add('selected');
-        } else {
-            const first = state.mSelected;
-            if (first.div === div) return;
-            state.mLock = true;
-            if (first.data.id === data.id && first.data.type !== data.type) {
-                div.classList.add('correct');
-                first.div.classList.add('correct');
-                setTimeout(() => { div.classList.add('hidden'); first.div.classList.add('hidden'); state.mLock = false; }, 800);
-            } else {
-                div.classList.add('wrong');
-                first.div.classList.add('wrong');
-                setTimeout(() => { div.classList.remove('wrong', 'selected'); first.div.classList.remove('wrong', 'selected'); state.mLock = false; }, 800);
-            }
-            state.mSelected = null;
-        }
-    }
+      </div>
 
-    function nextType() {
-        if (state.index >= state.filtered.length) state.index = 0;
-        const item = state.filtered[state.index++];
-        const mode = document.getElementById('challenge-mode').value;
-        let isAmhQ = (mode === 'amh-eng') || (mode === 'random' && Math.random() > 0.5);
-        document.getElementById('t-dir').innerText = isAmhQ ? "Translate to English" : "Translate to Amharic";
-        document.getElementById('t-quest').innerText = isAmhQ ? item.amh : item.eng;
-        state.target = isAmhQ ? item.eng : item.amh;
-        document.getElementById('t-input').value = '';
-        document.getElementById('t-feedback').innerText = '';
-    }
+      <!-- Quick-start tip -->
+      <div style="margin-top:32px;padding:20px 24px;background:rgba(200,145,30,0.07);border:1px solid rgba(200,145,30,0.22);border-radius:6px;max-width:720px;margin-left:auto;margin-right:auto">
+        <p style="font-size:14px;color:var(--ivory-dim);line-height:1.9;text-align:center">
+          <strong style="color:var(--gold-l)">New to Amharic?</strong>
+          Start with the
+          <span onclick="navTo('fidel')" style="color:var(--gold);cursor:pointer;text-decoration:underline;text-underline-offset:3px">Fidel Alphabet</span>
+          to learn the script, then move to
+          <span onclick="navTo('flashcards')" style="color:var(--gold);cursor:pointer;text-decoration:underline;text-underline-offset:3px">Flashcards</span>
+          to build vocabulary.
+          For full audio &amp; speaking features use <strong style="color:var(--gold-l)">Chrome</strong> or <strong style="color:var(--gold-l)">Edge</strong>.
+        </p>
+      </div>
 
-    function checkType() {
-        const input = document.getElementById('t-input').value.trim().toLowerCase();
-        const target = state.target.toLowerCase();
-        const fb = document.getElementById('t-feedback');
-        if (input === target) {
-            fb.style.color = "var(--success)"; fb.innerText = "Correct!";
-            setTimeout(nextType, 1000);
-        } else {
-            fb.style.color = "var(--error)"; fb.innerText = `Wrong. Answer: ${state.target}`;
-        }
-    }
+    </section><!-- /#sec-home -->
 
-    init();
-</script>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ② FIDEL — ETHIOPIC ALPHABET
+    ════════════════════════════════════════════════════════════ -->
+    <section id="sec-fidel" class="section" aria-label="Fidel alphabet">
+
+      <div class="section-header">
+        <h2>Fidel — The Ethiopic Alphabet</h2>
+        <p>
+          Amharic is written in the <em>Ge'ez</em> script. Each symbol represents a syllable — a consonant
+          combined with one of 7 vowels. There are 31 consonant families × 7 vowel orders = 217 core characters.
+          Click any character to hear it spoken and see its romanization.
+        </p>
+      </div>
+
+      <!-- Vowel pronunciation guide -->
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px">
+        <span style="font-size:12px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-right:4px;align-self:center">Vowels:</span>
+        <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">① ä = "uh"</span>
+        <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">② u = "oo"</span>
+        <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">③ i = "ee"</span>
+        <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">④ a = "ah"</span>
+        <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">⑤ ē = "ay"</span>
+        <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">⑥ ɨ = "ih"</span>
+        <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">⑦ o = "oh"</span>
+      </div>
+
+      <!-- Mode toggle -->
+      <div class="fidel-mode-btns">
+        <button id="fidel-browse" class="mode-tab active" onclick="fidelMode('browse')">
+          📖 Browse Chart
+        </button>
+        <button id="fidel-quiz-btn" class="mode-tab" onclick="fidelMode('quiz')">
+          📝 Quiz Me
+        </button>
+      </div>
+
+      <!-- ── BROWSE VIEW ─────────────────────────── -->
+      <div id="fidel-chart-wrap">
+        <!-- Fidel grid is rendered here by Fidel.buildChart() -->
+        <div id="fidel-chart"></div>
+
+        <!-- Character info panel (appears on click) -->
+        <div id="fidel-info-panel" class="fidel-info-panel">
+          <div id="fidel-info-char" class="fidel-info-char">ሀ</div>
+          <div class="fidel-info-det">
+            <div id="fidel-info-rom" class="fidel-info-rom">he</div>
+            <div id="fidel-info-row" class="fidel-info-row">H family · 1st order (ä / uh)</div>
+            <button class="btn-ghost" style="margin-top:10px;font-size:13px;padding:7px 16px"
+              onclick="Audio.speakText(document.getElementById('fidel-info-char').textContent,'am-ET')">
+              🔊 Hear it
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── QUIZ VIEW (hidden until quiz mode) ──── -->
+      <div id="fidel-quiz-wrap">
+        <div id="fidel-quiz-score" class="quiz-score">Score: 0 / 0</div>
+        <p style="color:var(--ivory-dim);font-size:14px;margin-bottom:4px">
+          Select the correct romanization for this character:
+        </p>
+        <div id="quiz-char-display" class="quiz-char-display">ሀ</div>
+        <div id="quiz-options" class="quiz-options"><!-- built by JS --></div>
+        <div id="quiz-feedback" class="quiz-feedback"></div>
+      </div>
+
+    </section><!-- /#sec-fidel -->
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ③ FLASHCARDS
+    ════════════════════════════════════════════════════════════ -->
+    <section id="sec-flashcards" class="section" aria-label="Flashcards">
+
+      <div class="section-header">
+        <h2>Flashcards</h2>
+        <p>Filter by part of speech or category, then click a card to flip it. Press 🔊 to hear the Amharic word spoken aloud.</p>
+      </div>
+
+      <!-- Filter panel (filled by JS) -->
+      <div id="fc-filter" class="filter-panel"></div>
+
+      <!-- Direction + Start -->
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap">
+        <div id="fc-dir" class="fc-dir-row" style="margin:0;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="dir-btn on" data-dir="ae" onclick="fcSetDir('ae')">Amharic → English</button>
+          <button class="dir-btn"    data-dir="ea" onclick="fcSetDir('ea')">English → Amharic</button>
+          <button class="dir-btn"    data-dir="mix" onclick="fcSetDir('mix')">🔀 Mix</button>
+        </div>
+        <button class="btn-primary" onclick="fcStart()" style="padding:10px 22px;font-size:15px">
+          Start →
+        </button>
+      </div>
+
+      <!-- Progress -->
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span class="progress-txt" id="fc-prog">0 / 0</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="fc-bar" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Flashcard -->
+      <div id="fc-card-wrap" style="margin-top:18px">
+        <div class="fc-wrap" onclick="fcFlip()" role="button" tabindex="0"
+             aria-label="Flip flashcard" onkeydown="if(event.key==='Enter'||event.key===' ')fcFlip()">
+          <div class="flashcard" id="fc-card">
+
+            <div class="card-face front">
+              <div class="card-label" id="fc-front-label">AMHARIC</div>
+              <div class="card-main" id="fc-front-main">
+                <span style="color:var(--ivory-dim);font-style:italic;font-size:15px">
+                  Press Start to begin
+                </span>
+              </div>
+              <div class="card-sub" id="fc-front-sub"></div>
+            </div>
+
+            <div class="card-face back">
+              <div class="card-label" id="fc-back-label">ENGLISH</div>
+              <div class="card-main" id="fc-back-main"></div>
+              <div class="card-sub" id="fc-back-sub"></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <p class="fc-hint">Click card to flip · 🔊 to hear Amharic pronunciation</p>
+
+      <div class="fc-nav">
+        <button class="btn-ghost" id="fc-prev" onclick="fcPrev()" disabled>← Previous</button>
+        <button class="btn-ghost" id="fc-next" onclick="fcNext()">Next →</button>
+      </div>
+
+    </section><!-- /#sec-flashcards -->
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ④ MATCHING
+    ════════════════════════════════════════════════════════════ -->
+    <section id="sec-matching" class="section" aria-label="Matching game">
+
+      <div class="section-header">
+        <h2>Matching Game</h2>
+        <p>Click two tiles to match an Amharic word with its English translation. A correct match plays the pronunciation automatically. Match all 8 pairs to complete the round.</p>
+      </div>
+
+      <!-- Filter panel (filled by JS) -->
+      <div id="mt-filter" class="filter-panel"></div>
+
+      <!-- Start + score row -->
+      <div class="mt-top">
+        <button class="btn-primary" onclick="mtStart()">Start Round →</button>
+        <span id="mt-score" class="mt-score">Pairs: 0 / 8</span>
+      </div>
+
+      <!-- Tile grid (built by JS) -->
+      <div id="mt-grid" class="matching-grid" aria-live="polite"></div>
+
+      <!-- Round-complete message (shown by JS) -->
+      <div id="mt-next" style="display:none;text-align:center;padding:24px 0">
+        <div style="font-size:26px;margin-bottom:14px">🌟 Round Complete!</div>
+        <p style="color:var(--ivory-dim);font-size:15px;margin-bottom:16px">Every pair matched — great work!</p>
+        <button class="btn-gold" onclick="mtStart()">🔄 Next Round</button>
+      </div>
+
+    </section><!-- /#sec-matching -->
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ⑤ WRITING / TYPING
+    ════════════════════════════════════════════════════════════ -->
+    <section id="sec-typing" class="section" aria-label="Writing practice">
+
+      <div class="section-header">
+        <h2>Writing Practice</h2>
+        <p>Test your recall by typing translations. When writing Amharic script, use the ⌨️ button to open the built-in Ethiopic keyboard.</p>
+      </div>
+
+      <!-- ── SETUP PANEL ─────────────────────────── -->
+      <div id="ty-setup">
+
+        <div id="ty-filter" class="filter-panel"></div>
+
+        <div style="margin-bottom:6px">
+          <span class="filter-label">Direction</span>
+        </div>
+        <div id="ty-dir-row" style="display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap">
+          <button class="dir-btn on" onclick="tySetDir('ae',this)">Amharic → Type English</button>
+          <button class="dir-btn"    onclick="tySetDir('ea',this)">English → Type Amharic</button>
+          <button class="dir-btn"    onclick="tySetDir('mix',this)">🔀 Mix Both</button>
+        </div>
+
+        <button class="btn-primary" onclick="tyStart()">Begin Writing Practice →</button>
+
+      </div>
+
+      <!-- ── GAME PANEL ──────────────────────────── -->
+      <div id="ty-section-main" style="display:none">
+
+        <!-- Progress bar -->
+        <div class="progress-wrap" style="margin-bottom:16px">
+          <div class="progress-meta">
+            <span class="progress-txt" id="ty-prog">1 / 10</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="ty-bar" style="width:10%"></div>
+          </div>
+        </div>
+
+        <!-- Question card -->
+        <div class="ty-prompt-card glass">
+          <div class="ty-label" id="ty-label">TRANSLATE TO ENGLISH</div>
+          <div id="ty-prompt"
+               style="min-height:64px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
+          </div>
+          <div class="ty-sub" id="ty-sub"></div>
+        </div>
+
+        <!-- Answer area -->
+        <div class="ty-input-area" style="margin-top:14px">
+
+          <!-- Input row with keyboard toggle -->
+          <div style="display:flex;gap:8px;align-items:stretch">
+            <input
+              type="text"
+              class="game-input"
+              id="ty-input"
+              placeholder="Type your answer…"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              aria-label="Translation answer"
+            >
+            <button
+              class="btn-ghost"
+              onclick="tyToggleKb()"
+              title="Toggle Amharic keyboard (⌨️)"
+              aria-label="Toggle Amharic keyboard"
+              style="flex-shrink:0;padding:0 14px;font-size:20px;border-radius:var(--radius)"
+            >⌨️</button>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="ty-controls">
+            <button class="btn-primary" onclick="tyCheck()">Check ✓</button>
+            <button class="btn-ghost"   onclick="tyNext()">Skip →</button>
+            <button class="btn-ghost"   onclick="tyBack()"
+                    style="margin-left:auto;font-size:13px">← Filters</button>
+          </div>
+
+          <!-- Feedback + answer reveal -->
+          <div class="feedback" id="ty-feedback" aria-live="polite"></div>
+          <div class="reveal-text" id="ty-reveal" style="display:none" aria-live="polite"></div>
+
+          <!-- "Next" appears after answering -->
+          <button class="btn-gold" id="ty-next" onclick="tyNext()"
+                  style="display:none;margin-top:12px">
+            Next →
+          </button>
+
+        </div>
+      </div>
+
+    </section><!-- /#sec-typing -->
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ⑥ SENTENCES
+    ════════════════════════════════════════════════════════════ -->
+    <section id="sec-sentences" class="section" aria-label="Sentence practice">
+
+      <div class="section-header">
+        <h2>Sentence Practice</h2>
+        <p>Translate dynamically generated sentences using the Amharic present progressive tense. Type answers in romanized Amharic (e.g. <em style="color:var(--gold-l)">ine lij iyyefelleghu new</em>).</p>
+      </div>
+
+      <!-- Formula reference -->
+      <div class="sn-reference">
+        <strong style="color:var(--gold)">Formula:</strong>
+        <span style="color:var(--gold-l)"> iyye</span> + [stem] + [suffix] +
+        <span style="color:var(--gold-l)"> new</span>
+        &nbsp;·&nbsp;
+        <strong style="color:var(--gold)">Example:</strong>
+        "I am going" →
+        <span style="color:var(--gold-l)">iyyehēdhu new</span>
+        &nbsp;·&nbsp;
+        <strong style="color:var(--gold)">Word order:</strong> Subject · Object · Verb
+        <br>
+        <span style="font-size:12px;color:var(--ivory-dim)">
+          Suffixes: I=hu · You(m)=h · You(f)=sh · He=e · She=ech · We=en · You(pl)=achihu · They=achew
+          &nbsp;— If stem ends in a vowel, drop the leading "e" from ech/en.
+        </span>
+      </div>
+
+      <!-- Direction toggle -->
+      <div id="sn-dir-row" style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
+        <button class="dir-btn on" onclick="snSetDir('toAmh',this)">English → Romanized Amharic</button>
+        <button class="dir-btn"    onclick="snSetDir('toEng',this)">Romanized Amharic → English</button>
+      </div>
+
+      <!-- Sentence display card -->
+      <div class="sn-card glass">
+        <div class="sn-label" id="sn-label">TRANSLATE TO AMHARIC (romanized)</div>
+        <div id="sn-prompt"
+             style="font-size:clamp(17px,3.5vw,26px);margin:14px 0;line-height:1.5;min-height:48px">
+        </div>
+        <div class="sn-hint" id="sn-hint">Hint: [subject] + [object] + iyye[stem][suffix] new</div>
+      </div>
+
+      <!-- Answer area -->
+      <div class="ty-input-area" style="margin-top:14px">
+        <input
+          type="text"
+          class="game-input"
+          id="sn-input"
+          placeholder="e.g. ine lij iyyefelleghu new"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          aria-label="Sentence translation answer"
+        >
+
+        <div class="ty-controls">
+          <button class="btn-primary" onclick="snCheck()">Check ✓</button>
+          <button class="btn-ghost"   onclick="snNext()">New Sentence 🔄</button>
+        </div>
+
+        <div class="feedback" id="sn-feedback" aria-live="polite"></div>
+        <div class="reveal-text" id="sn-reveal" style="display:none" aria-live="polite"></div>
+
+        <button class="btn-gold" id="sn-next" onclick="snNext()"
+                style="display:none;margin-top:12px">
+          Next Sentence →
+        </button>
+
+      </div>
+
+    </section><!-- /#sec-sentences -->
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ⑦ SPEAKING PRACTICE
+    ════════════════════════════════════════════════════════════ -->
+    <section id="sec-speaking" class="section" aria-label="Speaking practice">
+
+      <div class="section-header">
+        <h2>Speaking Practice</h2>
+        <p>Hear an Amharic word, then speak the English translation. Your speech is transcribed in real time and scored. Works best in <strong>Chrome</strong> or <strong>Edge</strong>.</p>
+      </div>
+
+      <!-- Browser compatibility warning (shown by JS if unsupported) -->
+      <div id="sp-compat-note" class="sp-compat-note" role="alert">
+        ⚠️ Speech recognition is not available in your browser.
+        Please switch to <strong>Chrome</strong> or <strong>Edge</strong> to use this feature.
+      </div>
+
+      <!-- Direction toggle -->
+      <div id="sp-dir-row" style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
+        <button class="dir-btn on" onclick="spSetDir('listenAmh',this)">
+          🔊 Hear Amharic → Speak English
+        </button>
+        <button class="dir-btn" onclick="spSetDir('speakAmh',this)">
+          📖 Read English → Speak Amharic
+        </button>
+      </div>
+
+      <!-- Prompt card -->
+      <div class="sp-card glass">
+        <div id="sp-direction-label" class="sp-dir-label">LISTEN · THEN SPEAK THE ENGLISH TRANSLATION</div>
+        <div id="sp-prompt"
+             style="min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;margin:16px 0">
+        </div>
+        <div id="sp-expected" class="sp-expected"></div>
+        <button id="sp-listen-btn" class="btn-ghost" onclick="spListen()"
+                style="margin-top:14px;font-size:14px;padding:8px 20px">
+          🔊 Play Audio Again
+        </button>
+      </div>
+
+      <!-- Microphone button -->
+      <div style="text-align:center;margin:24px 0 10px">
+        <button id="sp-mic-btn" class="sp-mic-btn" onclick="spToggleRec()"
+                aria-label="Start speaking">
+          🎙️ Start Speaking
+        </button>
+        <p style="color:var(--ivory-dim);font-size:12px;margin-top:10px;letter-spacing:0.5px">
+          PRESS BUTTON · SPEAK · RECEIVE SCORE
+        </p>
+      </div>
+
+      <!-- Live transcript -->
+      <div id="sp-transcript" class="sp-transcript" aria-live="polite">
+        Ready — press the microphone button to begin
+      </div>
+
+      <!-- Score bar (shown after recognition) -->
+      <div id="sp-score-wrap" style="display:none;margin-top:20px" aria-live="polite">
+        <div class="sp-score-bar-track">
+          <div id="sp-score-bar" class="sp-score-bar" style="width:0%"></div>
+        </div>
+        <div class="sp-score-row" style="margin-top:8px">
+          <span id="sp-score-txt" class="sp-score-txt">0%</span>
+          <span id="sp-score-msg" class="sp-score-msg"></span>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap">
+        <button class="btn-primary" onclick="spNext()">Next Word →</button>
+      </div>
+
+    </section><!-- /#sec-speaking -->
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ⑧ CONJUGATION PRACTICE
+    ════════════════════════════════════════════════════════════ -->
+    <section id="sec-conjugation" class="section" aria-label="Verb conjugation">
+
+      <div class="section-header">
+        <h2>Verb Conjugation</h2>
+        <p>Type the present progressive form in romanized Amharic. Formula:
+          <strong style="color:var(--gold-l)">iyye + [stem] + [suffix] + new</strong>.
+          The reference guide shows all 8 suffix forms.
+        </p>
+      </div>
+
+      <!-- Two-column layout: question card + reference panel -->
+      <div class="cj-layout">
+
+        <!-- ── Question side ──────────────── -->
+        <div>
+
+          <!-- Progress bar -->
+          <div class="progress-wrap" style="margin-bottom:18px">
+            <div class="progress-meta">
+              <span class="progress-txt" id="cj-prog">1 / 20</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="cj-bar" style="width:5%"></div>
+            </div>
+          </div>
+
+          <!-- Question card -->
+          <div class="cj-card glass">
+
+            <!-- Pronoun -->
+            <div class="cj-pronoun-block">
+              <div class="cj-p-label">SUBJECT</div>
+              <div id="cj-pronoun" class="cj-p-main">I</div>
+              <div id="cj-pron-amh" class="cj-p-amh">እኔ</div>
+            </div>
+
+            <!-- Verb -->
+            <div class="cj-verb-block">
+              <div id="cj-verb-amh" class="cj-v-amh">መሄድ</div>
+              <div id="cj-verb-tr"  class="cj-v-tr">mehēd</div>
+              <div id="cj-verb-en"  class="cj-v-en">to go</div>
+            </div>
+
+            <!-- Stem hint -->
+            <div id="cj-stem-hint" class="cj-stem-hint">Stem: "hēd"</div>
+
+            <!-- Answer input -->
+            <div class="ty-input-area">
+              <input
+                type="text"
+                class="game-input"
+                id="cj-input"
+                placeholder='e.g. "iyyehēdhu new"'
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+                aria-label="Conjugated verb form"
+              >
+
+              <div class="ty-controls">
+                <button class="btn-primary" onclick="cjCheck()">Check ✓</button>
+                <button class="btn-ghost"   onclick="cjNext()">Skip →</button>
+              </div>
+
+              <div class="feedback" id="cj-feedback" aria-live="polite"></div>
+              <div class="reveal-text" id="cj-reveal" style="display:none" aria-live="polite"></div>
+
+              <button class="btn-gold" id="cj-next" onclick="cjNext()"
+                      style="display:none;margin-top:12px">
+                Next →
+              </button>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Reference panel ───────────── -->
+        <div class="cj-ref-panel glass">
+          <div class="cj-ref-title">📖 SUFFIX REFERENCE</div>
+          <p style="font-size:12px;color:var(--ivory-dim);margin-bottom:12px;line-height:1.8">
+            <span style="color:var(--gold-l)">iyye</span> + stem +
+            <strong style="color:var(--ivory)">suffix</strong> +
+            <span style="color:var(--gold-l)"> new</span><br>
+            <em>Stem ending in vowel?<br>Drop the leading "e" from -ech and -en</em>
+          </p>
+          <!-- Built dynamically by Conjugation.renderRef() -->
+          <div id="cj-ref"></div>
+        </div>
+
+      </div>
+
+    </section><!-- /#sec-conjugation -->
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ⑨ SUCCESS SCREEN
+    ════════════════════════════════════════════════════════════ -->
+    <section id="sec-success" class="section" aria-label="Success" aria-live="polite">
+      <div class="suc-star" aria-hidden="true">🌟</div>
+      <h1 class="suc-title">Well Done!</h1>
+      <div class="suc-amh" aria-label="Gobez — well done in Amharic">ጎበዝ! — gobez!</div>
+      <p class="suc-msg" id="suc-msg">Set complete!</p>
+      <div class="suc-btns">
+        <button class="btn-primary" id="suc-again">Practice Again</button>
+        <button class="btn-ghost"   id="suc-home" onclick="navTo('home')">← Home</button>
+      </div>
+    </section><!-- /#sec-success -->
+
+  </main><!-- /.main -->
+</div><!-- /#layout -->
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MOBILE BOTTOM NAVIGATION
+═══════════════════════════════════════════════════════════════════ -->
+<nav class="bottom-nav" aria-label="Mobile navigation">
+  <div class="bottom-nav-item active" data-target="home" onclick="navTo('home')"
+       role="menuitem" tabindex="0">
+    <span class="nav-icon">🏠</span>
+    <span>Home</span>
+  </div>
+  <div class="bottom-nav-item" data-target="fidel" onclick="navTo('fidel')"
+       role="menuitem" tabindex="0">
+    <span class="nav-icon" style="font-family:var(--font-amh)">ሀ</span>
+    <span>Fidel</span>
+  </div>
+  <div class="bottom-nav-item" data-target="flashcards" onclick="navTo('flashcards')"
+       role="menuitem" tabindex="0">
+    <span class="nav-icon">🃏</span>
+    <span>Cards</span>
+  </div>
+  <div class="bottom-nav-item" data-target="matching" onclick="navTo('matching')"
+       role="menuitem" tabindex="0">
+    <span class="nav-icon">🔗</span>
+    <span>Match</span>
+  </div>
+  <div class="bottom-nav-item" data-target="typing" onclick="navTo('typing')"
+       role="menuitem" tabindex="0">
+    <span class="nav-icon">✍️</span>
+    <span>Write</span>
+  </div>
+  <div class="bottom-nav-item" data-target="sentences" onclick="navTo('sentences')"
+       role="menuitem" tabindex="0">
+    <span class="nav-icon">💬</span>
+    <span>Sentences</span>
+  </div>
+  <div class="bottom-nav-item" data-target="speaking" onclick="navTo('speaking')"
+       role="menuitem" tabindex="0">
+    <span class="nav-icon">🎙️</span>
+    <span>Speak</span>
+  </div>
+  <div class="bottom-nav-item" data-target="conjugation" onclick="navTo('conjugation')"
+       role="menuitem" tabindex="0">
+    <span class="nav-icon">🔤</span>
+    <span>Conjugate</span>
+  </div>
+</nav>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SCRIPTS — load order matters: data → audio → keyboard → app
+═══════════════════════════════════════════════════════════════════ -->
+<script src="js/data.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/keyboard.js"></script>
+<script src="js/app.js"></script>
+
 </body>
 </html>
