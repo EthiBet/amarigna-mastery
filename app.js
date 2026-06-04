@@ -2,9 +2,9 @@
 // APP.JS — Main application logic
 // =====================================================================
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════════════════════
    UTILITIES
-═══════════════════════════════════════════════════════════════════ */
+═════════════════════════════════════════════════════════════════════════════ */
 const $ = id => document.getElementById(id);
 const $$ = sel => document.querySelectorAll(sel);
 
@@ -39,9 +39,9 @@ function audioBtn(text, lang = 'am-ET', extraClass = '') {
   return `<button class="audio-btn ${extraClass}" title="Listen" onclick="event.stopPropagation();Audio.speakText(${JSON.stringify(text)},${JSON.stringify(lang)})">🔊</button>`;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════════════════════
    BACKGROUND CROSSFADE
-═══════════════════════════════════════════════════════════════════ */
+═════════════════════════════════════════════════════════════════════════════ */
 const BG = {
   active: 'a',
   index: 0,
@@ -64,9 +64,9 @@ const BG = {
   }
 };
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════════════════════
    NAVIGATION
-═══════════════════════════════════════════════════════════════════ */
+═════════════════════════════════════════════════════════════════════════════ */
 const Nav = {
   current: 'home',
   go(sectionId) {
@@ -95,9 +95,9 @@ const Nav = {
   }
 };
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════════════════════
    FILTER BUILDER (shared by Flashcard, Matching, Typing, Sentences)
-═══════════════════════════════════════════════════════════════════ */
+═════════════════════════════════════════════════════════════════════════════ */
 function buildFilterPanel(containerId, state, onChange) {
   const c = $(containerId);
   if (!c) return;
@@ -157,9 +157,9 @@ function updateFilterCount(containerId, state) {
   if (el) el.textContent = `${filtered.length} word${filtered.length !== 1 ? 's' : ''} selected`;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════════════════════
    ① FIDEL — Alphabet section
-═══════════════════════════════════════════════════════════════════ */
+═════════════════════════════════════════════════════════════════════════════ */
 const Fidel = (() => {
   let mode = 'browse'; // 'browse' | 'quiz'
   let quizScore = { correct: 0, total: 0 };
@@ -270,9 +270,9 @@ const Fidel = (() => {
   return { init, buildChart, cellClick, setMode, nextQuiz, checkQuiz };
 })();
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════════════════════
    ② FLASHCARD section
-═══════════════════════════════════════════════════════════════════ */
+═════════════════════════════════════════════════════════════════════════════ */
 const Flashcard = (() => {
   let items = [], index = 0, flipped = false, dir = 'ae';
 
@@ -349,9 +349,9 @@ const Flashcard = (() => {
   return { init, load, render, flip, next, prev, setDir, start };
 })();
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════════════════════
    ③ MATCHING section
-═══════════════════════════════════════════════════════════════════ */
+═════════════════════════════════════════════════════════════════════════════ */
 const Matching = (() => {
   let items = [], sel = null, matched = 0, total = 0;
   const ROUND_SIZE = 8;
@@ -414,16 +414,14 @@ const Matching = (() => {
     }
   }
 
-  function init() { buildFilterPanel('mt-filter', appState.mt, null); }
-
   return { init, start, clickTile };
 })();
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════════════════════
    ④ TYPING section
-═══════════════════════════════════════════════════════════════════ */
+═════════════════════════════════════════════════════════════════════════════ */
 const Typing = (() => {
-  let items = [], index = 0, answered = false, dir = 'ae';
+  let items = [], index = 0, answered = false, dir = 'ae', resolvedDir = 'ae';
 
   function init() { buildFilterPanel('ty-filter', appState.ty, null); }
 
@@ -440,7 +438,7 @@ const Typing = (() => {
     if (!items.length) return;
     const item = items[index];
     const total = items.length;
-    const resolvedDir = dir === 'mix' ? (Math.random() > .5 ? 'ae' : 'ea') : dir;
+    resolvedDir = dir === 'mix' ? (index % 2 === 0 ? 'ae' : 'ea') : dir;
 
     setProgress('ty-bar', 'ty-prog', index + 1, total);
     answered = false;
@@ -474,9 +472,8 @@ const Typing = (() => {
   function check() {
     if (answered) return;
     const inp  = $('ty-input');
-    const ans  = Audio.normalizeAmharic(inp.value.trim().toLowerCase());
+    const ans  = inp.value.trim().toLowerCase();
     const item = items[index];
-    const resolvedDir = dir === 'mix' ? (index % 2 === 0 ? 'ae' : 'ea') : dir;
 
     let ok = false, correctStr = '';
 
@@ -487,10 +484,13 @@ const Typing = (() => {
       ok = ans === ce || ans === item.eng.toLowerCase() ||
            (ans.length > 2 && item.eng.toLowerCase().includes(ans));
     } else {
-      // Typing Amharic
-      const normAmh = Audio.normalizeAmharic(item.amh);
+      // Typing Amharic (script or romanization) — no normalization for script answers
       const normAns = Audio.normalizeAmharic(inp.value.trim());
-      ok = normAns === normAmh || inp.value.trim().toLowerCase() === item.trans.toLowerCase();
+      const normAmh = Audio.normalizeAmharic(item.amh);
+      // Compare exact script first (no normalization), then accept exact romanization
+      ok = inp.value.trim() === item.amh || 
+           inp.value.trim().toLowerCase() === item.trans.toLowerCase() ||
+           normAns === normAmh;
       correctStr = `${item.amh}  (${item.trans})`;
     }
 
@@ -535,9 +535,9 @@ const Typing = (() => {
   return { init, start, render, check, next, setDir, toggleKb, backToSetup };
 })();
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════════════════════
    ⑤ SENTENCE BUILDER section
-═══════════════════════════════════════════════════════════════════ */
+═════════════════════════════════════════════════════════════════════════════ */
 const Sentences = (() => {
   let current = null, answered = false, dir = 'toAmh'; // toAmh | toEng
 
@@ -551,7 +551,12 @@ const Sentences = (() => {
   }
 
   function toBeForm(idx) {
-    return [0].includes(idx) ? 'am' : [5].includes(idx) ? 'are' : 'is';
+    // idx 0: I (am), idx 5: We (are), all others: is
+    if (idx === 0) return 'am';
+    if (idx === 5) return 'are';
+    // idx 1-4 (You m/f, He, She) and idx 6-7 (You plural, They) all use 'are'
+    if ([1, 2, 6, 7].includes(idx)) return 'are';
+    return 'is';
   }
 
   function generate() {
@@ -649,9 +654,9 @@ const Sentences = (() => {
   return { init, generate, check, next, setDir };
 })();
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════════════════════
    ⑥ SPEAKING PRACTICE section
-═══════════════════════════════════════════════════════════════════ */
+═════════════════════════════════════════════════════════════════════════════ */
 const Speaking = (() => {
   let recActive = false, currentItem = null, dir = 'listenAmh'; // listenAmh | speakAmh
 
@@ -765,9 +770,9 @@ const Speaking = (() => {
   return { init, nextItem, listen, toggleRec, startRec, stopRec, setDir };
 })();
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════════════════════
    ⑦ CONJUGATION section
-═══════════════════════════════════════════════════════════════════ */
+═════════════════════════════════════════════════════════════════════════════ */
 const Conjugation = (() => {
   let queue = [], index = 0, answered = false;
   const ROUND = 20;
@@ -856,9 +861,9 @@ const Conjugation = (() => {
   return { init, buildQueue, check, next };
 })();
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════════════════════
    SUCCESS SCREEN
-═══════════════════════════════════════════════════════════════════ */
+═════════════════════════════════════════════════════════════════════════════ */
 function showSuccess(fromSection, msg, againFn) {
   $('suc-msg').textContent = msg || 'Set complete!';
   $('suc-again').onclick = () => { Nav.go(fromSection); againFn && againFn(); };
@@ -866,9 +871,9 @@ function showSuccess(fromSection, msg, againFn) {
   Nav.go('success');
 }
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════════════════════
    GLOBAL ENTRY POINTS (called from HTML onclick attributes)
-═══════════════════════════════════════════════════════════════════ */
+═════════════════════════════════════════════════════════════════════════════ */
 function navTo(s)              { Nav.go(s); }
 function fcFlip()              { Flashcard.flip(); }
 function fcNext()              { Flashcard.next(); }
@@ -905,9 +910,9 @@ function cjCheck()             { Conjugation.check(); }
 function cjNext()              { Conjugation.next(); }
 function fidelMode(m)          { Fidel.setMode(m); }
 
-/* ═══════════════════════════════════════════════════════════════════
+/* ═════════════════════════════════════════════════════════════════════════════
    INIT
-═══════════════════════════════════════════════════════════════════ */
+═════════════════════════════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
   BG.init();
   Nav.go('home');
