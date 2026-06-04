@@ -750,6 +750,7 @@ const Speaking = (() => {
   function stopRec() { Audio.stopRecognition(); recActive = false; }
 
   function showScore(transcript) {
+    // Use normalized expected for comparison, but always display canonical form
     const expected = dir === 'listenAmh' ? currentItem.eng : currentItem.amh + ' ' + currentItem.trans;
     const score = Audio.calculateScore(expected, transcript);
 
