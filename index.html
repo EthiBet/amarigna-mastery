@@ -8,181 +8,185 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    body, button, input, select, textarea, .eng-text {
+    /* ═════════════════════════════════════════════════════════════════
+       FONT & COLOR CONFIGURATION (Strict Language Isolation)
+       ═════════════════════════════════════════════════════════════════ */
+    body, button, input, select, textarea, .eng-text, .kb-title, .progress-text {
       font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
-      color: #ffffff; /* White main text */
+      color: #ffffff;
     }
-    .amh-text, .fidel-char, [onclick*="Fidel"], [id*="fidel"], .fidel-grid, .fidel-cell {
+    
+    /* Enforce Abyssinica SIL ONLY on Amharic text blocks */
+    .amh-text, 
+    .fidel-char, 
+    .tile-amh,
+    #quiz-char-display,
+    #cj-pron-amh,
+    #cj-verb-amh {
       font-family: 'Abyssinica SIL', 'Ge'ez', serif !important;
     }
     
-    /* Background Layer Management for app.js Crossfades */
+    .gold-title {
+      color: #c8911e !important;
+      font-weight: 700;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       IMAGE WALLPAPERS LAYER (Fixed beneath all interface text)
+       ═════════════════════════════════════════════════════════════════ */
     .bg-layer {
       position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
+      top: 0; 
+      left: 0; 
+      width: 100vw; 
+      height: 100vh;
       background-size: cover;
       background-position: center;
       transition: opacity 0.8s ease-in-out;
-      z-index: -2;
+      z-index: -10; /* Sent completely behind everything else */
     }
     #bg-a { opacity: 1; }
     #bg-b { opacity: 0; }
     
-    /* Global Color Rules & Structural Safety Nets */
-    .gold-title {
-      color: #c8911e !important; /* Gold Title Theme */
-      font-weight: 700;
-    }
-    .text-white { color: #ffffff !important; }
-
-    /* Layout Wrapper */
+    /* ═════════════════════════════════════════════════════════════════
+       THE DARK CONTRAST MATRIX HOOD (Opaque background blocker)
+       ═════════════════════════════════════════════════════════════════ */
     #app-container {
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      width: 100%;
+      position: relative;
+      z-index: 1;
       box-sizing: border-box;
-      background: rgba(9, 5, 3, 0.45); /* Soft overlay to keep text hyper-readable */
+      /* Pure solid black base, blended with a high-opacity mask layer to darken background images */
+      background: linear-gradient(0deg, rgba(9, 5, 3, 0.82), rgba(9, 5, 3, 0.82)), #000000;
     }
 
-    /* Standardized Modular Display Section Controls */
+    /* ═════════════════════════════════════════════════════════════════
+       LAYOUT COMPONENT RULES
+       ═════════════════════════════════════════════════════════════════ */
     .section {
       display: none;
       width: 100%;
-      max-width: 1200px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 30px 20px;
+      padding: 40px 24px;
       box-sizing: border-box;
     }
     .section.active {
       display: block !important;
     }
 
-    /* Hero / Gateway Title Layout */
+    /* Hero Splash Layout */
     .gateway-hero {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      min-height: 80vh;
+      min-height: 85vh;
     }
     .gateway-title {
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
-      margin-bottom: 10px;
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      margin: 0 0 12px 0;
     }
     .gateway-subtitle {
-      font-size: clamp(1.1rem, 2.5vw, 1.8rem);
-      margin-bottom: 40px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      margin: 0 0 45px 0;
+      color: #ffffff;
     }
     
-    /* Buttons and Navigation Components */
+    /* Dynamic Buttons */
     .gold-enter-btn {
       background: #c8911e;
       color: #090503 !important;
-      font-weight: bold;
+      font-weight: 700;
       font-size: 1.3rem;
-      padding: 15px 40px;
+      padding: 16px 44px;
       border: 2px solid #e8b84a;
       border-radius: 30px;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(200,145,30,0.4);
-      transition: all 0.2s ease;
+      box-shadow: 0 5px 20px rgba(200, 145, 30, 0.35);
+      transition: transform 0.2s, background-color 0.2s;
     }
     .gold-enter-btn:hover {
       background: #e8b84a;
       transform: translateY(-2px);
     }
-    .back-nav-container {
-      margin-bottom: 20px;
-    }
-    .action-row {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-top: 20px;
-    }
 
-    /* Custom Selection Dashboard Panels */
+    /* Selection Dashboards */
     .dashboard-panel {
-      background: rgba(16, 9, 4, 0.88);
-      border: 1px solid rgba(200, 145, 30, 0.3);
+      background: rgba(16, 9, 4, 0.75);
+      border: 1px solid rgba(200, 145, 30, 0.25);
       border-radius: 12px;
       padding: 25px;
       margin-bottom: 25px;
     }
     .panel-title {
-      border-bottom: 1px solid rgba(200, 145, 30, 0.2);
+      border-bottom: 1px solid rgba(200, 145, 30, 0.15);
       padding-bottom: 10px;
-      margin-bottom: 15px;
-      font-size: 1.4rem;
+      margin-bottom: 18px;
+      font-size: 1.35rem;
     }
     
-    /* Multi-Tier Interactive Filter Grids */
-    .checkbox-matrix {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 12px;
-      margin-top: 10px;
-    }
-    .checkbox-label {
+    /* Part of Speech & Category Tag Layout overrides */
+    .tags {
       display: flex;
-      align-items: center;
-      gap: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 5px;
+    }
+    .tag {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 20px;
       cursor: pointer;
-      font-size: 1.05rem;
-      background: rgba(240, 229, 207, 0.05);
-      padding: 8px 12px;
-      border-radius: 6px;
-      transition: background 0.2s;
+      font-size: 0.9rem;
+      transition: all 0.2s;
     }
-    .checkbox-label:hover {
-      background: rgba(240, 229, 207, 0.12);
-    }
-    .checkbox-label input {
-      accent-color: #c8911e;
-      width: 18px;
-      height: 18px;
-    }
-    .nested-group {
-      margin-left: 20px;
-      border-left: 2px solid #7a2e1a;
-      padding-left: 15px;
-      margin-top: 8px;
+    .tag.on, .dir-btn.on {
+      background: #c8911e !important;
+      border-color: #e8b84a !important;
+      color: #090503 !important;
+      font-weight: bold;
     }
 
-    /* Study Mode Footer Button Bar Layout */
+    /* Study Module Footer Action Buttons */
     .study-mode-bar {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 12px;
-      margin-top: 20px;
     }
     .mode-launch-btn {
-      background: rgba(122, 46, 26, 0.85); /* Rust Base */
+      background: #7a2e1a;
       border: 1px solid #b04828;
-      padding: 18px 10px;
-      font-size: 1.1rem;
+      padding: 16px 12px;
+      font-size: 1.05rem;
       font-weight: 500;
       border-radius: 8px;
       cursor: pointer;
-      transition: all 0.2s ease;
       text-align: center;
+      transition: all 0.2s;
     }
     .mode-launch-btn:hover {
       background: #b04828;
-      box-shadow: 0 0 10px rgba(176, 72, 40, 0.5);
       transform: translateY(-2px);
     }
-
-    /* Utilities & Layout fixes */
-    .flex-wrap-buttons {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+    .back-btn-setup {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      margin-bottom: 20px;
+      display: inline-block;
     }
-    .m-top-20 { margin-top: 20px; }
-    .hidden-panel { display: none; }
+    .back-btn-setup:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    .hidden-panel { display: none !important; }
   </style>
 </head>
 <body>
@@ -195,68 +199,33 @@
     <section id="sec-home" class="section active">
       <div class="gateway-hero">
         <h1 class="gateway-title gold-title">አማርኛን መምራት</h1>
-        <p class="gateway-subtitle text-white">Mastering Amharic</p>
+        <p class="gateway-subtitle">Mastering Amharic</p>
         <button class="gold-enter-btn" onclick="navTo('selection')">Enter the site</button>
       </div>
     </section>
 
     <section id="sec-selection" class="section">
-      <h2 class="gold-title" style="font-size: 2rem; margin-bottom: 25px;">Configure Study Campaign</h2>
+      <h2 class="gold-title" style="font-size: 2rem; margin-bottom: 25px;">Configuration Dashboard</h2>
       
-      <div class="dashboard-panel">
-        <div class="panel-title gold-title">1. Select Translation Challenge Track</div>
-        <div class="flex-wrap-buttons" id="config-direction-row">
-          <button class="dir-btn on" style="padding:12px 20px;" onclick="fcSetDir('ae'); tySetDir('ae', this); snSetDir('toAmh', this); spSetDir('listenAmh', this);">Amharic ➔ English</button>
-          <button class="dir-btn" style="padding:12px 20px;" onclick="fcSetDir('ea'); tySetDir('ea', this); snSetDir('toEng', this); spSetDir('speakAmh', this);">English ➔ Amharic</button>
-          <button class="dir-btn" style="padding:12px 20px;" onclick="fcSetDir('mix'); tySetDir('mix', this);">Random Mix Challenge</button>
+      <div class="dashboard-panel" id="direction-config-card">
+        <div class="panel-title gold-title">1. Choose Translation Challenge Mode</div>
+        <div class="tags" id="ty-dir-row">
+          <button class="tag dir-btn on" onclick="fcSetDir('ae'); tySetDir('ae', this); snSetDir('toAmh', this); spSetDir('listenAmh', this);">Amharic ➔ English</button>
+          <button class="tag dir-btn" onclick="fcSetDir('ea'); tySetDir('ea', this); snSetDir('toEng', this); spSetDir('speakAmh', this);">English ➔ Amharic</button>
+          <button class="tag dir-btn" onclick="fcSetDir('mix'); tySetDir('mix', this);">Random Mix Challenge</button>
         </div>
+        <div id="fc-dir" class="hidden-panel"><button data-dir="ae"></button><button data-dir="ea"></button><button data-dir="mix"></button></div>
+        <div id="sn-dir-row" class="hidden-panel"><button class="dir-btn"></button></div>
+        <div id="sp-dir-row" class="hidden-panel"><button class="dir-btn"></button></div>
       </div>
 
       <div class="dashboard-panel">
-        <div class="panel-title gold-title">2. Select Vocabulary & Syntactic Units</div>
-        <p style="font-size: 0.95rem; margin-bottom: 15px; color: #f0e5cf;">Check or uncheck groups to target specific lexicon pools during modules:</p>
+        <div class="panel-title gold-title">2. Mix and Match Vocabulary Groups</div>
+        <p style="font-size:0.95rem; margin-bottom:15px; color:rgba(255,255,255,0.7);">Select parts of speech and categorical fields below to filter learning content pools:</p>
         
-        <div class="checkbox-matrix">
-          <div>
-            <label class="checkbox-label">
-              <input type="checkbox" checked onchange="buildFilterPanel('fc-filter', appState.fc); buildFilterPanel('ty-filter', appState.ty); buildFilterPanel('sn-filter', appState.sn);">
-              <span>General Nouns</span>
-            </label>
-            <div class="nested-group">
-              <label class="checkbox-label"><input type="checkbox" checked> <span>Family Nouns</span></label>
-              <label class="checkbox-label"><input type="checkbox" checked> <span>Food &amp; Drink</span></label>
-              <label class="checkbox-label"><input type="checkbox" checked> <span>Places &amp; Space</span></label>
-              <label class="checkbox-label"><input type="checkbox" checked> <span>Body Anatomy</span></label>
-            </div>
-          </div>
-
-          <div>
-            <label class="checkbox-label">
-              <input type="checkbox" checked>
-              <span>Grammatical Verbs</span>
-            </label>
-            <div class="nested-group">
-              <label class="checkbox-label"><input type="checkbox" checked> <span>Present Stems</span></label>
-              <label class="checkbox-label"><input type="checkbox" checked> <span>Infinitive Roots</span></label>
-            </div>
-          </div>
-
-          <div>
-            <label class="checkbox-label">
-              <input type="checkbox" checked>
-              <span>Conversational</span>
-            </label>
-            <div class="nested-group">
-              <label class="checkbox-label"><input type="checkbox" checked> <span>Greetings</span></label>
-              <label class="checkbox-label"><input type="checkbox" checked> <span>Adjectives &amp; Colors</span></label>
-              <label class="checkbox-label"><input type="checkbox" checked> <span>Numbers</span></label>
-              <label class="checkbox-label"><input type="checkbox" checked> <span>Pronouns</span></label>
-            </div>
-          </div>
-        </div>
-
+        <div id="fc-filter"></div>
+        
         <div class="hidden-panel">
-          <div id="fc-filter"></div>
           <div id="mt-filter"></div>
           <div id="ty-filter"></div>
           <div id="sn-filter"></div>
@@ -264,242 +233,230 @@
       </div>
 
       <div class="dashboard-panel">
-        <div class="panel-title gold-title">3. Launch Target System Core Engine</div>
+        <div class="panel-title gold-title">3. Choose Study Mode Engine</div>
         <div class="study-mode-bar">
           <button class="mode-launch-btn" onclick="navTo('fidel')">𓏟 Fidel Chart</button>
           <button class="mode-launch-btn" onclick="fcStart(); navTo('flashcards');">🗂️ Flashcards</button>
-          <button class="mode-launch-btn" onclick="mtStart(); navTo('matching')">🧩 Matching Game</button>
-          <button class="mode-launch-btn" onclick="tyStart(); navTo('typing')">⌨️ Writing Lab</button>
+          <button class="mode-launch-btn" onclick="mtStart(); navTo('matching')">🧩 Matching</button>
+          <button class="mode-launch-btn" onclick="tyStart(); navTo('typing')">⌨️ Writing</button>
           <button class="mode-launch-btn" onclick="navTo('sentences')">🌿 Sentences</button>
-          <button class="mode-launch-btn" onclick="navTo('speaking')">🎙️ Speaking Engine</button>
-          <button class="mode-launch-btn" style="background:#7a5a1a; border-color:#e8b84a;" onclick="navTo('conjugation')">⚙️ Conjugation</button>
+          <button class="mode-launch-btn" onclick="navTo('speaking')">🎙️ Speaking</button>
+          <button class="mode-launch-btn" style="background:#5e3a07; border-color:#c8911e;" onclick="navTo('conjugation')">⚙️ Conjugation</button>
         </div>
       </div>
     </section>
 
     <section id="sec-fidel" class="section">
-      <div class="back-nav-container">
-        <button class="action-btn secondary" onclick="navTo('selection')">← Back to Setup</button>
-      </div>
-      <div class="section-header">
-        <h2 class="gold-title">Ge'ez Alphabet Chart (Fidel)</h2>
-        <div class="toggle-bar" style="margin: 15px 0;">
-          <button id="fidel-browse" class="toggle-btn active" style="padding:8px 16px;" onclick="fidelMode('browse')">Browse Table</button>
-          <button id="fidel-quiz-btn" class="toggle-btn" style="padding:8px 16px;" onclick="fidelMode('quiz')">Interactive Quiz</button>
+      <button class="back-btn-setup" onclick="navTo('selection')">← Back to Dashboard</button>
+      
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:15px;">
+        <h2 class="gold-title" style="margin:0;">Ge'ez Alphabet (Fidel) Matrix</h2>
+        <div style="display:flex; gap:8px;">
+          <button id="fidel-browse" class="tag on" onclick="fidelMode('browse')">Browse Table</button>
+          <button id="fidel-quiz-btn" class="tag" onclick="fidelMode('quiz')">Interactive Quiz</button>
         </div>
       </div>
 
-      <div id="fidel-chart-wrap" class="panel">
-        <div id="fidel-chart" class="fidel-scroll-container" style="overflow-x: auto; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px;">
+      <div id="fidel-chart-wrap">
+        <div id="fidel-chart" style="overflow-x:auto; padding:5px; background:rgba(0,0,0,0.3); border-radius:8px;">
           </div>
         
-        <div id="fidel-info-panel" class="info-drawer" style="margin-top:20px; padding:15px; background:rgba(200,145,30,0.15); border-radius:8px;">
-          <div class="drawer-content" style="display:flex; gap:20px; align-items:center;">
-            <div id="fidel-info-char" class="large-char amh-text" style="font-size:3.5rem; color:#e8b84a;">--</div>
+        <div id="fidel-info-panel" style="margin-top:20px; padding:20px; background:rgba(200,145,30,0.12); border:1px solid rgba(200,145,30,0.25); border-radius:8px;">
+          <div style="display:flex; gap:25px; align-items:center;">
+            <div id="fidel-info-char" class="large-char amh-text" style="font-size:3.5rem; color:#e8b84a; line-height:1;">--</div>
             <div>
-              <h3 id="fidel-info-rom" class="gold-title">--</h3>
-              <p id="fidel-info-row">Select any character box from the matrix layout grid grid above to map components.</p>
+              <h3 id="fidel-info-rom" class="gold-title" style="margin:0 0 5px 0; font-size:1.4rem;">--</h3>
+              <p id="fidel-info-row" style="margin:0; color:rgba(255,255,255,0.75);">Click any cell box on the layout above to stream target pronunciation metrics.</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div id="fidel-quiz-wrap" class="panel" style="display: none; flex-direction:column; gap:20px;">
-        <div class="quiz-workspace" style="background:rgba(16,9,4,0.85); padding:25px; border-radius:12px; text-align:center;">
-          <div id="fidel-quiz-score" class="score-badge" style="font-size:1.2rem; margin-bottom:15px; font-weight:bold;">Score: 0 / 0</div>
-          <div id="quiz-char-display" class="prompt-display amh-text" style="font-size:5rem; margin:20px 0; color:#e8b84a;">?</div>
-          <div id="quiz-options" class="options-grid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:15px; max-width:400px; margin:0 auto;">
+      <div id="fidel-quiz-wrap" style="display:none; flex-direction:column; gap:20px;">
+        <div style="background:rgba(16,9,4,0.85); border:1px solid rgba(200,145,30,0.2); padding:35px; border-radius:12px; text-align:center; max-width:500px; margin:0 auto; width:100%; box-sizing:border-box;">
+          <div id="fidel-quiz-score" style="font-size:1.1rem; font-weight:bold; margin-bottom:15px; letter-spacing:1px;">Score: 0 / 0</div>
+          <div id="quiz-char-display" class="amh-text" style="font-size:5.5rem; margin:20px 0; color:#e8b84a; line-height:1;">?</div>
+          <div id="quiz-options" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; margin-top:25px;">
             </div>
-          <div id="quiz-feedback" class="feedback m-top-20" style="font-size:1.3rem; font-weight:bold;"></div>
+          <div id="quiz-feedback" style="font-size:1.2rem; font-weight:bold; margin-top:20px; min-height:24px;"></div>
         </div>
       </div>
     </section>
 
     <section id="sec-flashcards" class="section">
-      <div class="back-nav-container">
-        <button class="action-btn secondary" onclick="navTo('selection')">← Back to Setup</button>
-      </div>
+      <button class="back-btn-setup" onclick="navTo('selection')">← Back to Dashboard</button>
       <h2 class="gold-title">Active Vocabulary Flashcards</h2>
 
-      <div id="fc-card-wrap" class="card-arena" style="margin:30px auto; max-width:550px;">
-        <div id="fc-card" class="flashcard" style="min-height:300px; cursor:pointer;" onclick="fcFlip()">
-          <div class="card-side card-front" style="padding:30px; text-align:center;">
-            <span id="fc-front-label" class="card-meta-label" style="color:#c8911e; letter-spacing:2px;">FRONT</span>
-            <div id="fc-front-main" class="card-main-content" style="margin:40px 0;">--</div>
-            <div id="fc-front-sub" class="card-sub-content">--</div>
+      <div id="fc-card-wrap" style="margin:30px auto; max-width:500px; width:100%;">
+        <div id="fc-card" class="flashcard" style="min-height:280px; cursor:pointer;" onclick="fcFlip()">
+          <div class="card-side card-front" style="padding:25px; text-align:center; display:flex; flex-direction:column; justify-content:space-between; box-sizing:border-box;">
+            <span id="fc-front-label" style="color:#c8911e; letter-spacing:2px; font-size:0.8rem; font-weight:bold;">FRONT</span>
+            <div id="fc-front-main" style="margin:auto 0; word-break:break-word;">--</div>
+            <div id="fc-front-sub" style="color:rgba(255,255,255,0.6); min-height:20px;">--</div>
           </div>
-          <div class="card-side card-back" style="padding:30px; text-align:center;">
-            <span id="fc-back-label" class="card-meta-label" style="color:#b04828; letter-spacing:2px;">BACK</span>
-            <div id="fc-back-main" class="card-main-content" style="margin:40px 0;">--</div>
-            <div id="fc-back-sub" class="card-sub-content">--</div>
+          <div class="card-side card-back" style="padding:25px; text-align:center; display:flex; flex-direction:column; justify-content:space-between; box-sizing:border-box;">
+            <span id="fc-back-label" style="color:#b04828; letter-spacing:2px; font-size:0.8rem; font-weight:bold;">BACK</span>
+            <div id="fc-back-main" style="margin:auto 0; word-break:break-word;">--</div>
+            <div id="fc-back-sub" style="color:rgba(255,255,255,0.6); min-height:20px;">--</div>
           </div>
         </div>
       </div>
 
-      <div class="pagination-controls" style="display:flex; justify-content:space-between; align-items:center; max-width:550px; margin:0 auto; gap:20px;">
-        <button id="fc-prev" class="nav-arrow" style="padding:10px 20px;" onclick="fcPrev()">← Previous</button>
-        <div class="progress-box" style="flex-grow:1; text-align:center;">
-          <div class="progress-bar-track" style="background:rgba(255,255,255,0.1); height:8px; border-radius:4px; margin-bottom:5px; overflow:hidden;">
-            <div id="fc-bar" class="progress-bar-fill" style="width: 0%; background:#c8911e; height:100%;"></div>
+      <div style="display:flex; justify-content:space-between; align-items:center; max-width:500px; margin:0 auto; gap:20px;">
+        <button id="fc-prev" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); padding:10px 18px; border-radius:6px; cursor:pointer;" onclick="fcPrev()">← Prev</button>
+        <div style="flex-grow:1; text-align:center;">
+          <div style="background:rgba(255,255,255,0.1); height:6px; border-radius:3px; margin-bottom:6px; overflow:hidden;">
+            <div id="fc-bar" style="width:0%; background:#c8911e; height:100%; transition:width 0.2s;"></div>
           </div>
-          <span id="fc-prog" class="progress-text">0 / 0</span>
+          <span id="fc-prog" class="progress-text" style="font-size:0.85rem; color:rgba(255,255,255,0.6);">0 / 0</span>
         </div>
-        <button id="fc-next" class="nav-arrow" style="padding:10px 20px;" onclick="fcNext()">Next →</button>
+        <button id="fc-next" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); padding:10px 18px; border-radius:6px; cursor:pointer;" onclick="fcNext()">Next →</button>
       </div>
     </section>
 
     <section id="sec-matching" class="section">
-      <div class="back-nav-container">
-        <button class="action-btn secondary" onclick="navTo('selection')">← Back to Setup</button>
-      </div>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
-        <h2 class="gold-title" style="margin:0;">Matrix Semantic Association</h2>
-        <div id="mt-score" class="score-badge" style="font-size:1.2rem; background:rgba(0,0,0,0.5); padding:8px 15px; border-radius:6px;">Pairs: 0 / 0</div>
+      <button class="back-btn-setup" onclick="navTo('selection')">← Back to Dashboard</button>
+      
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; flex-wrap:wrap; gap:15px;">
+        <h2 class="gold-title" style="margin:0;">Semantic Matching Pairs</h2>
+        <div id="mt-score" style="font-size:1.1rem; background:rgba(0,0,0,0.4); padding:8px 16px; border-radius:6px; border:1px solid rgba(255,255,255,0.1);">Pairs: 0 / 0</div>
       </div>
 
-      <div id="mt-grid" class="tile-matching-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:15px; margin-bottom:20px;">
+      <div id="mt-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:15px; margin-bottom:30px;">
         </div>
 
-      <div class="completion-deck" style="text-align:center;">
-        <button id="mt-next" class="action-btn success" style="display:none; padding:15px 35px; font-size:1.1rem;" onclick="mtStart()">Play Next Round 🎉</button>
+      <div style="text-align:center;">
+        <button id="mt-next" style="display:none; background:#c8911e; color:#090503; padding:15px 40px; font-weight:bold; font-size:1.1rem; border:none; border-radius:6px; cursor:pointer;" onclick="mtStart()">Play Next Round 🎉</button>
       </div>
     </section>
 
     <section id="sec-typing" class="section">
-      <div class="back-nav-container">
-        <button class="action-btn secondary" onclick="tyBack(); navTo('selection');">← Back to Setup</button>
-      </div>
+      <button class="back-btn-setup" onclick="tyBack(); navTo('selection');">← Back to Dashboard</button>
       <h2 class="gold-title">Orthographical Writing Arena</h2>
       
-      <div id="ty-section-main" class="panel task-view" style="margin-top:20px;">
-        <div class="progress-box" style="margin-bottom:20px;">
-          <div class="progress-bar-track" style="background:rgba(255,255,255,0.1); height:6px; overflow:hidden; border-radius:3px;"><div id="ty-bar" class="progress-bar-fill" style="background:#c8911e; width:0%; height:100%;"></div></div>
-          <span id="ty-prog" class="progress-text" style="font-size:0.85rem;">0 / 0</span>
+      <div id="ty-section-main" style="margin-top:20px;">
+        <div style="margin-bottom:20px;">
+          <div style="background:rgba(255,255,255,0.1); height:6px; overflow:hidden; border-radius:3px; margin-bottom:6px;"><div id="ty-bar" style="background:#c8911e; width:0%; height:100%;"></div></div>
+          <span id="ty-prog" class="progress-text" style="font-size:0.85rem; color:rgba(255,255,255,0.6);">0 / 0</span>
         </div>
 
-        <div class="task-card" style="background:rgba(16,9,4,0.9); padding:30px; border-radius:12px; border:1px solid rgba(200,145,30,0.25);">
-          <h4 id="ty-label" class="task-instruction gold-title" style="margin-top:0; font-size:1.1rem; text-transform:uppercase; letter-spacing:1px;">--</h4>
-          <div id="ty-prompt" class="prompt-display" style="margin:20px 0; min-height:60px;">--</div>
-          <p id="ty-sub" class="prompt-hint-sub" style="color:rgba(240,229,207,0.6); font-style:italic;">--</p>
+        <div style="background:rgba(16,9,4,0.85); padding:30px; border-radius:12px; border:1px solid rgba(200,145,30,0.25);">
+          <h4 id="ty-label" class="gold-title" style="margin:0 0 15px 0; font-size:1.05rem; text-transform:uppercase; letter-spacing:1px;">--</h4>
+          <div id="ty-prompt" style="margin:20px 0; min-height:55px; display:flex; align-items:center; gap:15px; flex-wrap:wrap;">--</div>
+          <p id="ty-sub" style="color:rgba(255,255,255,0.5); font-style:italic; margin:0 0 25px 0;">--</p>
           
-          <div class="input-stack" style="position:relative; margin:25px 0; display:flex; gap:10px;">
-            <input type="text" id="ty-input" class="game-input" style="flex-grow:1; background:rgba(0,0,0,0.5); border:1px solid #7a2e1a; padding:15px; font-size:1.2rem; border-radius:6px; color:#fff;" autocomplete="off">
-            <button id="ty-kb-toggle" class="utility-icon-btn" style="background:#7a2e1a; border:none; padding:0 15px; border-radius:6px; cursor:pointer; font-size:1.3rem;" title="Toggle Virtual Script Engine Pad" onclick="tyToggleKb()">⌨️</button>
+          <div style="display:flex; gap:10px; margin-bottom:20px; max-width:600px; width:100%;">
+            <input type="text" id="ty-input" style="flex-grow:1; background:rgba(0,0,0,0.4); border:1px solid #7a2e1a; padding:14px; font-size:1.15rem; border-radius:6px; color:#ffffff;" autocomplete="off">
+            <button id="ty-kb-toggle" style="background:#7a2e1a; border:none; padding:0 18px; border-radius:6px; cursor:pointer; font-size:1.2rem;" title="Toggle Virtual Script Engine Pad" onclick="tyToggleKb()">⌨️</button>
           </div>
 
-          <div id="ty-feedback" class="feedback" style="font-size:1.2rem; font-weight:bold; margin-bottom:15px;"></div>
-          <div id="ty-reveal" class="solution-reveal-panel" style="display: none; background:rgba(200,145,30,0.15); padding:15px; border-radius:6px; margin-bottom:15px; font-weight:bold; color:#e8b84a;"></div>
+          <div id="ty-feedback" style="font-size:1.2rem; font-weight:bold; margin-bottom:15px;"></div>
+          <div id="ty-reveal" style="display:none; background:rgba(200,145,30,0.12); border:1px solid rgba(200,145,30,0.25); padding:15px; border-radius:6px; margin-bottom:20px; font-weight:bold; color:#e8b84a;"></div>
 
-          <div class="action-row">
-            <button id="ty-check" class="action-btn primary" style="padding:12px 25px;" onclick="tyCheck()">Submit Entry</button>
-            <button id="ty-next" class="action-btn success" style="display: none; padding:12px 25px;" onclick="tyNext()">Next Question →</button>
+          <div style="display:flex; gap:12px;">
+            <button id="ty-check" style="background:#7a2e1a; border:1px solid #b04828; padding:12px 28px; font-weight:bold; border-radius:6px; cursor:pointer;" onclick="tyCheck()">Submit Entry</button>
+            <button id="ty-next" style="display:none; background:#c8911e; color:#090503; padding:12px 28px; font-weight:bold; border-radius:6px; cursor:pointer;" onclick="tyNext()">Next Question →</button>
           </div>
         </div>
       </div>
 
-      <div id="ty-setup" style="display:none;"></div>
+      <div id="ty-setup" class="hidden-panel"></div>
     </section>
 
     <section id="sec-sentences" class="section">
-      <div class="back-nav-container">
-        <button class="action-btn secondary" onclick="navTo('selection')">← Back to Setup</button>
-      </div>
+      <button class="back-btn-setup" onclick="navTo('selection')">← Back to Dashboard</button>
       <h2 class="gold-title">Syntactic Sentence Sandbox</h2>
 
-      <div class="task-card" style="background:rgba(16,9,4,0.9); padding:30px; border-radius:12px; border:1px solid rgba(200,145,30,0.25); margin-top:20px;">
-        <h4 id="sn-label" class="task-instruction gold-title" style="margin-top:0; text-transform:uppercase; font-size:1.1rem;">--</h4>
-        <div id="sn-prompt" class="prompt-display" style="margin:20px 0; font-size:1.6rem; min-height:50px;">--</div>
-        <p id="sn-hint" class="prompt-hint-sub" style="color:rgba(240,229,207,0.6); font-style:italic;">--</p>
+      <div style="background:rgba(16,9,4,0.85); padding:30px; border-radius:12px; border:1px solid rgba(200,145,30,0.25); margin-top:20px;">
+        <h4 id="sn-label" class="gold-title" style="margin:0 0 15px 0; text-transform:uppercase; font-size:1.05rem; letter-spacing:1px;">--</h4>
+        <div id="sn-prompt" style="margin:20px 0; font-size:1.5rem; min-height:48px; word-break:break-word;">--</div>
+        <p id="sn-hint" style="color:rgba(255,255,255,0.5); font-style:italic; margin:0 0 25px 0;">--</p>
 
-        <input type="text" id="sn-input" class="game-input" style="width:100%; box-sizing:border-box; background:rgba(0,0,0,0.5); border:1px solid #7a2e1a; padding:15px; font-size:1.1rem; border-radius:6px; margin:20px 0; color:#fff;" autocomplete="off">
+        <input type="text" id="sn-input" style="width:100%; box-sizing:border-box; background:rgba(0,0,0,0.4); border:1px solid #7a2e1a; padding:14px; font-size:1.1rem; border-radius:6px; margin-bottom:20px; color:#ffffff;" autocomplete="off">
         
-        <div id="sn-feedback" class="feedback" style="font-size:1.2rem; font-weight:bold; margin-bottom:15px;"></div>
-        <div id="sn-reveal" class="solution-reveal-panel" style="display: none; background:rgba(200,145,30,0.15); padding:15px; border-radius:6px; margin-bottom:15px; font-weight:bold; color:#e8b84a;"></div>
+        <div id="sn-feedback" style="font-size:1.2rem; font-weight:bold; margin-bottom:15px;"></div>
+        <div id="sn-reveal" style="display:none; background:rgba(200,145,30,0.12); border:1px solid rgba(200,145,30,0.25); padding:15px; border-radius:6px; margin-bottom:20px; font-weight:bold; color:#e8b84a;"></div>
 
-        <div class="action-row">
-          <button id="sn-check" class="action-btn primary" style="padding:12px 25px;" onclick="snCheck()">Validate Alignment</button>
-          <button id="sn-next" class="action-btn success" style="display: none; padding:12px 25px;" onclick="snNext()">Advance Sequence →</button>
+        <div style="display:flex; gap:12px;">
+          <button id="sn-check" style="background:#7a2e1a; border:1px solid #b04828; padding:12px 28px; font-weight:bold; border-radius:6px; cursor:pointer;" onclick="snCheck()">Validate Alignment</button>
+          <button id="sn-next" style="display:none; background:#c8911e; color:#090503; padding:12px 28px; font-weight:bold; border-radius:6px; cursor:pointer;" onclick="snNext()">Advance Sequence →</button>
         </div>
       </div>
     </section>
 
     <section id="sec-speaking" class="section">
-      <div class="back-nav-container">
-        <button class="action-btn secondary" onclick="navTo('selection')">← Back to Setup</button>
-      </div>
+      <button class="back-btn-setup" onclick="navTo('selection')">← Back to Dashboard</button>
       <h2 class="gold-title">Phonetic Pronunciation Engine</h2>
 
-      <div id="sp-compat-note" class="alert-banner warning" style="display: none; background:#7a2e1a; border:1px solid #b04828; padding:15px; border-radius:6px; margin-bottom:20px;">
+      <div id="sp-compat-note" style="display:none; background:#7a2e1a; border:1px solid #b04828; padding:15px; border-radius:6px; margin-bottom:25px; font-size:0.95rem;">
         ⚠️ Web Speech Recognition API is not supported on this browser architecture instance. For comprehensive audio analysis, please run the application via desktop versions of Google Chrome or Microsoft Edge.
       </div>
 
-      <div class="task-card" style="background:rgba(16,9,4,0.9); padding:30px; border-radius:12px; border:1px solid rgba(200,145,30,0.25);">
-        <h4 id="sp-direction-label" class="task-instruction gold-title" style="margin-top:0; font-size:1.1rem; text-transform:uppercase;">--</h4>
-        <div id="sp-prompt" class="prompt-display" style="margin:25px 0; min-height:70px;">--</div>
-        <p id="sp-expected" class="prompt-hint-sub" style="color:rgba(240,229,207,0.6); font-style:italic;">--</p>
+      <div style="background:rgba(16,9,4,0.85); padding:30px; border-radius:12px; border:1px solid rgba(200,145,30,0.25);">
+        <h4 id="sp-direction-label" class="gold-title" style="margin:0 0 15px 0; font-size:1.05rem; text-transform:uppercase; letter-spacing:1px;">--</h4>
+        <div id="sp-prompt" style="margin:25px 0; min-height:65px; word-break:break-word;">--</div>
+        <p id="sp-expected" style="color:rgba(255,255,255,0.5); font-style:italic; margin:0 0 25px 0;">--</p>
 
-        <div class="audio-ui-cluster" style="display:flex; gap:15px; margin:25px 0;">
-          <button id="sp-listen-btn" class="action-btn secondary" style="padding:12px 20px;" onclick="spListen()">🔊 Benchmark Playback</button>
-          <button id="sp-mic-btn" class="action-btn mic-control" style="padding:12px 20px; background:#7a2e1a;" onclick="spToggleRec()">🎙️ Start Speaking</button>
+        <div style="display:flex; gap:12px; margin-bottom:25px; flex-wrap:wrap;">
+          <button id="sp-listen-btn" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); padding:12px 22px; border-radius:6px; font-weight:500; cursor:pointer;" onclick="spListen()">🔊 Benchmark Playback</button>
+          <button id="sp-mic-btn" style="background:#7a2e1a; border:1px solid #b04828; padding:12px 22px; border-radius:6px; font-weight:500; cursor:pointer;" onclick="spToggleRec()">🎙️ Start Speaking</button>
         </div>
 
-        <div class="recording-terminal" style="margin:20px 0; background:rgba(0,0,0,0.4); padding:15px; border-radius:6px;">
-          <label style="font-size:0.8rem; text-transform:uppercase; color:#c8911e; display:block; margin-bottom:5px;">Live Evaluation Transcript Pipeline Stream:</label>
-          <div id="sp-transcript" class="transcript-viewport" style="min-height:40px; font-size:1.1rem; font-weight:500;"></div>
+        <div style="margin-bottom:25px; background:rgba(0,0,0,0.3); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.08);">
+          <label style="font-size:0.75rem; text-transform:uppercase; color:#c8911e; display:block; margin-bottom:6px; font-weight:bold; letter-spacing:1px;">Live Evaluation Transcript pipeline stream:</label>
+          <div id="sp-transcript" style="min-height:35px; font-size:1.1rem; font-weight:500; color:#ffffff;"></div>
         </div>
 
-        <div id="sp-score-wrap" class="panel progress-box metric-analysis" style="display: none; background:rgba(0,0,0,0.3); padding:15px; border-radius:6px;">
-          <label style="font-size:0.85rem; display:block; margin-bottom:8px;">Phonetic Evaluation Match Score Matrix:</label>
-          <div class="progress-bar-track gauge" style="background:rgba(255,255,255,0.1); height:8px; border-radius:4px; overflow:hidden; margin-bottom:8px;">
-            <div id="sp-score-bar" class="progress-bar-fill" style="width: 0%; height:100%;"></div>
+        <div id="sp-score-wrap" style="display:none; background:rgba(0,0,0,0.25); padding:18px; border-radius:6px; margin-bottom:25px; border:1px solid rgba(255,255,255,0.05);">
+          <label style="font-size:0.8rem; display:block; margin-bottom:8px; color:rgba(255,255,255,0.6);">Phonetic Evaluation Match Score Matrix:</label>
+          <div style="background:rgba(255,255,255,0.1); height:8px; border-radius:4px; overflow:hidden; margin-bottom:8px;">
+            <div id="sp-score-bar" style="width:0%; height:100%; transition:width 0.3s;"></div>
           </div>
-          <div class="metric-row" style="display:flex; justify-content:space-between; font-weight:bold;">
-            <span id="sp-score-txt" class="percentage-label">0%</span>
-            <span id="sp-score-msg" class="contextual-appraisal" style="color:#e8b84a;">--</span>
+          <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.05rem;">
+            <span id="sp-score-txt">0%</span>
+            <span id="sp-score-msg" style="color:#e8b84a;">--</span>
           </div>
         </div>
 
-        <div class="action-row" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:20px; margin-top:20px;">
-          <button id="sp-next" class="action-btn plain" style="background:transparent; border:1px solid rgba(255,255,255,0.3);" onclick="spNext()">Skip / Load Next Item ⏭</button>
+        <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;">
+          <button id="sp-next" style="background:transparent; border:1px solid rgba(255,255,255,0.25); padding:10px 20px; border-radius:6px; cursor:pointer; color:rgba(255,255,255,0.8);" onclick="spNext()">Skip / Load Next Item ⏭</button>
         </div>
       </div>
     </section>
 
     <section id="sec-conjugation" class="section">
-      <div class="back-nav-container">
-        <button class="action-btn secondary" onclick="navTo('selection')">← Back to Setup</button>
-      </div>
+      <button class="back-btn-setup" onclick="navTo('selection')">← Back to Dashboard</button>
       <h2 class="gold-title">Present Progressive Paradigm Matrix</h2>
       
-      <div class="split-workspace-panel" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:25px; margin-top:20px;">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:25px; margin-top:20px; align-items:start;">
         
-        <div class="task-card main-workspace" style="background:rgba(16,9,4,0.9); padding:25px; border-radius:12px; border:1px solid rgba(200,145,30,0.25);">
-          <div class="progress-box" style="margin-bottom:15px;">
-            <div class="progress-bar-track" style="background:rgba(255,255,255,0.1); height:5px; overflow:hidden;"><div id="cj-bar" class="progress-bar-fill" style="background:#c8911e; width:0%; height:100%;"></div></div>
-            <span id="cj-prog" class="progress-text" style="font-size:0.8rem;">0 / 0</span>
+        <div style="background:rgba(16,9,4,0.85); padding:25px; border-radius:12px; border:1px solid rgba(200,145,30,0.25);">
+          <div style="margin-bottom:15px;">
+            <div style="background:rgba(255,255,255,0.1); height:5px; overflow:hidden; border-radius:2px; margin-bottom:5px;"><div id="cj-bar" style="background:#c8911e; width:0%; height:100%;"></div></div>
+            <span id="cj-prog" class="progress-text" style="font-size:0.8rem; color:rgba(255,255,255,0.5);">0 / 0</span>
           </div>
 
-          <div class="paradigm-prompt" style="margin:20px 0;">
-            <h3 style="margin:5px 0;">Subject Target: <span id="cj-pronoun" class="gold-title" style="font-size:1.4rem;">--</span> (<span id="cj-pron-amh" class="amh-text">--</span>)</h3>
-            <h4 style="margin:5px 0; font-weight:normal;">Root Base: <span id="cj-verb-amh" class="amh-text" style="color:#e8b84a; font-size:1.3rem;">--</span> / <span id="cj-verb-tr" style="font-style:italic;">--</span></h4>
-            <p class="translation-hint" style="color:rgba(240,229,207,0.7); font-size:0.95rem; margin:5px 0;">Meaning: "<span id="cj-verb-en">--</span>"</p>
-            <div id="cj-stem-hint" style="margin-top:10px; font-size:0.85rem; color:#b04828; background:rgba(0,0,0,0.3); padding:8px; border-radius:4px;">--</div>
+          <div style="margin:20px 0; background:rgba(0,0,0,0.2); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.05);">
+            <h3 style="margin:0 0 8px 0; font-size:1.25rem; font-weight:normal;">Subject Target: <span id="cj-pronoun" class="gold-title" style="font-weight:700;">--</span> (<span id="cj-pron-amh" class="amh-text" style="color:#e8b84a;">--</span>)</h3>
+            <h4 style="margin:0 0 8px 0; font-weight:normal; font-size:1.15rem;">Root Base: <span id="cj-verb-amh" class="amh-text" style="color:#e8b84a;">--</span> / <span id="cj-verb-tr" style="font-style:italic;">--</span></h4>
+            <p style="color:rgba(255,255,255,0.6); font-size:0.95rem; margin:0 0 10px 0;">Meaning: "<span id="cj-verb-en">--</span>"</p>
+            <div id="cj-stem-hint" style="font-size:0.85rem; color:#e8b84a; background:rgba(122,46,26,0.25); border:1px solid rgba(176,72,40,0.3); padding:8px; border-radius:4px; word-break:break-word;">--</div>
           </div>
 
-          <input type="text" id="cj-input" class="game-input" style="width:100%; box-sizing:border-box; background:rgba(0,0,0,0.5); border:1px solid #7a2e1a; padding:12px; font-size:1.1rem; border-radius:6px; margin-bottom:15px; color:#fff;" placeholder="Provide complete conjugated progressive string..." autocomplete="off">
+          <input type="text" id="cj-input" style="width:100%; box-sizing:border-box; background:rgba(0,0,0,0.4); border:1px solid #7a2e1a; padding:12px; font-size:1.1rem; border-radius:6px; margin-bottom:15px; color:#ffffff;" placeholder="Provide complete conjugated progressive string..." autocomplete="off">
 
-          <div id="cj-feedback" class="feedback" style="font-size:1.1rem; font-weight:bold; margin-bottom:10px;"></div>
-          <div id="cj-reveal" class="solution-reveal-panel" style="display: none; background:rgba(200,145,30,0.15); padding:12px; border-radius:6px; margin-bottom:15px; font-weight:bold; color:#e8b84a;"></div>
+          <div id="cj-feedback" style="font-size:1.1rem; font-weight:bold; margin-bottom:10px;"></div>
+          <div id="cj-reveal" style="display:none; background:rgba(200,145,30,0.12); border:1px solid rgba(200,145,30,0.25); padding:12px; border-radius:6px; margin-bottom:15px; font-weight:bold; color:#e8b84a;"></div>
 
-          <div class="action-row">
-            <button id="cj-check" class="action-btn primary" style="padding:10px 20px;" onclick="cjCheck()">Verify Suffix Morph</button>
-            <button id="cj-next" class="action-btn success" style="display: none; padding:10px 20px;" onclick="cjNext()">Next Paradigm →</button>
+          <div style="display:flex; gap:12px;">
+            <button id="cj-check" style="background:#7a2e1a; border:1px solid #b04828; padding:10px 22px; font-weight:bold; border-radius:6px; cursor:pointer;" onclick="cjCheck()">Verify Suffix Morph</button>
+            <button id="cj-next" style="display:none; background:#c8911e; color:#090503; padding:10px 22px; font-weight:bold; border-radius:6px; cursor:pointer;" onclick="cjNext()">Next Paradigm →</button>
           </div>
         </div>
 
-        <div class="reference-sidebar" style="background:rgba(9,5,3,0.85); padding:20px; border-radius:12px; border:1px solid rgba(255,255,255,0.1);">
-          <h4 class="gold-title" style="margin-top:0; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px;">Present Progressive Suffix Architecture Matrix Map</h4>
-          <div id="cj-ref" style="display:flex; flex-direction:column; gap:8px; font-size:0.9rem; max-height:300px; overflow-y:auto; padding-right:5px;">
+        <div style="background:rgba(9,5,3,0.85); padding:20px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); box-sizing:border-box;">
+          <h4 class="gold-title" style="margin:0 0 10px 0; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px; font-size:1.1rem;">Suffix Matrix Blueprint Map</h4>
+          <div id="cj-ref" style="display:flex; flex-direction:column; gap:8px; font-size:0.9rem; max-height:280px; overflow-y:auto;">
             </div>
         </div>
 
@@ -507,32 +464,30 @@
     </section>
 
     <section id="sec-success" class="section">
-      <div style="background:rgba(16,9,4,0.95); max-width:500px; margin:50px auto; padding:40px; border-radius:16px; text-align:center; border:2px solid #c8911e;">
-        <div style="font-size:4rem; margin-bottom:15px;">🏆</div>
-        <h2 id="suc-msg" class="gold-title" style="font-size:2rem; margin-bottom:10px;">Module Complete!</h2>
-        <p style="color:#f0e5cf; margin-bottom:30px;">Your metrics matched successful sequence target metrics verification rules.</p>
-        <div style="display:flex; flex-direction:column; gap:12px; max-width:280px; margin:0 auto;">
-          <button id="suc-again" class="gold-enter-btn" style="font-size:1.1rem; padding:12px;">Replay Activity Module</button>
-          <button id="suc-home" class="action-btn plain" style="padding:10px; border:1px solid rgba(255,255,255,0.2);" onclick="navTo('selection')">Return to System Hub</button>
+      <div style="background:rgba(16,9,4,0.95); max-width:480px; margin:40px auto; padding:40px 25px; border-radius:16px; text-align:center; border:2px solid #c8911e; box-sizing:border-box;">
+        <div style="font-size:3.5rem; margin-bottom:15px;">🏆</div>
+        <h2 id="suc-msg" class="gold-title" style="font-size:1.8rem; margin:0 0 10px 0;">Module Complete!</h2>
+        <p style="color:rgba(255,255,255,0.75); margin:0 0 30px 0; font-size:1rem;">Your execution matched validation parameters successfully.</p>
+        <div style="display:flex; flex-direction:column; gap:12px; max-width:260px; margin:0 auto; width:100%;">
+          <button id="suc-again" class="gold-enter-btn" style="font-size:1.1rem; padding:12px; border-radius:8px;">Replay Activity Module</button>
+          <button id="suc-home" style="background:transparent; border:1px solid rgba(255,255,255,0.25); padding:10px; border-radius:6px; cursor:pointer;" onclick="navTo('selection')">Return to Dashboard Hub</button>
         </div>
       </div>
     </section>
 
   </div>
 
-  <div id="virtual-keyboard-extension-host" class="hidden-extension"></div>
+  <div id="virtual-keyboard-extension-host" class="hidden-panel"></div>
 
   <script src="data.js"></script>
-
   <script src="audio.js"></script>
   <script src="keyboard.js"></script>
-
   <script src="app.js"></script>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (typeof Keyboard !== "undefined" && typeof Keyboard.build === "function") {
-        Keyboard.build();
+        Keyboard.build(); /* Build the keyboard DOM elements immediately */
       }
     });
   </script>
