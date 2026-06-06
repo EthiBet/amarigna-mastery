@@ -2,822 +2,539 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <meta name="description" content="Learn Amharic online — alphabet, vocabulary, speaking, and verb conjugation.">
-  <title>ቋንቋ | Learn Amharic</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🇪🇹 - አማርኛን</title>
+  
+  <link rel="stylesheet" href="style.css">
 
-  <!-- ── Fonts ────────────────────────────────────────────────── -->
-  <!-- Abyssinica SIL — authentic Ethiopic script display       -->
-  <!-- DM Sans        — closest freely available to Google Sans  -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Abyssinica+SIL&family=Noto+Serif+Ethiopic:wdth,wght@100..125,400;100..125,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:wght@400;500&display=swap" rel="stylesheet">
-
-  <!-- ── Base styles ──────────────────────────────────────────── -->
-  <link rel="stylesheet" href="css/style.css">
-
-  <!-- ── Inline overrides ─────────────────────────────────────── -->
   <style>
-    /* Use Abyssinica SIL for all Amharic script rendering */
-    :root {
-      --font-amh:  'Abyssinica SIL', 'Noto Serif Ethiopic', serif;
-      --font-head: 'DM Sans', 'Playfair Display', sans-serif;
-      --font-body: 'DM Sans', 'Lora', sans-serif;
+    body, button, input, select, textarea, .eng-text {
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+      color: #ffffff; /* White main text */
+    }
+    .amh-text, .fidel-char, [onclick*="Fidel"], [id*="fidel"], .fidel-grid, .fidel-cell {
+      font-family: 'Abyssinica SIL', 'Ge'ez', serif !important;
+    }
+    
+    /* Background Layer Management for app.js Crossfades */
+    .bg-layer {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background-size: cover;
+      background-position: center;
+      transition: opacity 0.8s ease-in-out;
+      z-index: -2;
+    }
+    #bg-a { opacity: 1; }
+    #bg-b { opacity: 0; }
+    
+    /* Global Color Rules & Structural Safety Nets */
+    .gold-title {
+      color: #c8911e !important; /* Gold Title Theme */
+      font-weight: 700;
+    }
+    .text-white { color: #ffffff !important; }
+
+    /* Layout Wrapper */
+    #app-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      background: rgba(9, 5, 3, 0.45); /* Soft overlay to keep text hyper-readable */
     }
 
-    /* Speaking mic button — JS sets text so it cannot be a fixed circle */
-    .sp-mic-btn {
-      width: auto !important;
-      height: auto !important;
-      min-width: 210px !important;
-      border-radius: 40px !important;
-      padding: 15px 32px !important;
-      font-size: 16px !important;
-      font-family: var(--font-body) !important;
-      letter-spacing: 0.4px !important;
+    /* Standardized Modular Display Section Controls */
+    .section {
+      display: none;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      box-sizing: border-box;
+    }
+    .section.active {
+      display: block !important;
     }
 
-    /* Make conjugation reference visible on all screen sizes */
-    @media (max-width: 900px) {
-      .cj-layout  { grid-template-columns: 1fr !important; }
-      .cj-ref-panel { display: block !important; margin-top: 20px; }
+    /* Hero / Gateway Title Layout */
+    .gateway-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 80vh;
+    }
+    .gateway-title {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      margin-bottom: 10px;
+    }
+    .gateway-subtitle {
+      font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+      margin-bottom: 40px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+    
+    /* Buttons and Navigation Components */
+    .gold-enter-btn {
+      background: #c8911e;
+      color: #090503 !important;
+      font-weight: bold;
+      font-size: 1.3rem;
+      padding: 15px 40px;
+      border: 2px solid #e8b84a;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(200,145,30,0.4);
+      transition: all 0.2s ease;
+    }
+    .gold-enter-btn:hover {
+      background: #e8b84a;
+      transform: translateY(-2px);
+    }
+    .back-nav-container {
+      margin-bottom: 20px;
+    }
+    .action-row {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 20px;
     }
 
-    /* Home card keyboard focus ring */
-    .home-card:focus-visible {
-      outline: 2px solid var(--gold-l);
-      outline-offset: 3px;
+    /* Custom Selection Dashboard Panels */
+    .dashboard-panel {
+      background: rgba(16, 9, 4, 0.88);
+      border: 1px solid rgba(200, 145, 30, 0.3);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+    .panel-title {
+      border-bottom: 1px solid rgba(200, 145, 30, 0.2);
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+    }
+    
+    /* Multi-Tier Interactive Filter Grids */
+    .checkbox-matrix {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      font-size: 1.05rem;
+      background: rgba(240, 229, 207, 0.05);
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .checkbox-label:hover {
+      background: rgba(240, 229, 207, 0.12);
+    }
+    .checkbox-label input {
+      accent-color: #c8911e;
+      width: 18px;
+      height: 18px;
+    }
+    .nested-group {
+      margin-left: 20px;
+      border-left: 2px solid #7a2e1a;
+      padding-left: 15px;
+      margin-top: 8px;
     }
 
-    /* Consistent focus ring across all interactive elements */
-    button:focus-visible, a:focus-visible, [tabindex]:focus-visible {
-      outline: 2px solid var(--gold-l);
-      outline-offset: 2px;
+    /* Study Mode Footer Button Bar Layout */
+    .study-mode-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .mode-launch-btn {
+      background: rgba(122, 46, 26, 0.85); /* Rust Base */
+      border: 1px solid #b04828;
+      padding: 18px 10px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    .mode-launch-btn:hover {
+      background: #b04828;
+      box-shadow: 0 0 10px rgba(176, 72, 40, 0.5);
+      transform: translateY(-2px);
     }
 
-    /* Sentence section: wider reference box on desktop */
-    .sn-reference { max-width: 760px; }
-
-    /* Better fidel info panel on small screens */
-    @media (max-width: 520px) {
-      .fidel-info-panel { flex-direction: column; text-align: center; gap: 10px; }
+    /* Utilities & Layout fixes */
+    .flex-wrap-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
+    .m-top-20 { margin-top: 20px; }
+    .hidden-panel { display: none; }
   </style>
-
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇪🇹</text></svg>">
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     BACKGROUND CROSSFADE LAYERS
-═══════════════════════════════════════════════════════════════════ -->
-<div id="bg-a"></div>
-<div id="bg-b"></div>
-<div id="bg-overlay"></div>
+  <div id="bg-a" class="bg-layer"></div>
+  <div id="bg-b" class="bg-layer"></div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     APP LAYOUT
-═══════════════════════════════════════════════════════════════════ -->
-<div id="layout">
+  <div id="app-container">
 
-  <!-- ─────────────────────────────────────────────────────────────
-       SIDEBAR NAVIGATION (desktop)
-  ───────────────────────────────────────────────────────────────── -->
-  <nav class="sidebar" aria-label="Main navigation">
-
-    <div class="sidebar-brand" onclick="navTo('home')" role="button" tabindex="0"
-         onkeydown="if(event.key==='Enter')navTo('home')" aria-label="Go to home page">
-      <span class="brand-eth">ቋንቋ</span>
-      <span class="brand-en">Learn Amharic</span>
-    </div>
-
-    <div class="sidebar-nav">
-      <a class="nav-item active" data-target="home"
-         onclick="navTo('home')" tabindex="0" role="menuitem">
-        <span class="nav-icon">🏠</span>
-        <span class="nav-label">Home</span>
-      </a>
-      <a class="nav-item" data-target="fidel"
-         onclick="navTo('fidel')" tabindex="0" role="menuitem">
-        <span class="nav-icon" style="font-family:var(--font-amh)">ሀ</span>
-        <span class="nav-label">Fidel Alphabet</span>
-      </a>
-      <a class="nav-item" data-target="flashcards"
-         onclick="navTo('flashcards')" tabindex="0" role="menuitem">
-        <span class="nav-icon">🃏</span>
-        <span class="nav-label">Flashcards</span>
-      </a>
-      <a class="nav-item" data-target="matching"
-         onclick="navTo('matching')" tabindex="0" role="menuitem">
-        <span class="nav-icon">🔗</span>
-        <span class="nav-label">Matching</span>
-      </a>
-      <a class="nav-item" data-target="typing"
-         onclick="navTo('typing')" tabindex="0" role="menuitem">
-        <span class="nav-icon">✍️</span>
-        <span class="nav-label">Writing</span>
-      </a>
-      <a class="nav-item" data-target="sentences"
-         onclick="navTo('sentences')" tabindex="0" role="menuitem">
-        <span class="nav-icon">💬</span>
-        <span class="nav-label">Sentences</span>
-      </a>
-      <a class="nav-item" data-target="speaking"
-         onclick="navTo('speaking')" tabindex="0" role="menuitem">
-        <span class="nav-icon">🎙️</span>
-        <span class="nav-label">Speaking</span>
-      </a>
-      <a class="nav-item" data-target="conjugation"
-         onclick="navTo('conjugation')" tabindex="0" role="menuitem">
-        <span class="nav-icon">🔤</span>
-        <span class="nav-label">Conjugation</span>
-      </a>
-    </div>
-
-    <div class="sidebar-footer">
-      <div>🇪🇹 Ethiopia's ancient tongue</div>
-      <div style="margin-top:6px;font-size:10px;line-height:1.6">
-        Full audio &amp; speech features<br>require <strong>Chrome</strong> or <strong>Edge</strong>.
+    <section id="sec-home" class="section active">
+      <div class="gateway-hero">
+        <h1 class="gateway-title gold-title">አማርኛን መምራት</h1>
+        <p class="gateway-subtitle text-white">Mastering Amharic</p>
+        <button class="gold-enter-btn" onclick="navTo('selection')">Enter the site</button>
       </div>
-    </div>
-  </nav>
+    </section>
 
-  <!-- ─────────────────────────────────────────────────────────────
-       MAIN CONTENT
-  ───────────────────────────────────────────────────────────────── -->
-  <main class="main" id="main-content">
-
-    <!-- ═══════════════════════════════════════════════════════════
-         ① HOME
-    ════════════════════════════════════════════════════════════ -->
-    <section id="sec-home" class="section active" aria-label="Home">
-
-      <div class="home-hero">
-        <span class="home-eth" aria-label="Amharic word for language">ቋንቋ</span>
-        <span class="home-sub">Learn Amharic</span>
-        <div class="home-rule"></div>
-        <p class="home-tagline">Ethiopia's ancient tongue — spoken by over 57 million people</p>
-      </div>
-
-      <div class="home-grid">
-
-        <div class="home-card" onclick="navTo('fidel')" role="button" tabindex="0"
-             onkeydown="if(event.key==='Enter')navTo('fidel')">
-          <div class="home-card-icon" style="font-family:var(--font-amh)">ሀ</div>
-          <div class="home-card-title">Fidel Alphabet</div>
-          <div class="home-card-desc">Learn the 231-character Ethiopic syllabary with audio and an interactive quiz</div>
-        </div>
-
-        <div class="home-card" onclick="navTo('flashcards')" role="button" tabindex="0"
-             onkeydown="if(event.key==='Enter')navTo('flashcards')">
-          <div class="home-card-icon">🃏</div>
-          <div class="home-card-title">Flashcards</div>
-          <div class="home-card-desc">190+ vocabulary cards with audio — greetings, family, numbers, colors, verbs &amp; places</div>
-        </div>
-
-        <div class="home-card" onclick="navTo('matching')" role="button" tabindex="0"
-             onkeydown="if(event.key==='Enter')navTo('matching')">
-          <div class="home-card-icon">🔗</div>
-          <div class="home-card-title">Matching</div>
-          <div class="home-card-desc">Race to match 8 Amharic words to their English translations with instant audio feedback</div>
-        </div>
-
-        <div class="home-card" onclick="navTo('typing')" role="button" tabindex="0"
-             onkeydown="if(event.key==='Enter')navTo('typing')">
-          <div class="home-card-icon">✍️</div>
-          <div class="home-card-title">Writing</div>
-          <div class="home-card-desc">Type translations in English or Amharic script using the built-in Ethiopic keyboard</div>
-        </div>
-
-        <div class="home-card" onclick="navTo('sentences')" role="button" tabindex="0"
-             onkeydown="if(event.key==='Enter')navTo('sentences')">
-          <div class="home-card-icon">💬</div>
-          <div class="home-card-title">Sentences</div>
-          <div class="home-card-desc">Translate infinitely generated Amharic sentences using the present progressive tense</div>
-        </div>
-
-        <div class="home-card" onclick="navTo('speaking')" role="button" tabindex="0"
-             onkeydown="if(event.key==='Enter')navTo('speaking')">
-          <div class="home-card-icon">🎙️</div>
-          <div class="home-card-title">Speaking</div>
-          <div class="home-card-desc">Hear Amharic words and speak the English translation — scored in real time</div>
-        </div>
-
-        <div class="home-card" onclick="navTo('conjugation')" role="button" tabindex="0"
-             onkeydown="if(event.key==='Enter')navTo('conjugation')">
-          <div class="home-card-icon">🔤</div>
-          <div class="home-card-title">Conjugation</div>
-          <div class="home-card-desc">Master the present progressive verb form across all 8 subject pronouns</div>
-        </div>
-
-      </div>
-
-      <!-- Quick-start tip -->
-      <div style="margin-top:32px;padding:20px 24px;background:rgba(200,145,30,0.07);border:1px solid rgba(200,145,30,0.22);border-radius:6px;max-width:720px;margin-left:auto;margin-right:auto">
-        <p style="font-size:14px;color:var(--ivory-dim);line-height:1.9;text-align:center">
-          <strong style="color:var(--gold-l)">New to Amharic?</strong>
-          Start with the
-          <span onclick="navTo('fidel')" style="color:var(--gold);cursor:pointer;text-decoration:underline;text-underline-offset:3px">Fidel Alphabet</span>
-          to learn the script, then move to
-          <span onclick="navTo('flashcards')" style="color:var(--gold);cursor:pointer;text-decoration:underline;text-underline-offset:3px">Flashcards</span>
-          to build vocabulary.
-          For full audio &amp; speaking features use <strong style="color:var(--gold-l)">Chrome</strong> or <strong style="color:var(--gold-l)">Edge</strong>.
-        </p>
-      </div>
-
-    </section><!-- /#sec-home -->
-
-
-    <!-- ═══════════════════════════════════════════════════════════
-         ② FIDEL — ETHIOPIC ALPHABET
-    ════════════════════════════════════════════════════════════ -->
-    <section id="sec-fidel" class="section" aria-label="Fidel alphabet">
-
-      <div class="section-header">
-        <h2>Fidel — The Ethiopic Alphabet</h2>
-        <p>
-          Amharic is written in the <em>Ge'ez</em> script. Each symbol represents a syllable — a consonant
-          combined with one of 7 vowels. There are 31 consonant families × 7 vowel orders = 217 core characters.
-          Click any character to hear it spoken and see its romanization.
-        </p>
-      </div>
-
-      <!-- Vowel pronunciation guide -->
-      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px">
-        <span style="font-size:12px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-right:4px;align-self:center">Vowels:</span>
-        <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">① ä = "uh"</span>
-        <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">② u = "oo"</span>
-        <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">③ i = "ee"</span>
-        <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">④ a = "ah"</span>
-        <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">⑤ ē = "ay"</span>
-        <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">⑥ ɨ = "ih"</span>
-        <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">⑦ o = "oh"</span>
-      </div>
-
-      <!-- Mode toggle -->
-      <div class="fidel-mode-btns">
-        <button id="fidel-browse" class="mode-tab active" onclick="fidelMode('browse')">
-          📖 Browse Chart
-        </button>
-        <button id="fidel-quiz-btn" class="mode-tab" onclick="fidelMode('quiz')">
-          📝 Quiz Me
-        </button>
-      </div>
-
-      <!-- ── BROWSE VIEW ─────────────────────────── -->
-      <div id="fidel-chart-wrap">
-        <!-- Fidel grid is rendered here by Fidel.buildChart() -->
-        <div id="fidel-chart"></div>
-
-        <!-- Character info panel (appears on click) -->
-        <div id="fidel-info-panel" class="fidel-info-panel">
-          <div id="fidel-info-char" class="fidel-info-char">ሀ</div>
-          <div class="fidel-info-det">
-            <div id="fidel-info-rom" class="fidel-info-rom">he</div>
-            <div id="fidel-info-row" class="fidel-info-row">H family · 1st order (ä / uh)</div>
-            <button class="btn-ghost" style="margin-top:10px;font-size:13px;padding:7px 16px"
-              onclick="Audio.speakText(document.getElementById('fidel-info-char').textContent,'am-ET')">
-              🔊 Hear it
-            </button>
-          </div>
+    <section id="sec-selection" class="section">
+      <h2 class="gold-title" style="font-size: 2rem; margin-bottom: 25px;">Configure Study Campaign</h2>
+      
+      <div class="dashboard-panel">
+        <div class="panel-title gold-title">1. Select Translation Challenge Track</div>
+        <div class="flex-wrap-buttons" id="config-direction-row">
+          <button class="dir-btn on" style="padding:12px 20px;" onclick="fcSetDir('ae'); tySetDir('ae', this); snSetDir('toAmh', this); spSetDir('listenAmh', this);">Amharic ➔ English</button>
+          <button class="dir-btn" style="padding:12px 20px;" onclick="fcSetDir('ea'); tySetDir('ea', this); snSetDir('toEng', this); spSetDir('speakAmh', this);">English ➔ Amharic</button>
+          <button class="dir-btn" style="padding:12px 20px;" onclick="fcSetDir('mix'); tySetDir('mix', this);">Random Mix Challenge</button>
         </div>
       </div>
 
-      <!-- ── QUIZ VIEW (hidden until quiz mode) ──── -->
-      <div id="fidel-quiz-wrap">
-        <div id="fidel-quiz-score" class="quiz-score">Score: 0 / 0</div>
-        <p style="color:var(--ivory-dim);font-size:14px;margin-bottom:4px">
-          Select the correct romanization for this character:
-        </p>
-        <div id="quiz-char-display" class="quiz-char-display">ሀ</div>
-        <div id="quiz-options" class="quiz-options"><!-- built by JS --></div>
-        <div id="quiz-feedback" class="quiz-feedback"></div>
-      </div>
-
-    </section><!-- /#sec-fidel -->
-
-
-    <!-- ═══════════════════════════════════════════════════════════
-         ③ FLASHCARDS
-    ════════════════════════════════════════════════════════════ -->
-    <section id="sec-flashcards" class="section" aria-label="Flashcards">
-
-      <div class="section-header">
-        <h2>Flashcards</h2>
-        <p>Filter by part of speech or category, then click a card to flip it. Press 🔊 to hear the Amharic word spoken aloud.</p>
-      </div>
-
-      <!-- Filter panel (filled by JS) -->
-      <div id="fc-filter" class="filter-panel"></div>
-
-      <!-- Direction + Start -->
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap">
-        <div id="fc-dir" class="fc-dir-row" style="margin:0;display:flex;gap:8px;flex-wrap:wrap">
-          <button class="dir-btn on" data-dir="ae" onclick="fcSetDir('ae')">Amharic → English</button>
-          <button class="dir-btn"    data-dir="ea" onclick="fcSetDir('ea')">English → Amharic</button>
-          <button class="dir-btn"    data-dir="mix" onclick="fcSetDir('mix')">🔀 Mix</button>
-        </div>
-        <button class="btn-primary" onclick="fcStart()" style="padding:10px 22px;font-size:15px">
-          Start →
-        </button>
-      </div>
-
-      <!-- Progress -->
-      <div class="progress-wrap">
-        <div class="progress-meta">
-          <span class="progress-txt" id="fc-prog">0 / 0</span>
-        </div>
-        <div class="progress-bar">
-          <div class="progress-fill" id="fc-bar" style="width:0%"></div>
-        </div>
-      </div>
-
-      <!-- Flashcard -->
-      <div id="fc-card-wrap" style="margin-top:18px">
-        <div class="fc-wrap" onclick="fcFlip()" role="button" tabindex="0"
-             aria-label="Flip flashcard" onkeydown="if(event.key==='Enter'||event.key===' ')fcFlip()">
-          <div class="flashcard" id="fc-card">
-
-            <div class="card-face front">
-              <div class="card-label" id="fc-front-label">AMHARIC</div>
-              <div class="card-main" id="fc-front-main">
-                <span style="color:var(--ivory-dim);font-style:italic;font-size:15px">
-                  Press Start to begin
-                </span>
-              </div>
-              <div class="card-sub" id="fc-front-sub"></div>
-            </div>
-
-            <div class="card-face back">
-              <div class="card-label" id="fc-back-label">ENGLISH</div>
-              <div class="card-main" id="fc-back-main"></div>
-              <div class="card-sub" id="fc-back-sub"></div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      <p class="fc-hint">Click card to flip · 🔊 to hear Amharic pronunciation</p>
-
-      <div class="fc-nav">
-        <button class="btn-ghost" id="fc-prev" onclick="fcPrev()" disabled>← Previous</button>
-        <button class="btn-ghost" id="fc-next" onclick="fcNext()">Next →</button>
-      </div>
-
-    </section><!-- /#sec-flashcards -->
-
-
-    <!-- ═══════════════════════════════════════════════════════════
-         ④ MATCHING
-    ════════════════════════════════════════════════════════════ -->
-    <section id="sec-matching" class="section" aria-label="Matching game">
-
-      <div class="section-header">
-        <h2>Matching Game</h2>
-        <p>Click two tiles to match an Amharic word with its English translation. A correct match plays the pronunciation automatically. Match all 8 pairs to complete the round.</p>
-      </div>
-
-      <!-- Filter panel (filled by JS) -->
-      <div id="mt-filter" class="filter-panel"></div>
-
-      <!-- Start + score row -->
-      <div class="mt-top">
-        <button class="btn-primary" onclick="mtStart()">Start Round →</button>
-        <span id="mt-score" class="mt-score">Pairs: 0 / 8</span>
-      </div>
-
-      <!-- Tile grid (built by JS) -->
-      <div id="mt-grid" class="matching-grid" aria-live="polite"></div>
-
-      <!-- Round-complete message (shown by JS) -->
-      <div id="mt-next" style="display:none;text-align:center;padding:24px 0">
-        <div style="font-size:26px;margin-bottom:14px">🌟 Round Complete!</div>
-        <p style="color:var(--ivory-dim);font-size:15px;margin-bottom:16px">Every pair matched — great work!</p>
-        <button class="btn-gold" onclick="mtStart()">🔄 Next Round</button>
-      </div>
-
-    </section><!-- /#sec-matching -->
-
-
-    <!-- ═══════════════════════════════════════════════════════════
-         ⑤ WRITING / TYPING
-    ════════════════════════════════════════════════════════════ -->
-    <section id="sec-typing" class="section" aria-label="Writing practice">
-
-      <div class="section-header">
-        <h2>Writing Practice</h2>
-        <p>Test your recall by typing translations. When writing Amharic script, use the ⌨️ button to open the built-in Ethiopic keyboard.</p>
-      </div>
-
-      <!-- ── SETUP PANEL ─────────────────────────── -->
-      <div id="ty-setup">
-
-        <div id="ty-filter" class="filter-panel"></div>
-
-        <div style="margin-bottom:6px">
-          <span class="filter-label">Direction</span>
-        </div>
-        <div id="ty-dir-row" style="display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap">
-          <button class="dir-btn on" onclick="tySetDir('ae',this)">Amharic → Type English</button>
-          <button class="dir-btn"    onclick="tySetDir('ea',this)">English → Type Amharic</button>
-          <button class="dir-btn"    onclick="tySetDir('mix',this)">🔀 Mix Both</button>
-        </div>
-
-        <button class="btn-primary" onclick="tyStart()">Begin Writing Practice →</button>
-
-      </div>
-
-      <!-- ── GAME PANEL ──────────────────────────── -->
-      <div id="ty-section-main" style="display:none">
-
-        <!-- Progress bar -->
-        <div class="progress-wrap" style="margin-bottom:16px">
-          <div class="progress-meta">
-            <span class="progress-txt" id="ty-prog">1 / 10</span>
-          </div>
-          <div class="progress-bar">
-            <div class="progress-fill" id="ty-bar" style="width:10%"></div>
-          </div>
-        </div>
-
-        <!-- Question card -->
-        <div class="ty-prompt-card glass">
-          <div class="ty-label" id="ty-label">TRANSLATE TO ENGLISH</div>
-          <div id="ty-prompt"
-               style="min-height:64px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
-          </div>
-          <div class="ty-sub" id="ty-sub"></div>
-        </div>
-
-        <!-- Answer area -->
-        <div class="ty-input-area" style="margin-top:14px">
-
-          <!-- Input row with keyboard toggle -->
-          <div style="display:flex;gap:8px;align-items:stretch">
-            <input
-              type="text"
-              class="game-input"
-              id="ty-input"
-              placeholder="Type your answer…"
-              autocomplete="off"
-              autocorrect="off"
-              autocapitalize="off"
-              spellcheck="false"
-              aria-label="Translation answer"
-            >
-            <button
-              class="btn-ghost"
-              onclick="tyToggleKb()"
-              title="Toggle Amharic keyboard (⌨️)"
-              aria-label="Toggle Amharic keyboard"
-              style="flex-shrink:0;padding:0 14px;font-size:20px;border-radius:var(--radius)"
-            >⌨️</button>
-          </div>
-
-          <!-- Action buttons -->
-          <div class="ty-controls">
-            <button class="btn-primary" onclick="tyCheck()">Check ✓</button>
-            <button class="btn-ghost"   onclick="tyNext()">Skip →</button>
-            <button class="btn-ghost"   onclick="tyBack()"
-                    style="margin-left:auto;font-size:13px">← Filters</button>
-          </div>
-
-          <!-- Feedback + answer reveal -->
-          <div class="feedback" id="ty-feedback" aria-live="polite"></div>
-          <div class="reveal-text" id="ty-reveal" style="display:none" aria-live="polite"></div>
-
-          <!-- "Next" appears after answering -->
-          <button class="btn-gold" id="ty-next" onclick="tyNext()"
-                  style="display:none;margin-top:12px">
-            Next →
-          </button>
-
-        </div>
-      </div>
-
-    </section><!-- /#sec-typing -->
-
-
-    <!-- ═══════════════════════════════════════════════════════════
-         ⑥ SENTENCES
-    ════════════════════════════════════════════════════════════ -->
-    <section id="sec-sentences" class="section" aria-label="Sentence practice">
-
-      <div class="section-header">
-        <h2>Sentence Practice</h2>
-        <p>Translate dynamically generated sentences using the Amharic present progressive tense. Type answers in romanized Amharic (e.g. <em style="color:var(--gold-l)">ine lij iyyefelleghu new</em>).</p>
-      </div>
-
-      <!-- Formula reference -->
-      <div class="sn-reference">
-        <strong style="color:var(--gold)">Formula:</strong>
-        <span style="color:var(--gold-l)"> iyye</span> + [stem] + [suffix] +
-        <span style="color:var(--gold-l)"> new</span>
-        &nbsp;·&nbsp;
-        <strong style="color:var(--gold)">Example:</strong>
-        "I am going" →
-        <span style="color:var(--gold-l)">iyyehēdhu new</span>
-        &nbsp;·&nbsp;
-        <strong style="color:var(--gold)">Word order:</strong> Subject · Object · Verb
-        <br>
-        <span style="font-size:12px;color:var(--ivory-dim)">
-          Suffixes: I=hu · You(m)=h · You(f)=sh · He=e · She=ech · We=en · You(pl)=achihu · They=achew
-          &nbsp;— If stem ends in a vowel, drop the leading "e" from ech/en.
-        </span>
-      </div>
-
-      <!-- Direction toggle -->
-      <div id="sn-dir-row" style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
-        <button class="dir-btn on" onclick="snSetDir('toAmh',this)">English → Romanized Amharic</button>
-        <button class="dir-btn"    onclick="snSetDir('toEng',this)">Romanized Amharic → English</button>
-      </div>
-
-      <!-- Sentence display card -->
-      <div class="sn-card glass">
-        <div class="sn-label" id="sn-label">TRANSLATE TO AMHARIC (romanized)</div>
-        <div id="sn-prompt"
-             style="font-size:clamp(17px,3.5vw,26px);margin:14px 0;line-height:1.5;min-height:48px">
-        </div>
-        <div class="sn-hint" id="sn-hint">Hint: [subject] + [object] + iyye[stem][suffix] new</div>
-      </div>
-
-      <!-- Answer area -->
-      <div class="ty-input-area" style="margin-top:14px">
-        <input
-          type="text"
-          class="game-input"
-          id="sn-input"
-          placeholder="e.g. ine lij iyyefelleghu new"
-          autocomplete="off"
-          autocorrect="off"
-          autocapitalize="off"
-          spellcheck="false"
-          aria-label="Sentence translation answer"
-        >
-
-        <div class="ty-controls">
-          <button class="btn-primary" onclick="snCheck()">Check ✓</button>
-          <button class="btn-ghost"   onclick="snNext()">New Sentence 🔄</button>
-        </div>
-
-        <div class="feedback" id="sn-feedback" aria-live="polite"></div>
-        <div class="reveal-text" id="sn-reveal" style="display:none" aria-live="polite"></div>
-
-        <button class="btn-gold" id="sn-next" onclick="snNext()"
-                style="display:none;margin-top:12px">
-          Next Sentence →
-        </button>
-
-      </div>
-
-    </section><!-- /#sec-sentences -->
-
-
-    <!-- ═══════════════════════════════════════════════════════════
-         ⑦ SPEAKING PRACTICE
-    ════════════════════════════════════════════════════════════ -->
-    <section id="sec-speaking" class="section" aria-label="Speaking practice">
-
-      <div class="section-header">
-        <h2>Speaking Practice</h2>
-        <p>Hear an Amharic word, then speak the English translation. Your speech is transcribed in real time and scored. Works best in <strong>Chrome</strong> or <strong>Edge</strong>.</p>
-      </div>
-
-      <!-- Browser compatibility warning (shown by JS if unsupported) -->
-      <div id="sp-compat-note" class="sp-compat-note" role="alert">
-        ⚠️ Speech recognition is not available in your browser.
-        Please switch to <strong>Chrome</strong> or <strong>Edge</strong> to use this feature.
-      </div>
-
-      <!-- Direction toggle -->
-      <div id="sp-dir-row" style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
-        <button class="dir-btn on" onclick="spSetDir('listenAmh',this)">
-          🔊 Hear Amharic → Speak English
-        </button>
-        <button class="dir-btn" onclick="spSetDir('speakAmh',this)">
-          📖 Read English → Speak Amharic
-        </button>
-      </div>
-
-      <!-- Prompt card -->
-      <div class="sp-card glass">
-        <div id="sp-direction-label" class="sp-dir-label">LISTEN · THEN SPEAK THE ENGLISH TRANSLATION</div>
-        <div id="sp-prompt"
-             style="min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;margin:16px 0">
-        </div>
-        <div id="sp-expected" class="sp-expected"></div>
-        <button id="sp-listen-btn" class="btn-ghost" onclick="spListen()"
-                style="margin-top:14px;font-size:14px;padding:8px 20px">
-          🔊 Play Audio Again
-        </button>
-      </div>
-
-      <!-- Microphone button -->
-      <div style="text-align:center;margin:24px 0 10px">
-        <button id="sp-mic-btn" class="sp-mic-btn" onclick="spToggleRec()"
-                aria-label="Start speaking">
-          🎙️ Start Speaking
-        </button>
-        <p style="color:var(--ivory-dim);font-size:12px;margin-top:10px;letter-spacing:0.5px">
-          PRESS BUTTON · SPEAK · RECEIVE SCORE
-        </p>
-      </div>
-
-      <!-- Live transcript -->
-      <div id="sp-transcript" class="sp-transcript" aria-live="polite">
-        Ready — press the microphone button to begin
-      </div>
-
-      <!-- Score bar (shown after recognition) -->
-      <div id="sp-score-wrap" style="display:none;margin-top:20px" aria-live="polite">
-        <div class="sp-score-bar-track">
-          <div id="sp-score-bar" class="sp-score-bar" style="width:0%"></div>
-        </div>
-        <div class="sp-score-row" style="margin-top:8px">
-          <span id="sp-score-txt" class="sp-score-txt">0%</span>
-          <span id="sp-score-msg" class="sp-score-msg"></span>
-        </div>
-      </div>
-
-      <!-- Navigation -->
-      <div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap">
-        <button class="btn-primary" onclick="spNext()">Next Word →</button>
-      </div>
-
-    </section><!-- /#sec-speaking -->
-
-
-    <!-- ═══════════════════════════════════════════════════════════
-         ⑧ CONJUGATION PRACTICE
-    ════════════════════════════════════════════════════════════ -->
-    <section id="sec-conjugation" class="section" aria-label="Verb conjugation">
-
-      <div class="section-header">
-        <h2>Verb Conjugation</h2>
-        <p>Type the present progressive form in romanized Amharic. Formula:
-          <strong style="color:var(--gold-l)">iyye + [stem] + [suffix] + new</strong>.
-          The reference guide shows all 8 suffix forms.
-        </p>
-      </div>
-
-      <!-- Two-column layout: question card + reference panel -->
-      <div class="cj-layout">
-
-        <!-- ── Question side ──────────────── -->
-        <div>
-
-          <!-- Progress bar -->
-          <div class="progress-wrap" style="margin-bottom:18px">
-            <div class="progress-meta">
-              <span class="progress-txt" id="cj-prog">1 / 20</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" id="cj-bar" style="width:5%"></div>
+      <div class="dashboard-panel">
+        <div class="panel-title gold-title">2. Select Vocabulary & Syntactic Units</div>
+        <p style="font-size: 0.95rem; margin-bottom: 15px; color: #f0e5cf;">Check or uncheck groups to target specific lexicon pools during modules:</p>
+        
+        <div class="checkbox-matrix">
+          <div>
+            <label class="checkbox-label">
+              <input type="checkbox" checked onchange="buildFilterPanel('fc-filter', appState.fc); buildFilterPanel('ty-filter', appState.ty); buildFilterPanel('sn-filter', appState.sn);">
+              <span>General Nouns</span>
+            </label>
+            <div class="nested-group">
+              <label class="checkbox-label"><input type="checkbox" checked> <span>Family Nouns</span></label>
+              <label class="checkbox-label"><input type="checkbox" checked> <span>Food &amp; Drink</span></label>
+              <label class="checkbox-label"><input type="checkbox" checked> <span>Places &amp; Space</span></label>
+              <label class="checkbox-label"><input type="checkbox" checked> <span>Body Anatomy</span></label>
             </div>
           </div>
 
-          <!-- Question card -->
-          <div class="cj-card glass">
-
-            <!-- Pronoun -->
-            <div class="cj-pronoun-block">
-              <div class="cj-p-label">SUBJECT</div>
-              <div id="cj-pronoun" class="cj-p-main">I</div>
-              <div id="cj-pron-amh" class="cj-p-amh">እኔ</div>
+          <div>
+            <label class="checkbox-label">
+              <input type="checkbox" checked>
+              <span>Grammatical Verbs</span>
+            </label>
+            <div class="nested-group">
+              <label class="checkbox-label"><input type="checkbox" checked> <span>Present Stems</span></label>
+              <label class="checkbox-label"><input type="checkbox" checked> <span>Infinitive Roots</span></label>
             </div>
+          </div>
 
-            <!-- Verb -->
-            <div class="cj-verb-block">
-              <div id="cj-verb-amh" class="cj-v-amh">መሄድ</div>
-              <div id="cj-verb-tr"  class="cj-v-tr">mehēd</div>
-              <div id="cj-verb-en"  class="cj-v-en">to go</div>
-            </div>
-
-            <!-- Stem hint -->
-            <div id="cj-stem-hint" class="cj-stem-hint">Stem: "hēd"</div>
-
-            <!-- Answer input -->
-            <div class="ty-input-area">
-              <input
-                type="text"
-                class="game-input"
-                id="cj-input"
-                placeholder='e.g. "iyyehēdhu new"'
-                autocomplete="off"
-                autocorrect="off"
-                autocapitalize="off"
-                spellcheck="false"
-                aria-label="Conjugated verb form"
-              >
-
-              <div class="ty-controls">
-                <button class="btn-primary" onclick="cjCheck()">Check ✓</button>
-                <button class="btn-ghost"   onclick="cjNext()">Skip →</button>
-              </div>
-
-              <div class="feedback" id="cj-feedback" aria-live="polite"></div>
-              <div class="reveal-text" id="cj-reveal" style="display:none" aria-live="polite"></div>
-
-              <button class="btn-gold" id="cj-next" onclick="cjNext()"
-                      style="display:none;margin-top:12px">
-                Next →
-              </button>
-
+          <div>
+            <label class="checkbox-label">
+              <input type="checkbox" checked>
+              <span>Conversational</span>
+            </label>
+            <div class="nested-group">
+              <label class="checkbox-label"><input type="checkbox" checked> <span>Greetings</span></label>
+              <label class="checkbox-label"><input type="checkbox" checked> <span>Adjectives &amp; Colors</span></label>
+              <label class="checkbox-label"><input type="checkbox" checked> <span>Numbers</span></label>
+              <label class="checkbox-label"><input type="checkbox" checked> <span>Pronouns</span></label>
             </div>
           </div>
         </div>
 
-        <!-- ── Reference panel ───────────── -->
-        <div class="cj-ref-panel glass">
-          <div class="cj-ref-title">📖 SUFFIX REFERENCE</div>
-          <p style="font-size:12px;color:var(--ivory-dim);margin-bottom:12px;line-height:1.8">
-            <span style="color:var(--gold-l)">iyye</span> + stem +
-            <strong style="color:var(--ivory)">suffix</strong> +
-            <span style="color:var(--gold-l)"> new</span><br>
-            <em>Stem ending in vowel?<br>Drop the leading "e" from -ech and -en</em>
-          </p>
-          <!-- Built dynamically by Conjugation.renderRef() -->
-          <div id="cj-ref"></div>
+        <div class="hidden-panel">
+          <div id="fc-filter"></div>
+          <div id="mt-filter"></div>
+          <div id="ty-filter"></div>
+          <div id="sn-filter"></div>
+        </div>
+      </div>
+
+      <div class="dashboard-panel">
+        <div class="panel-title gold-title">3. Launch Target System Core Engine</div>
+        <div class="study-mode-bar">
+          <button class="mode-launch-btn" onclick="navTo('fidel')">𓏟 Fidel Chart</button>
+          <button class="mode-launch-btn" onclick="fcStart(); navTo('flashcards');">🗂️ Flashcards</button>
+          <button class="mode-launch-btn" onclick="mtStart(); navTo('matching')">🧩 Matching Game</button>
+          <button class="mode-launch-btn" onclick="tyStart(); navTo('typing')">⌨️ Writing Lab</button>
+          <button class="mode-launch-btn" onclick="navTo('sentences')">🌿 Sentences</button>
+          <button class="mode-launch-btn" onclick="navTo('speaking')">🎙️ Speaking Engine</button>
+          <button class="mode-launch-btn" style="background:#7a5a1a; border-color:#e8b84a;" onclick="navTo('conjugation')">⚙️ Conjugation</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="sec-fidel" class="section">
+      <div class="back-nav-container">
+        <button class="action-btn secondary" onclick="navTo('selection')">← Back to Setup</button>
+      </div>
+      <div class="section-header">
+        <h2 class="gold-title">Ge'ez Alphabet Chart (Fidel)</h2>
+        <div class="toggle-bar" style="margin: 15px 0;">
+          <button id="fidel-browse" class="toggle-btn active" style="padding:8px 16px;" onclick="fidelMode('browse')">Browse Table</button>
+          <button id="fidel-quiz-btn" class="toggle-btn" style="padding:8px 16px;" onclick="fidelMode('quiz')">Interactive Quiz</button>
+        </div>
+      </div>
+
+      <div id="fidel-chart-wrap" class="panel">
+        <div id="fidel-chart" class="fidel-scroll-container" style="overflow-x: auto; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px;">
+          </div>
+        
+        <div id="fidel-info-panel" class="info-drawer" style="margin-top:20px; padding:15px; background:rgba(200,145,30,0.15); border-radius:8px;">
+          <div class="drawer-content" style="display:flex; gap:20px; align-items:center;">
+            <div id="fidel-info-char" class="large-char amh-text" style="font-size:3.5rem; color:#e8b84a;">--</div>
+            <div>
+              <h3 id="fidel-info-rom" class="gold-title">--</h3>
+              <p id="fidel-info-row">Select any character box from the matrix layout grid grid above to map components.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="fidel-quiz-wrap" class="panel" style="display: none; flex-direction:column; gap:20px;">
+        <div class="quiz-workspace" style="background:rgba(16,9,4,0.85); padding:25px; border-radius:12px; text-align:center;">
+          <div id="fidel-quiz-score" class="score-badge" style="font-size:1.2rem; margin-bottom:15px; font-weight:bold;">Score: 0 / 0</div>
+          <div id="quiz-char-display" class="prompt-display amh-text" style="font-size:5rem; margin:20px 0; color:#e8b84a;">?</div>
+          <div id="quiz-options" class="options-grid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:15px; max-width:400px; margin:0 auto;">
+            </div>
+          <div id="quiz-feedback" class="feedback m-top-20" style="font-size:1.3rem; font-weight:bold;"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sec-flashcards" class="section">
+      <div class="back-nav-container">
+        <button class="action-btn secondary" onclick="navTo('selection')">← Back to Setup</button>
+      </div>
+      <h2 class="gold-title">Active Vocabulary Flashcards</h2>
+
+      <div id="fc-card-wrap" class="card-arena" style="margin:30px auto; max-width:550px;">
+        <div id="fc-card" class="flashcard" style="min-height:300px; cursor:pointer;" onclick="fcFlip()">
+          <div class="card-side card-front" style="padding:30px; text-align:center;">
+            <span id="fc-front-label" class="card-meta-label" style="color:#c8911e; letter-spacing:2px;">FRONT</span>
+            <div id="fc-front-main" class="card-main-content" style="margin:40px 0;">--</div>
+            <div id="fc-front-sub" class="card-sub-content">--</div>
+          </div>
+          <div class="card-side card-back" style="padding:30px; text-align:center;">
+            <span id="fc-back-label" class="card-meta-label" style="color:#b04828; letter-spacing:2px;">BACK</span>
+            <div id="fc-back-main" class="card-main-content" style="margin:40px 0;">--</div>
+            <div id="fc-back-sub" class="card-sub-content">--</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination-controls" style="display:flex; justify-content:space-between; align-items:center; max-width:550px; margin:0 auto; gap:20px;">
+        <button id="fc-prev" class="nav-arrow" style="padding:10px 20px;" onclick="fcPrev()">← Previous</button>
+        <div class="progress-box" style="flex-grow:1; text-align:center;">
+          <div class="progress-bar-track" style="background:rgba(255,255,255,0.1); height:8px; border-radius:4px; margin-bottom:5px; overflow:hidden;">
+            <div id="fc-bar" class="progress-bar-fill" style="width: 0%; background:#c8911e; height:100%;"></div>
+          </div>
+          <span id="fc-prog" class="progress-text">0 / 0</span>
+        </div>
+        <button id="fc-next" class="nav-arrow" style="padding:10px 20px;" onclick="fcNext()">Next →</button>
+      </div>
+    </section>
+
+    <section id="sec-matching" class="section">
+      <div class="back-nav-container">
+        <button class="action-btn secondary" onclick="navTo('selection')">← Back to Setup</button>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+        <h2 class="gold-title" style="margin:0;">Matrix Semantic Association</h2>
+        <div id="mt-score" class="score-badge" style="font-size:1.2rem; background:rgba(0,0,0,0.5); padding:8px 15px; border-radius:6px;">Pairs: 0 / 0</div>
+      </div>
+
+      <div id="mt-grid" class="tile-matching-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:15px; margin-bottom:20px;">
+        </div>
+
+      <div class="completion-deck" style="text-align:center;">
+        <button id="mt-next" class="action-btn success" style="display:none; padding:15px 35px; font-size:1.1rem;" onclick="mtStart()">Play Next Round 🎉</button>
+      </div>
+    </section>
+
+    <section id="sec-typing" class="section">
+      <div class="back-nav-container">
+        <button class="action-btn secondary" onclick="tyBack(); navTo('selection');">← Back to Setup</button>
+      </div>
+      <h2 class="gold-title">Orthographical Writing Arena</h2>
+      
+      <div id="ty-section-main" class="panel task-view" style="margin-top:20px;">
+        <div class="progress-box" style="margin-bottom:20px;">
+          <div class="progress-bar-track" style="background:rgba(255,255,255,0.1); height:6px; overflow:hidden; border-radius:3px;"><div id="ty-bar" class="progress-bar-fill" style="background:#c8911e; width:0%; height:100%;"></div></div>
+          <span id="ty-prog" class="progress-text" style="font-size:0.85rem;">0 / 0</span>
+        </div>
+
+        <div class="task-card" style="background:rgba(16,9,4,0.9); padding:30px; border-radius:12px; border:1px solid rgba(200,145,30,0.25);">
+          <h4 id="ty-label" class="task-instruction gold-title" style="margin-top:0; font-size:1.1rem; text-transform:uppercase; letter-spacing:1px;">--</h4>
+          <div id="ty-prompt" class="prompt-display" style="margin:20px 0; min-height:60px;">--</div>
+          <p id="ty-sub" class="prompt-hint-sub" style="color:rgba(240,229,207,0.6); font-style:italic;">--</p>
+          
+          <div class="input-stack" style="position:relative; margin:25px 0; display:flex; gap:10px;">
+            <input type="text" id="ty-input" class="game-input" style="flex-grow:1; background:rgba(0,0,0,0.5); border:1px solid #7a2e1a; padding:15px; font-size:1.2rem; border-radius:6px; color:#fff;" autocomplete="off">
+            <button id="ty-kb-toggle" class="utility-icon-btn" style="background:#7a2e1a; border:none; padding:0 15px; border-radius:6px; cursor:pointer; font-size:1.3rem;" title="Toggle Virtual Script Engine Pad" onclick="tyToggleKb()">⌨️</button>
+          </div>
+
+          <div id="ty-feedback" class="feedback" style="font-size:1.2rem; font-weight:bold; margin-bottom:15px;"></div>
+          <div id="ty-reveal" class="solution-reveal-panel" style="display: none; background:rgba(200,145,30,0.15); padding:15px; border-radius:6px; margin-bottom:15px; font-weight:bold; color:#e8b84a;"></div>
+
+          <div class="action-row">
+            <button id="ty-check" class="action-btn primary" style="padding:12px 25px;" onclick="tyCheck()">Submit Entry</button>
+            <button id="ty-next" class="action-btn success" style="display: none; padding:12px 25px;" onclick="tyNext()">Next Question →</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="ty-setup" style="display:none;"></div>
+    </section>
+
+    <section id="sec-sentences" class="section">
+      <div class="back-nav-container">
+        <button class="action-btn secondary" onclick="navTo('selection')">← Back to Setup</button>
+      </div>
+      <h2 class="gold-title">Syntactic Sentence Sandbox</h2>
+
+      <div class="task-card" style="background:rgba(16,9,4,0.9); padding:30px; border-radius:12px; border:1px solid rgba(200,145,30,0.25); margin-top:20px;">
+        <h4 id="sn-label" class="task-instruction gold-title" style="margin-top:0; text-transform:uppercase; font-size:1.1rem;">--</h4>
+        <div id="sn-prompt" class="prompt-display" style="margin:20px 0; font-size:1.6rem; min-height:50px;">--</div>
+        <p id="sn-hint" class="prompt-hint-sub" style="color:rgba(240,229,207,0.6); font-style:italic;">--</p>
+
+        <input type="text" id="sn-input" class="game-input" style="width:100%; box-sizing:border-box; background:rgba(0,0,0,0.5); border:1px solid #7a2e1a; padding:15px; font-size:1.1rem; border-radius:6px; margin:20px 0; color:#fff;" autocomplete="off">
+        
+        <div id="sn-feedback" class="feedback" style="font-size:1.2rem; font-weight:bold; margin-bottom:15px;"></div>
+        <div id="sn-reveal" class="solution-reveal-panel" style="display: none; background:rgba(200,145,30,0.15); padding:15px; border-radius:6px; margin-bottom:15px; font-weight:bold; color:#e8b84a;"></div>
+
+        <div class="action-row">
+          <button id="sn-check" class="action-btn primary" style="padding:12px 25px;" onclick="snCheck()">Validate Alignment</button>
+          <button id="sn-next" class="action-btn success" style="display: none; padding:12px 25px;" onclick="snNext()">Advance Sequence →</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="sec-speaking" class="section">
+      <div class="back-nav-container">
+        <button class="action-btn secondary" onclick="navTo('selection')">← Back to Setup</button>
+      </div>
+      <h2 class="gold-title">Phonetic Pronunciation Engine</h2>
+
+      <div id="sp-compat-note" class="alert-banner warning" style="display: none; background:#7a2e1a; border:1px solid #b04828; padding:15px; border-radius:6px; margin-bottom:20px;">
+        ⚠️ Web Speech Recognition API is not supported on this browser architecture instance. For comprehensive audio analysis, please run the application via desktop versions of Google Chrome or Microsoft Edge.
+      </div>
+
+      <div class="task-card" style="background:rgba(16,9,4,0.9); padding:30px; border-radius:12px; border:1px solid rgba(200,145,30,0.25);">
+        <h4 id="sp-direction-label" class="task-instruction gold-title" style="margin-top:0; font-size:1.1rem; text-transform:uppercase;">--</h4>
+        <div id="sp-prompt" class="prompt-display" style="margin:25px 0; min-height:70px;">--</div>
+        <p id="sp-expected" class="prompt-hint-sub" style="color:rgba(240,229,207,0.6); font-style:italic;">--</p>
+
+        <div class="audio-ui-cluster" style="display:flex; gap:15px; margin:25px 0;">
+          <button id="sp-listen-btn" class="action-btn secondary" style="padding:12px 20px;" onclick="spListen()">🔊 Benchmark Playback</button>
+          <button id="sp-mic-btn" class="action-btn mic-control" style="padding:12px 20px; background:#7a2e1a;" onclick="spToggleRec()">🎙️ Start Speaking</button>
+        </div>
+
+        <div class="recording-terminal" style="margin:20px 0; background:rgba(0,0,0,0.4); padding:15px; border-radius:6px;">
+          <label style="font-size:0.8rem; text-transform:uppercase; color:#c8911e; display:block; margin-bottom:5px;">Live Evaluation Transcript Pipeline Stream:</label>
+          <div id="sp-transcript" class="transcript-viewport" style="min-height:40px; font-size:1.1rem; font-weight:500;"></div>
+        </div>
+
+        <div id="sp-score-wrap" class="panel progress-box metric-analysis" style="display: none; background:rgba(0,0,0,0.3); padding:15px; border-radius:6px;">
+          <label style="font-size:0.85rem; display:block; margin-bottom:8px;">Phonetic Evaluation Match Score Matrix:</label>
+          <div class="progress-bar-track gauge" style="background:rgba(255,255,255,0.1); height:8px; border-radius:4px; overflow:hidden; margin-bottom:8px;">
+            <div id="sp-score-bar" class="progress-bar-fill" style="width: 0%; height:100%;"></div>
+          </div>
+          <div class="metric-row" style="display:flex; justify-content:space-between; font-weight:bold;">
+            <span id="sp-score-txt" class="percentage-label">0%</span>
+            <span id="sp-score-msg" class="contextual-appraisal" style="color:#e8b84a;">--</span>
+          </div>
+        </div>
+
+        <div class="action-row" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:20px; margin-top:20px;">
+          <button id="sp-next" class="action-btn plain" style="background:transparent; border:1px solid rgba(255,255,255,0.3);" onclick="spNext()">Skip / Load Next Item ⏭</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="sec-conjugation" class="section">
+      <div class="back-nav-container">
+        <button class="action-btn secondary" onclick="navTo('selection')">← Back to Setup</button>
+      </div>
+      <h2 class="gold-title">Present Progressive Paradigm Matrix</h2>
+      
+      <div class="split-workspace-panel" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:25px; margin-top:20px;">
+        
+        <div class="task-card main-workspace" style="background:rgba(16,9,4,0.9); padding:25px; border-radius:12px; border:1px solid rgba(200,145,30,0.25);">
+          <div class="progress-box" style="margin-bottom:15px;">
+            <div class="progress-bar-track" style="background:rgba(255,255,255,0.1); height:5px; overflow:hidden;"><div id="cj-bar" class="progress-bar-fill" style="background:#c8911e; width:0%; height:100%;"></div></div>
+            <span id="cj-prog" class="progress-text" style="font-size:0.8rem;">0 / 0</span>
+          </div>
+
+          <div class="paradigm-prompt" style="margin:20px 0;">
+            <h3 style="margin:5px 0;">Subject Target: <span id="cj-pronoun" class="gold-title" style="font-size:1.4rem;">--</span> (<span id="cj-pron-amh" class="amh-text">--</span>)</h3>
+            <h4 style="margin:5px 0; font-weight:normal;">Root Base: <span id="cj-verb-amh" class="amh-text" style="color:#e8b84a; font-size:1.3rem;">--</span> / <span id="cj-verb-tr" style="font-style:italic;">--</span></h4>
+            <p class="translation-hint" style="color:rgba(240,229,207,0.7); font-size:0.95rem; margin:5px 0;">Meaning: "<span id="cj-verb-en">--</span>"</p>
+            <div id="cj-stem-hint" style="margin-top:10px; font-size:0.85rem; color:#b04828; background:rgba(0,0,0,0.3); padding:8px; border-radius:4px;">--</div>
+          </div>
+
+          <input type="text" id="cj-input" class="game-input" style="width:100%; box-sizing:border-box; background:rgba(0,0,0,0.5); border:1px solid #7a2e1a; padding:12px; font-size:1.1rem; border-radius:6px; margin-bottom:15px; color:#fff;" placeholder="Provide complete conjugated progressive string..." autocomplete="off">
+
+          <div id="cj-feedback" class="feedback" style="font-size:1.1rem; font-weight:bold; margin-bottom:10px;"></div>
+          <div id="cj-reveal" class="solution-reveal-panel" style="display: none; background:rgba(200,145,30,0.15); padding:12px; border-radius:6px; margin-bottom:15px; font-weight:bold; color:#e8b84a;"></div>
+
+          <div class="action-row">
+            <button id="cj-check" class="action-btn primary" style="padding:10px 20px;" onclick="cjCheck()">Verify Suffix Morph</button>
+            <button id="cj-next" class="action-btn success" style="display: none; padding:10px 20px;" onclick="cjNext()">Next Paradigm →</button>
+          </div>
+        </div>
+
+        <div class="reference-sidebar" style="background:rgba(9,5,3,0.85); padding:20px; border-radius:12px; border:1px solid rgba(255,255,255,0.1);">
+          <h4 class="gold-title" style="margin-top:0; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px;">Present Progressive Suffix Architecture Matrix Map</h4>
+          <div id="cj-ref" style="display:flex; flex-direction:column; gap:8px; font-size:0.9rem; max-height:300px; overflow-y:auto; padding-right:5px;">
+            </div>
         </div>
 
       </div>
+    </section>
 
-    </section><!-- /#sec-conjugation -->
-
-
-    <!-- ═══════════════════════════════════════════════════════════
-         ⑨ SUCCESS SCREEN
-    ════════════════════════════════════════════════════════════ -->
-    <section id="sec-success" class="section" aria-label="Success" aria-live="polite">
-      <div class="suc-star" aria-hidden="true">🌟</div>
-      <h1 class="suc-title">Well Done!</h1>
-      <div class="suc-amh" aria-label="Gobez — well done in Amharic">ጎበዝ! — gobez!</div>
-      <p class="suc-msg" id="suc-msg">Set complete!</p>
-      <div class="suc-btns">
-        <button class="btn-primary" id="suc-again">Practice Again</button>
-        <button class="btn-ghost"   id="suc-home" onclick="navTo('home')">← Home</button>
+    <section id="sec-success" class="section">
+      <div style="background:rgba(16,9,4,0.95); max-width:500px; margin:50px auto; padding:40px; border-radius:16px; text-align:center; border:2px solid #c8911e;">
+        <div style="font-size:4rem; margin-bottom:15px;">🏆</div>
+        <h2 id="suc-msg" class="gold-title" style="font-size:2rem; margin-bottom:10px;">Module Complete!</h2>
+        <p style="color:#f0e5cf; margin-bottom:30px;">Your metrics matched successful sequence target metrics verification rules.</p>
+        <div style="display:flex; flex-direction:column; gap:12px; max-width:280px; margin:0 auto;">
+          <button id="suc-again" class="gold-enter-btn" style="font-size:1.1rem; padding:12px;">Replay Activity Module</button>
+          <button id="suc-home" class="action-btn plain" style="padding:10px; border:1px solid rgba(255,255,255,0.2);" onclick="navTo('selection')">Return to System Hub</button>
+        </div>
       </div>
-    </section><!-- /#sec-success -->
+    </section>
 
-  </main><!-- /.main -->
-</div><!-- /#layout -->
+  </div>
 
+  <div id="virtual-keyboard-extension-host" class="hidden-extension"></div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     MOBILE BOTTOM NAVIGATION
-═══════════════════════════════════════════════════════════════════ -->
-<nav class="bottom-nav" aria-label="Mobile navigation">
-  <div class="bottom-nav-item active" data-target="home" onclick="navTo('home')"
-       role="menuitem" tabindex="0">
-    <span class="nav-icon">🏠</span>
-    <span>Home</span>
-  </div>
-  <div class="bottom-nav-item" data-target="fidel" onclick="navTo('fidel')"
-       role="menuitem" tabindex="0">
-    <span class="nav-icon" style="font-family:var(--font-amh)">ሀ</span>
-    <span>Fidel</span>
-  </div>
-  <div class="bottom-nav-item" data-target="flashcards" onclick="navTo('flashcards')"
-       role="menuitem" tabindex="0">
-    <span class="nav-icon">🃏</span>
-    <span>Cards</span>
-  </div>
-  <div class="bottom-nav-item" data-target="matching" onclick="navTo('matching')"
-       role="menuitem" tabindex="0">
-    <span class="nav-icon">🔗</span>
-    <span>Match</span>
-  </div>
-  <div class="bottom-nav-item" data-target="typing" onclick="navTo('typing')"
-       role="menuitem" tabindex="0">
-    <span class="nav-icon">✍️</span>
-    <span>Write</span>
-  </div>
-  <div class="bottom-nav-item" data-target="sentences" onclick="navTo('sentences')"
-       role="menuitem" tabindex="0">
-    <span class="nav-icon">💬</span>
-    <span>Sentences</span>
-  </div>
-  <div class="bottom-nav-item" data-target="speaking" onclick="navTo('speaking')"
-       role="menuitem" tabindex="0">
-    <span class="nav-icon">🎙️</span>
-    <span>Speak</span>
-  </div>
-  <div class="bottom-nav-item" data-target="conjugation" onclick="navTo('conjugation')"
-       role="menuitem" tabindex="0">
-    <span class="nav-icon">🔤</span>
-    <span>Conjugate</span>
-  </div>
-</nav>
+  <script src="data.js"></script>
 
+  <script src="audio.js"></script>
+  <script src="keyboard.js"></script>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     SCRIPTS — load order matters: data → audio → keyboard → app
-═══════════════════════════════════════════════════════════════════ -->
-<script src="js/data.js"></script>
-<script src="js/audio.js"></script>
-<script src="js/keyboard.js"></script>
-<script src="js/app.js"></script>
+  <script src="app.js"></script>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (typeof Keyboard !== "undefined" && typeof Keyboard.build === "function") {
+        Keyboard.build();
+      }
+    });
+  </script>
 </body>
 </html>
