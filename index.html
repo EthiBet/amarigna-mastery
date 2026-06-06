@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🇪🇹 - አማርኛን</title>
+  <title>🇪🇹 አማርኛን መምራት</title>
   
   <link rel="stylesheet" href="style.css">
 
   <style>
     /* ═════════════════════════════════════════════════════════════════
-       FONT ARSENAL: EXCLUSIVE ISOLATION 
+       FONT ARSENAL: AGGRESSIVE EXCLUSIVE ISOLATION 
        ═════════════════════════════════════════════════════════════════ */
-    body, button, input, select, textarea, .eng-text, .kb-title, .progress-text, label {
+    /* Force Google Sans exclusively for English text blocks */
+    body, button, input, select, textarea, .eng-text, .kb-title, .progress-text, label, span:not(.amh-text) {
       font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
-      color: #ffffff;
     }
     
-    /* Absolute isolated priority mapping for Abyssinica SIL Ge'ez blocks */
+    /* Absolute global priority injection for Abyssinica SIL on ALL Ge'ez characters */
     .amh-text, 
     .fidel-char,
     .fidel-cell,
@@ -29,7 +29,8 @@
     #ty-prompt,
     #sn-prompt,
     #sp-prompt,
-    .kb-key {
+    .kb-key,
+    [data-lang="am"] {
       font-family: 'Abyssinica SIL', 'Ge'ez', serif !important;
     }
     
@@ -39,7 +40,7 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
-       DYNAMIC BACKGROUND STACK (Z-Indexed safely below mask overlays)
+       DYNAMIC BACKGROUND STACK (Rebuilt for transparent alpha layering)
        ═════════════════════════════════════════════════════════════════ */
     .bg-layer {
       position: fixed;
@@ -49,78 +50,67 @@
       height: 100vh;
       background-size: cover;
       background-position: center;
-      z-index: -10; /* Locked completely underneath everything */
+      z-index: -10; /* Sent completely behind interface content cards */
       transition: opacity 0.8s ease-in-out;
     }
     #bg-a { opacity: 1; }
     #bg-b { opacity: 0; }
     
-    /* The Opaque Black Backplate Mask protecting text readability */
+    /* The Translucent Dark Contrast Hood Overlay */
     #app-container {
       min-height: 100vh;
       width: 100%;
       position: relative;
       z-index: 1;
       box-sizing: border-box;
-      /* Heavy black alpha plate lets background imagery show perfectly */
-      background: rgba(0, 0, 0, 0.85); 
+      /* Pure solid black base blended with high-opacity mask layer to darken background images */
+      background: linear-gradient(0deg, rgba(9, 5, 3, 0.88), rgba(9, 5, 3, 0.88)), #000000;
+    }
+
+    /* Fallback safety wire in case background links inside your data arrays fail to fetch */
+    body {
+      background-color: #090503 !important;
     }
 
     /* ═════════════════════════════════════════════════════════════════
-       INTERACTIVE MULTI-LEVEL VOCABULARY TREE LAYOUT
+       INTERACTIVE HIERARCHICAL TREE STRUCTURAL MATRIX
        ═════════════════════════════════════════════════════════════════ */
-    .vocab-tree-container {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      margin-top: 15px;
+    .custom-tree-card {
+      background: rgba(16, 9, 4, 0.75);
+      border: 1px solid rgba(200, 145, 30, 0.25);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
     }
-    .tree-branch {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(200, 145, 30, 0.15);
-      border-radius: 8px;
-      padding: 15px;
+    .tree-branch-group {
+      margin-bottom: 25px;
     }
-    .branch-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 1.2rem;
+    .tree-branch-header {
+      font-size: 1.4rem;
       font-weight: bold;
       color: #c8911e;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding-bottom: 8px;
       margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .nested-twigs {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    .tree-twig-nested-list {
+      list-style: none;
+      padding-left: 20px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
       gap: 10px;
-      padding-left: 25px;
     }
-    .twig-label {
+    .tree-twig-item {
+      font-size: 1.15rem;
+      color: #ffffff;
       display: flex;
       align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      font-size: 0.98rem;
-      background: rgba(255, 255, 255, 0.02);
-      padding: 6px 12px;
-      border-radius: 4px;
-      transition: background 0.2s;
-    }
-    .twig-label:hover {
-      background: rgba(200, 145, 30, 0.1);
-    }
-    .tree-checkbox {
-      accent-color: #c8911e;
-      width: 17px;
-      height: 17px;
-      cursor: pointer;
+      gap: 12px;
     }
 
     /* ═════════════════════════════════════════════════════════════════
-       CORE VIEWPORT & BUTTON RULES
+       CORE APPLICATION MODULE VIEWS
        ═════════════════════════════════════════════════════════════════ */
     .section {
       display: none;
@@ -164,19 +154,6 @@
     .gold-enter-btn:hover {
       background: #e8b84a;
       transform: translateY(-2px);
-    }
-    .dashboard-panel {
-      background: rgba(16, 9, 4, 0.75);
-      border: 1px solid rgba(200, 145, 30, 0.25);
-      border-radius: 12px;
-      padding: 25px;
-      margin-bottom: 25px;
-    }
-    .panel-title {
-      border-bottom: 1px solid rgba(200, 145, 30, 0.15);
-      padding-bottom: 10px;
-      margin-bottom: 18px;
-      font-size: 1.35rem;
     }
     .study-mode-bar {
       display: grid;
@@ -232,83 +209,63 @@
     <section id="sec-selection" class="section">
       <h2 class="gold-title" style="font-size: 2rem; margin-bottom: 25px;">Configuration Dashboard</h2>
       
-      <div class="dashboard-panel">
-        <div class="panel-title gold-title">1. Choose Translation Challenge Track</div>
-        <div style="display:flex; flex-wrap:wrap; gap:10px;">
-          <button id="dir-ae" class="tag dir-btn on" style="padding:12px 20px; cursor:pointer;" onclick="fcSetDir('ae'); tySetDir('ae', this); snSetDir('toAmh', this); spSetDir('listenAmh', this); handleDirectionSync('ae', this);">Amharic ➔ English</button>
-          <button id="dir-ea" class="tag dir-btn" style="padding:12px 20px; cursor:pointer;" onclick="fcSetDir('ea'); tySetDir('ea', this); snSetDir('toEng', this); spSetDir('speakAmh', this); handleDirectionSync('ea', this);">English ➔ Amharic</button>
-          <button id="dir-mix" class="tag dir-btn" style="padding:12px 20px; cursor:pointer;" onclick="fcSetDir('mix'); tySetDir('mix', this); handleDirectionSync('mix', this);">Random Mix Challenge</button>
+      <div class="custom-tree-card">
+        <div class="gold-title" style="font-size:1.35rem; margin-bottom:15px; border-bottom:1px solid rgba(200,145,30,0.2); padding-bottom:8px;">1. Choose Translation Challenge Track</div>
+        
+        <div id="fc-dir" style="margin-bottom: 12px;"></div>
+        
+        <div class="hidden-panel">
+          <div id="ty-dir-row"></div>
+          <div id="sn-dir-row"></div>
+          <div id="sp-dir-row"></div>
         </div>
       </div>
 
-      <div class="dashboard-panel">
-        <div class="panel-title gold-title">2. Select Vocabulary Groups & Subcategories</div>
-        <p style="font-size:0.95rem; color:rgba(255,255,255,0.7); margin-bottom:15px;">Check or uncheck categories to tailor your dynamic vocabulary sets pool:</p>
+      <div class="custom-tree-card">
+        <div class="gold-title" style="font-size:1.35rem; margin-bottom:15px; border-bottom:1px solid rgba(200,145,30,0.2); padding-bottom:8px;">2. Select Vocabulary Groups &amp; Categories Hierarchy</div>
         
-        <div class="vocab-tree-container">
-          <div class="tree-branch">
-            <div class="branch-header">
-              <input type="checkbox" id="master-noun-chk" class="tree-checkbox" checked onclick="toggleTreeBranch('Noun', this.checked)">
-              <span>Noun</span>
-            </div>
-            <div class="nested-twigs">
-              <label class="twig-label"><input type="checkbox" data-pos="Noun" data-cat="Family & Relationships" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Family &amp; Relationships</span></label>
-              <label class="twig-label"><input type="checkbox" data-pos="Noun" data-cat="Food &amp; Drink" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Food &amp; Drink</span></label>
-              <label class="twig-label"><input type="checkbox" data-pos="Noun" data-cat="Places, Nature &amp; Space" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Places, Nature &amp; Space</span></label>
-              <label class="twig-label"><input type="checkbox" data-pos="Noun" data-cat="Body &amp; Anatomy" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Body &amp; Anatomy</span></label>
-              <label class="twig-label"><input type="checkbox" data-pos="Noun" data-cat="Numbers" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Numbers</span></label>
-              <label class="twig-label"><input type="checkbox" data-pos="Noun" data-cat="Time &amp; Calendar" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Time &amp; Calendar</span></label>
-              <label class="twig-label"><input type="checkbox" data-pos="Noun" data-cat="Objects &amp; Materials" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Objects &amp; Materials</span></label>
-            </div>
-          </div>
-
-          <div class="tree-branch">
-            <div class="branch-header">
-              <input type="checkbox" id="master-verb-chk" class="tree-checkbox" checked onclick="toggleTreeBranch('Verb', this.checked)">
-              <span>Verb</span>
-            </div>
-            <div class="nested-twigs">
-              <label class="twig-label"><input type="checkbox" data-pos="Verb" data-cat="Action Verbs" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Action Verbs</span></label>
-              <label class="twig-label"><input type="checkbox" data-pos="Verb" data-cat="Grammatical &amp; Auxiliary Verbs" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Grammatical &amp; Auxiliary</span></label>
-            </div>
-          </div>
-
-          <div class="tree-branch">
-            <div class="branch-header">
-              <input type="checkbox" id="master-other-chk" class="tree-checkbox" checked onclick="toggleOtherBranches(this.checked)">
-              <span>Adjectives, Pronouns &amp; Expressions</span>
-            </div>
-            <div class="nested-twigs">
-              <label class="twig-label"><input type="checkbox" data-pos="Adjective" data-cat="Adjectives &amp; Colors" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Adjectives &amp; Colors</span></label>
-              <label class="twig-label"><input type="checkbox" data-pos="Pronoun" data-cat="Pronouns" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Pronouns Matrix</span></label>
-              <label class="twig-label"><input type="checkbox" data-pos="Interjection" data-cat="Greetings &amp; Goodbyes" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Greetings &amp; Goodbyes</span></label>
-              <label class="twig-label"><input type="checkbox" data-pos="Preposition" data-cat="Prepositions &amp; Conjunctions" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Prepositions</span></label>
-            </div>
-          </div>
+        <div class="tree-branch-group">
+          <div class="tree-branch-header">Noun</div>
+          <ul class="tree-twig-nested-list">
+            <li class="tree-twig-item"><span>•</span> Body</li>
+            <li class="tree-twig-item"><span>•</span> Numbers</li>
+            <li class="tree-twig-item"><span>•</span> Family &amp; Relationships</li>
+            <li class="tree-twig-item"><span>•</span> Food &amp; Drink</li>
+            <li class="tree-twig-item"><span>•</span> Places, Nature &amp; Space</li>
+            <li class="tree-twig-item"><span>•</span> Time &amp; Calendar</li>
+            <li class="tree-twig-item"><span>•</span> Objects &amp; Materials</li>
+          </ul>
         </div>
 
+        <div class="tree-branch-group">
+          <div class="tree-branch-header">Verb</div>
+          <ul class="tree-twig-nested-list">
+            <li class="tree-twig-item"><span>•</span> Regular (Action Verbs)</li>
+            <li class="tree-twig-item"><span>•</span> Irregular / Grammatical Auxiliary</li>
+          </ul>
+        </div>
+
+        <div class="tree-branch-group">
+          <div class="tree-branch-header">Other Categories</div>
+          <ul class="tree-twig-nested-list">
+            <li class="tree-twig-item"><span>•</span> Adjectives &amp; Colors</li>
+            <li class="tree-twig-item"><span>•</span> Pronouns Matrix</li>
+            <li class="tree-twig-item"><span>•</span> Greetings &amp; Goodbyes</li>
+            <li class="tree-twig-item"><span>•</span> Prepositions &amp; Conjunctions</li>
+          </ul>
+        </div>
+
+        <div id="fc-filter" style="margin-top:20px; border-top:1px dashed rgba(255,255,255,0.15); padding-top:15px;"></div>
+
         <div class="hidden-panel">
-          <div id="fc-filter"></div>
           <div id="mt-filter"></div>
           <div id="ty-filter"></div>
           <div id="sn-filter"></div>
-          <div id="fc-dir">
-            <button data-dir="ae" id="fc-dir-ae"></button>
-            <button data-dir="ea" id="fc-dir-ea"></button>
-            <button data-dir="mix" id="fc-dir-mix"></button>
-          </div>
-          <div id="ty-dir-row">
-            <button class="dir-btn" id="ty-dir-ae"></button>
-            <button class="dir-btn" id="ty-dir-ea"></button>
-            <button class="dir-btn" id="ty-dir-mix"></button>
-          </div>
-          <div id="sn-dir-row"><button class="dir-btn"></button></div>
-          <div id="sp-dir-row"><button class="dir-btn"></button></div>
         </div>
       </div>
 
-      <div class="dashboard-panel">
-        <div class="panel-title gold-title">3. Launch Target System Core Engine</div>
+      <div class="custom-tree-card">
+        <div class="gold-title" style="font-size:1.35rem; margin-bottom:18px; border-bottom:1px solid rgba(200,145,30,0.2); padding-bottom:8px;">3. Launch Target System Core Engine</div>
         <div class="study-mode-bar">
           <button class="mode-launch-btn" onclick="navTo('fidel')">𓏟 Fidel Chart</button>
           <button class="mode-launch-btn" onclick="fcStart(); navTo('flashcards');">🗂️ Flashcards</button>
@@ -327,21 +284,19 @@
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:15px;">
         <h2 class="gold-title" style="margin:0;">Ge'ez Alphabet (Fidel) Matrix</h2>
         <div style="display:flex; gap:8px;">
-          <button id="fidel-browse" class="tag on" style="cursor:pointer;" onclick="fidelMode('browse')">Browse Table</button>
-          <button id="fidel-quiz-btn" class="tag" style="cursor:pointer;" onclick="fidelMode('quiz')">Interactive Quiz</button>
+          <button id="fidel-browse" class="tag on" onclick="fidelMode('browse')">Browse Table</button>
+          <button id="fidel-quiz-btn" class="tag" onclick="fidelMode('quiz')">Interactive Quiz</button>
         </div>
       </div>
 
       <div id="fidel-chart-wrap">
-        <div id="fidel-chart" style="overflow-x:auto; padding:10px; background:rgba(0,0,0,0.4); border-radius:8px;">
-          </div>
-        
+        <div id="fidel-chart" style="overflow-x:auto; padding:10px; background:rgba(0,0,0,0.4); border-radius:8px;"></div>
         <div id="fidel-info-panel" style="margin-top:20px; padding:20px; background:rgba(200,145,30,0.12); border:1px solid rgba(200,145,30,0.25); border-radius:8px;">
           <div style="display:flex; gap:25px; align-items:center;">
             <div id="fidel-info-char" class="large-char amh-text" style="font-size:3.5rem; color:#e8b84a; line-height:1;">--</div>
             <div>
               <h3 id="fidel-info-rom" class="gold-title" style="margin:0 0 5px 0; font-size:1.4rem;">--</h3>
-              <p id="fidel-info-row" style="margin:0; color:rgba(255,255,255,0.75);">Click any box row matrix layout above to read pronunciation maps.</p>
+              <p id="fidel-info-row" style="margin:0; color:rgba(255,255,255,0.75);">Click any cell row matrix layout above to read phonetic markers.</p>
             </div>
           </div>
         </div>
@@ -365,12 +320,12 @@
         <div id="fc-card" class="flashcard" style="min-height:280px; cursor:pointer;" onclick="fcFlip()">
           <div class="card-side card-front" style="padding:25px; text-align:center; display:flex; flex-direction:column; justify-content:space-between; box-sizing:border-box;">
             <span id="fc-front-label" style="color:#c8911e; letter-spacing:2px; font-size:0.8rem; font-weight:bold;">FRONT</span>
-            <div id="fc-front-main" style="margin:auto 0; word-break:break-word; font-size:2.8rem;">--</div>
+            <div id="fc-front-main" class="amh-text" style="margin:auto 0; word-break:break-word; font-size:3rem;">--</div>
             <div id="fc-front-sub" style="color:rgba(255,255,255,0.6); min-height:20px; font-size:1.2rem;">--</div>
           </div>
           <div class="card-side card-back" style="padding:25px; text-align:center; display:flex; flex-direction:column; justify-content:space-between; box-sizing:border-box;">
             <span id="fc-back-label" style="color:#b04828; letter-spacing:2px; font-size:0.8rem; font-weight:bold;">BACK</span>
-            <div id="fc-back-main" style="margin:auto 0; word-break:break-word; font-size:2.8rem;">--</div>
+            <div id="fc-back-main" style="margin:auto 0; word-break:break-word; font-size:3rem;">--</div>
             <div id="fc-back-sub" style="color:rgba(255,255,255,0.6); min-height:20px; font-size:1.2rem;">--</div>
           </div>
         </div>
@@ -415,12 +370,12 @@
 
         <div style="background:rgba(16,9,4,0.85); padding:30px; border-radius:12px; border:1px solid rgba(200,145,30,0.25);">
           <h4 id="ty-label" class="gold-title" style="margin:0 0 15px 0; font-size:1.05rem; text-transform:uppercase; letter-spacing:1px;">--</h4>
-          <div id="ty-prompt" style="margin:20px 0; min-height:55px; font-size:2.5rem; display:flex; align-items:center; gap:15px; flex-wrap:wrap;">--</div>
+          <div id="ty-prompt" style="margin:20px 0; min-height:55px; font-size:2.6rem; display:flex; align-items:center; gap:15px; flex-wrap:wrap;">--</div>
           <p id="ty-sub" style="color:rgba(255,255,255,0.5); font-style:italic; margin:0 0 25px 0; font-size:1.1rem;">--</p>
           
           <div style="display:flex; gap:10px; margin-bottom:20px; max-width:600px; width:100%;">
             <input type="text" id="ty-input" style="flex-grow:1; background:rgba(0,0,0,0.4); border:1px solid #7a2e1a; padding:14px; font-size:1.25rem; border-radius:6px; color:#ffffff;" autocomplete="off">
-            <button id="ty-kb-toggle" style="background:#7a2e1a; border:none; padding:0 18px; border-radius:6px; cursor:pointer; font-size:1.2rem;" title="Toggle Virtual Keyboard" onclick="tyToggleKb()">⌨️</button>
+            <button id="ty-kb-toggle" style="background:#7a2e1a; border:none; padding:0 18px; border-radius:6px; cursor:pointer; font-size:1.2rem;" title="Toggle Keyboard" onclick="tyToggleKb()">⌨️</button>
           </div>
 
           <div id="ty-feedback" style="font-size:1.2rem; font-weight:bold; margin-bottom:15px;"></div>
@@ -461,12 +416,12 @@
       <h2 class="gold-title">Phonetic Pronunciation Engine</h2>
 
       <div id="sp-compat-note" style="display:none; background:#7a2e1a; border:1px solid #b04828; padding:15px; border-radius:6px; margin-bottom:25px; font-size:0.95rem;">
-        ⚠️ Web Speech Recognition API is not supported on this browser context. Please use desktop versions of Google Chrome or Microsoft Edge.
+        ⚠️ Web Speech Recognition API is not supported on this browser context instance. Run via Google Chrome or Microsoft Edge.
       </div>
 
       <div style="background:rgba(16,9,4,0.85); padding:30px; border-radius:12px; border:1px solid rgba(200,145,30,0.25);">
         <h4 id="sp-direction-label" class="gold-title" style="margin:0 0 15px 0; font-size:1.05rem; text-transform:uppercase; letter-spacing:1px;">--</h4>
-        <div id="sp-prompt" style="margin:25px 0; min-height:65px; word-break:break-word; font-size:2.4rem;">--</div>
+        <div id="sp-prompt" style="margin:25px 0; min-height:65px; word-break:break-word; font-size:2.5rem;">--</div>
         <p id="sp-expected" style="color:rgba(255,255,255,0.5); font-style:italic; margin:0 0 25px 0; font-size:1.1rem;">--</p>
 
         <div style="display:flex; gap:12px; margin-bottom:25px; flex-wrap:wrap;">
@@ -508,8 +463,8 @@
           </div>
 
           <div style="margin:20px 0; background:rgba(0,0,0,0.2); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.05);">
-            <h3 style="margin:0 0 8px 0; font-size:1.25rem; font-weight:normal;">Subject Target: <span id="cj-pronoun" class="gold-title" style="font-weight:700;">--</span> (<span id="cj-pron-amh" class="amh-text" style="color:#e8b84a; font-size:1.4rem;">--</span>)</h3>
-            <h4 style="margin:0 0 8px 0; font-weight:normal; font-size:1.15rem;">Root Base: <span id="cj-verb-amh" class="amh-text" style="color:#e8b84a; font-size:1.5rem;">--</span> / <span id="cj-verb-tr" style="font-style:italic;">--</span></h4>
+            <h3 style="margin:0 0 8px 0; font-size:1.25rem; font-weight:normal;">Subject Target: <span id="cj-pronoun" class="gold-title" style="font-weight:700;">--</span> (<span id="cj-pron-amh" class="amh-text" style="color:#e8b84a; font-size:1.5rem;">--</span>)</h3>
+            <h4 style="margin:0 0 8px 0; font-weight:normal; font-size:1.15rem;">Root Base: <span id="cj-verb-amh" class="amh-text" style="color:#e8b84a; font-size:1.6rem;">--</span> / <span id="cj-verb-tr" style="font-style:italic;">--</span></h4>
             <p style="color:rgba(255,255,255,0.6); font-size:0.95rem; margin:0 0 10px 0;">Meaning: "<span id="cj-verb-en">--</span>"</p>
             <div id="cj-stem-hint" style="font-size:0.9rem; color:#e8b84a; background:rgba(122,46,26,0.25); border:1px solid rgba(176,72,40,0.3); padding:8px; border-radius:4px; word-break:break-word;">--</div>
           </div>
@@ -536,7 +491,7 @@
       <div style="background:rgba(16,9,4,0.95); max-width:480px; margin:40px auto; padding:40px 25px; border-radius:16px; text-align:center; border:2px solid #c8911e; box-sizing:border-box;">
         <div style="font-size:3.5rem; margin-bottom:15px;">🏆</div>
         <h2 id="suc-msg" class="gold-title" style="font-size:1.8rem; margin:0 0 10px 0;">Module Complete!</h2>
-        <p style="color:rgba(255,255,255,0.75); margin:0 0 30px 0; font-size:1rem;">Your metrics successfully passed the core validation sequences.</p>
+        <p style="color:rgba(255,255,255,0.75); margin:0 0 30px 0; font-size:1rem;">Your execution matched parameters successfully.</p>
         <div style="display:flex; flex-direction:column; gap:12px; max-width:260px; margin:0 auto; width:100%;">
           <button id="suc-again" class="gold-enter-btn" style="font-size:1.1rem; padding:12px; border-radius:8px;">Replay Activity Module</button>
           <button id="suc-home" style="background:transparent; border:1px solid rgba(255,255,255,0.25); padding:10px; border-radius:6px; cursor:pointer;" onclick="navTo('selection')">Return to Dashboard Hub</button>
@@ -554,89 +509,21 @@
   <script src="app.js"></script>
 
   <script>
-    // Handles specific directional syncing loops across hidden system nodes
-    function handleDirectionSync(mode, activeBtn) {
-      document.querySelectorAll('#config-direction-row .dir-btn, .tag.dir-btn').forEach(btn => btn.classList.remove('on'));
-      if(activeBtn) activeBtn.classList.add('on');
-      
-      // Mirror the values onto internal hooks inside app.js 
-      const appHooks = {
-        'ae': ['fc-dir-ae', 'ty-dir-ae'],
-        'ea': ['fc-dir-ea', 'ty-dir-ea'],
-        'mix': ['fc-dir-mix', 'ty-dir-mix']
-      };
-      
-      if(appHooks[mode]) {
-        appHooks[mode].forEach(id => {
-          const target = document.getElementById(id);
-          if(target) target.click();
-        });
-      }
-    }
-
-    // Controls checking and unchecking tree levels for Nouns and Verbs
-    function toggleTreeBranch(posType, isChecked) {
-      document.querySelectorAll(`.twig-control-hook[data-pos="${posType}"]`).forEach(checkbox => {
-        checkbox.checked = isChecked;
-      });
-      syncAppFilters();
-    }
-
-    // Handles miscellaneous branches (Adjectives, Interjections, Pronouns, etc.)
-    function toggleOtherBranches(isChecked) {
-      document.querySelectorAll('.twig-control-hook').forEach(checkbox => {
-        const pos = checkbox.getAttribute('data-pos');
-        if (pos !== 'Noun' && pos !== 'Verb') {
-          checkbox.checked = isChecked;
-        }
-      });
-      syncAppFilters();
-    }
-
-    // Feeds selections into the appState matrix filter blocks inside app.js
-    function syncAppFilters() {
-      if (typeof appState === 'undefined') return;
-
-      // Clear out selection arrays safely
-      appState.fc.pos = []; appState.fc.cat = [];
-      appState.ty.pos = []; appState.ty.cat = [];
-      appState.sn.pos = []; appState.sn.cat = [];
-
-      let anyChecked = false;
-
-      document.querySelectorAll('.twig-control-hook:checked').forEach(checkedBox => {
-        anyChecked = true;
-        const pos = checkedBox.getAttribute('data-pos');
-        const cat = checkedBox.getAttribute('data-cat');
-
-        if(!appState.fc.pos.includes(pos)) {
-          appState.fc.pos.push(pos);
-          appState.ty.pos.push(pos);
-          appState.sn.pos.push(pos);
-        }
-        if(!appState.fc.cat.includes(cat)) {
-          appState.fc.cat.push(cat);
-          appState.ty.cat.push(cat);
-          appState.sn.cat.push(cat);
-        }
-      });
-
-      // Catch-all safety: if nothing is checked, fallback gracefully to prevent crashes
-      if (!anyChecked) {
-        appState.fc.pos = ['all']; appState.fc.cat = ['all'];
-        appState.ty.pos = ['all']; appState.ty.cat = ['all'];
-        appState.sn.pos = ['all']; appState.sn.cat = ['all'];
-      }
-    }
-
-    // Initializer routine execution on boot loop instances
     document.addEventListener("DOMContentLoaded", () => {
+      // 1. Fire virtual script pad generation sequence immediately
       if (typeof Keyboard !== "undefined" && typeof Keyboard.build === "function") {
-        Keyboard.build(); /* Build virtual keyboard elements instantly */
+        Keyboard.build();
       }
+
+      // 2. Fallback execution trap sequence protecting rendering pathways
       setTimeout(() => {
-        syncAppFilters(); // Initialize vocabulary trees correctly
-      }, 300);
+        // Enforce safe default category routing mappings if app.js didn't find selections
+        if (typeof appState !== 'undefined') {
+          // Sync internal values to prevent empty array reference crashes
+          if (!appState.fc.pos || appState.fc.pos.length === 0) appState.fc.pos = ['all'];
+          if (!appState.fc.cat || appState.fc.cat.length === 0) appState.fc.cat = ['all'];
+        }
+      }, 500);
     });
   </script>
 </body>
