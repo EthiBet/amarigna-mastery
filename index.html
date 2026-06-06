@@ -9,20 +9,27 @@
 
   <style>
     /* ═════════════════════════════════════════════════════════════════
-       FONT & COLOR CONFIGURATION (Strict Language Isolation)
+       FONT ARSENAL: EXCLUSIVE ISOLATION 
        ═════════════════════════════════════════════════════════════════ */
-    body, button, input, select, textarea, .eng-text, .kb-title, .progress-text {
+    body, button, input, select, textarea, .eng-text, .kb-title, .progress-text, label {
       font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
       color: #ffffff;
     }
     
-    /* Enforce Abyssinica SIL ONLY on Amharic text blocks */
+    /* Absolute isolated priority mapping for Abyssinica SIL Ge'ez blocks */
     .amh-text, 
-    .fidel-char, 
+    .fidel-char,
+    .fidel-cell,
     .tile-amh,
     #quiz-char-display,
     #cj-pron-amh,
-    #cj-verb-amh {
+    #cj-verb-amh,
+    #fc-front-main,
+    #fc-back-main,
+    #ty-prompt,
+    #sn-prompt,
+    #sp-prompt,
+    .kb-key {
       font-family: 'Abyssinica SIL', 'Ge'ez', serif !important;
     }
     
@@ -32,7 +39,7 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
-       IMAGE WALLPAPERS LAYER (Fixed beneath all interface text)
+       DYNAMIC BACKGROUND STACK (Z-Indexed safely below mask overlays)
        ═════════════════════════════════════════════════════════════════ */
     .bg-layer {
       position: fixed;
@@ -42,27 +49,78 @@
       height: 100vh;
       background-size: cover;
       background-position: center;
+      z-index: -10; /* Locked completely underneath everything */
       transition: opacity 0.8s ease-in-out;
-      z-index: -10; /* Sent completely behind everything else */
     }
     #bg-a { opacity: 1; }
     #bg-b { opacity: 0; }
     
-    /* ═════════════════════════════════════════════════════════════════
-       THE DARK CONTRAST MATRIX HOOD (Opaque background blocker)
-       ═════════════════════════════════════════════════════════════════ */
+    /* The Opaque Black Backplate Mask protecting text readability */
     #app-container {
       min-height: 100vh;
       width: 100%;
       position: relative;
       z-index: 1;
       box-sizing: border-box;
-      /* Pure solid black base, blended with a high-opacity mask layer to darken background images */
-      background: linear-gradient(0deg, rgba(9, 5, 3, 0.82), rgba(9, 5, 3, 0.82)), #000000;
+      /* Heavy black alpha plate lets background imagery show perfectly */
+      background: rgba(0, 0, 0, 0.85); 
     }
 
     /* ═════════════════════════════════════════════════════════════════
-       LAYOUT COMPONENT RULES
+       INTERACTIVE MULTI-LEVEL VOCABULARY TREE LAYOUT
+       ═════════════════════════════════════════════════════════════════ */
+    .vocab-tree-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 15px;
+    }
+    .tree-branch {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(200, 145, 30, 0.15);
+      border-radius: 8px;
+      padding: 15px;
+    }
+    .branch-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #c8911e;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .nested-twigs {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 10px;
+      padding-left: 25px;
+    }
+    .twig-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      font-size: 0.98rem;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 6px 12px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+    .twig-label:hover {
+      background: rgba(200, 145, 30, 0.1);
+    }
+    .tree-checkbox {
+      accent-color: #c8911e;
+      width: 17px;
+      height: 17px;
+      cursor: pointer;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       CORE VIEWPORT & BUTTON RULES
        ═════════════════════════════════════════════════════════════════ */
     .section {
       display: none;
@@ -75,8 +133,6 @@
     .section.active {
       display: block !important;
     }
-
-    /* Hero Splash Layout */
     .gateway-hero {
       display: flex;
       flex-direction: column;
@@ -92,10 +148,7 @@
     .gateway-subtitle {
       font-size: clamp(1.2rem, 3vw, 2rem);
       margin: 0 0 45px 0;
-      color: #ffffff;
     }
-    
-    /* Dynamic Buttons */
     .gold-enter-btn {
       background: #c8911e;
       color: #090503 !important;
@@ -112,8 +165,6 @@
       background: #e8b84a;
       transform: translateY(-2px);
     }
-
-    /* Selection Dashboards */
     .dashboard-panel {
       background: rgba(16, 9, 4, 0.75);
       border: 1px solid rgba(200, 145, 30, 0.25);
@@ -127,32 +178,6 @@
       margin-bottom: 18px;
       font-size: 1.35rem;
     }
-    
-    /* Part of Speech & Category Tag Layout overrides */
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 5px;
-    }
-    .tag {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #ffffff;
-      padding: 6px 14px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.2s;
-    }
-    .tag.on, .dir-btn.on {
-      background: #c8911e !important;
-      border-color: #e8b84a !important;
-      color: #090503 !important;
-      font-weight: bold;
-    }
-
-    /* Study Module Footer Action Buttons */
     .study-mode-bar {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -207,33 +232,83 @@
     <section id="sec-selection" class="section">
       <h2 class="gold-title" style="font-size: 2rem; margin-bottom: 25px;">Configuration Dashboard</h2>
       
-      <div class="dashboard-panel" id="direction-config-card">
-        <div class="panel-title gold-title">1. Choose Translation Challenge Mode</div>
-        <div class="tags" id="ty-dir-row">
-          <button class="tag dir-btn on" onclick="fcSetDir('ae'); tySetDir('ae', this); snSetDir('toAmh', this); spSetDir('listenAmh', this);">Amharic ➔ English</button>
-          <button class="tag dir-btn" onclick="fcSetDir('ea'); tySetDir('ea', this); snSetDir('toEng', this); spSetDir('speakAmh', this);">English ➔ Amharic</button>
-          <button class="tag dir-btn" onclick="fcSetDir('mix'); tySetDir('mix', this);">Random Mix Challenge</button>
+      <div class="dashboard-panel">
+        <div class="panel-title gold-title">1. Choose Translation Challenge Track</div>
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          <button id="dir-ae" class="tag dir-btn on" style="padding:12px 20px; cursor:pointer;" onclick="fcSetDir('ae'); tySetDir('ae', this); snSetDir('toAmh', this); spSetDir('listenAmh', this); handleDirectionSync('ae', this);">Amharic ➔ English</button>
+          <button id="dir-ea" class="tag dir-btn" style="padding:12px 20px; cursor:pointer;" onclick="fcSetDir('ea'); tySetDir('ea', this); snSetDir('toEng', this); spSetDir('speakAmh', this); handleDirectionSync('ea', this);">English ➔ Amharic</button>
+          <button id="dir-mix" class="tag dir-btn" style="padding:12px 20px; cursor:pointer;" onclick="fcSetDir('mix'); tySetDir('mix', this); handleDirectionSync('mix', this);">Random Mix Challenge</button>
         </div>
-        <div id="fc-dir" class="hidden-panel"><button data-dir="ae"></button><button data-dir="ea"></button><button data-dir="mix"></button></div>
-        <div id="sn-dir-row" class="hidden-panel"><button class="dir-btn"></button></div>
-        <div id="sp-dir-row" class="hidden-panel"><button class="dir-btn"></button></div>
       </div>
 
       <div class="dashboard-panel">
-        <div class="panel-title gold-title">2. Mix and Match Vocabulary Groups</div>
-        <p style="font-size:0.95rem; margin-bottom:15px; color:rgba(255,255,255,0.7);">Select parts of speech and categorical fields below to filter learning content pools:</p>
+        <div class="panel-title gold-title">2. Select Vocabulary Groups & Subcategories</div>
+        <p style="font-size:0.95rem; color:rgba(255,255,255,0.7); margin-bottom:15px;">Check or uncheck categories to tailor your dynamic vocabulary sets pool:</p>
         
-        <div id="fc-filter"></div>
-        
+        <div class="vocab-tree-container">
+          <div class="tree-branch">
+            <div class="branch-header">
+              <input type="checkbox" id="master-noun-chk" class="tree-checkbox" checked onclick="toggleTreeBranch('Noun', this.checked)">
+              <span>Noun</span>
+            </div>
+            <div class="nested-twigs">
+              <label class="twig-label"><input type="checkbox" data-pos="Noun" data-cat="Family & Relationships" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Family &amp; Relationships</span></label>
+              <label class="twig-label"><input type="checkbox" data-pos="Noun" data-cat="Food &amp; Drink" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Food &amp; Drink</span></label>
+              <label class="twig-label"><input type="checkbox" data-pos="Noun" data-cat="Places, Nature &amp; Space" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Places, Nature &amp; Space</span></label>
+              <label class="twig-label"><input type="checkbox" data-pos="Noun" data-cat="Body &amp; Anatomy" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Body &amp; Anatomy</span></label>
+              <label class="twig-label"><input type="checkbox" data-pos="Noun" data-cat="Numbers" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Numbers</span></label>
+              <label class="twig-label"><input type="checkbox" data-pos="Noun" data-cat="Time &amp; Calendar" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Time &amp; Calendar</span></label>
+              <label class="twig-label"><input type="checkbox" data-pos="Noun" data-cat="Objects &amp; Materials" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Objects &amp; Materials</span></label>
+            </div>
+          </div>
+
+          <div class="tree-branch">
+            <div class="branch-header">
+              <input type="checkbox" id="master-verb-chk" class="tree-checkbox" checked onclick="toggleTreeBranch('Verb', this.checked)">
+              <span>Verb</span>
+            </div>
+            <div class="nested-twigs">
+              <label class="twig-label"><input type="checkbox" data-pos="Verb" data-cat="Action Verbs" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Action Verbs</span></label>
+              <label class="twig-label"><input type="checkbox" data-pos="Verb" data-cat="Grammatical &amp; Auxiliary Verbs" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Grammatical &amp; Auxiliary</span></label>
+            </div>
+          </div>
+
+          <div class="tree-branch">
+            <div class="branch-header">
+              <input type="checkbox" id="master-other-chk" class="tree-checkbox" checked onclick="toggleOtherBranches(this.checked)">
+              <span>Adjectives, Pronouns &amp; Expressions</span>
+            </div>
+            <div class="nested-twigs">
+              <label class="twig-label"><input type="checkbox" data-pos="Adjective" data-cat="Adjectives &amp; Colors" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Adjectives &amp; Colors</span></label>
+              <label class="twig-label"><input type="checkbox" data-pos="Pronoun" data-cat="Pronouns" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Pronouns Matrix</span></label>
+              <label class="twig-label"><input type="checkbox" data-pos="Interjection" data-cat="Greetings &amp; Goodbyes" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Greetings &amp; Goodbyes</span></label>
+              <label class="twig-label"><input type="checkbox" data-pos="Preposition" data-cat="Prepositions &amp; Conjunctions" class="tree-checkbox twig-control-hook" checked onchange="syncAppFilters()"> <span>Prepositions</span></label>
+            </div>
+          </div>
+        </div>
+
         <div class="hidden-panel">
+          <div id="fc-filter"></div>
           <div id="mt-filter"></div>
           <div id="ty-filter"></div>
           <div id="sn-filter"></div>
+          <div id="fc-dir">
+            <button data-dir="ae" id="fc-dir-ae"></button>
+            <button data-dir="ea" id="fc-dir-ea"></button>
+            <button data-dir="mix" id="fc-dir-mix"></button>
+          </div>
+          <div id="ty-dir-row">
+            <button class="dir-btn" id="ty-dir-ae"></button>
+            <button class="dir-btn" id="ty-dir-ea"></button>
+            <button class="dir-btn" id="ty-dir-mix"></button>
+          </div>
+          <div id="sn-dir-row"><button class="dir-btn"></button></div>
+          <div id="sp-dir-row"><button class="dir-btn"></button></div>
         </div>
       </div>
 
       <div class="dashboard-panel">
-        <div class="panel-title gold-title">3. Choose Study Mode Engine</div>
+        <div class="panel-title gold-title">3. Launch Target System Core Engine</div>
         <div class="study-mode-bar">
           <button class="mode-launch-btn" onclick="navTo('fidel')">𓏟 Fidel Chart</button>
           <button class="mode-launch-btn" onclick="fcStart(); navTo('flashcards');">🗂️ Flashcards</button>
@@ -252,13 +327,13 @@
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:15px;">
         <h2 class="gold-title" style="margin:0;">Ge'ez Alphabet (Fidel) Matrix</h2>
         <div style="display:flex; gap:8px;">
-          <button id="fidel-browse" class="tag on" onclick="fidelMode('browse')">Browse Table</button>
-          <button id="fidel-quiz-btn" class="tag" onclick="fidelMode('quiz')">Interactive Quiz</button>
+          <button id="fidel-browse" class="tag on" style="cursor:pointer;" onclick="fidelMode('browse')">Browse Table</button>
+          <button id="fidel-quiz-btn" class="tag" style="cursor:pointer;" onclick="fidelMode('quiz')">Interactive Quiz</button>
         </div>
       </div>
 
       <div id="fidel-chart-wrap">
-        <div id="fidel-chart" style="overflow-x:auto; padding:5px; background:rgba(0,0,0,0.3); border-radius:8px;">
+        <div id="fidel-chart" style="overflow-x:auto; padding:10px; background:rgba(0,0,0,0.4); border-radius:8px;">
           </div>
         
         <div id="fidel-info-panel" style="margin-top:20px; padding:20px; background:rgba(200,145,30,0.12); border:1px solid rgba(200,145,30,0.25); border-radius:8px;">
@@ -266,7 +341,7 @@
             <div id="fidel-info-char" class="large-char amh-text" style="font-size:3.5rem; color:#e8b84a; line-height:1;">--</div>
             <div>
               <h3 id="fidel-info-rom" class="gold-title" style="margin:0 0 5px 0; font-size:1.4rem;">--</h3>
-              <p id="fidel-info-row" style="margin:0; color:rgba(255,255,255,0.75);">Click any cell box on the layout above to stream target pronunciation metrics.</p>
+              <p id="fidel-info-row" style="margin:0; color:rgba(255,255,255,0.75);">Click any box row matrix layout above to read pronunciation maps.</p>
             </div>
           </div>
         </div>
@@ -276,8 +351,7 @@
         <div style="background:rgba(16,9,4,0.85); border:1px solid rgba(200,145,30,0.2); padding:35px; border-radius:12px; text-align:center; max-width:500px; margin:0 auto; width:100%; box-sizing:border-box;">
           <div id="fidel-quiz-score" style="font-size:1.1rem; font-weight:bold; margin-bottom:15px; letter-spacing:1px;">Score: 0 / 0</div>
           <div id="quiz-char-display" class="amh-text" style="font-size:5.5rem; margin:20px 0; color:#e8b84a; line-height:1;">?</div>
-          <div id="quiz-options" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; margin-top:25px;">
-            </div>
+          <div id="quiz-options" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; margin-top:25px;"></div>
           <div id="quiz-feedback" style="font-size:1.2rem; font-weight:bold; margin-top:20px; min-height:24px;"></div>
         </div>
       </div>
@@ -291,13 +365,13 @@
         <div id="fc-card" class="flashcard" style="min-height:280px; cursor:pointer;" onclick="fcFlip()">
           <div class="card-side card-front" style="padding:25px; text-align:center; display:flex; flex-direction:column; justify-content:space-between; box-sizing:border-box;">
             <span id="fc-front-label" style="color:#c8911e; letter-spacing:2px; font-size:0.8rem; font-weight:bold;">FRONT</span>
-            <div id="fc-front-main" style="margin:auto 0; word-break:break-word;">--</div>
-            <div id="fc-front-sub" style="color:rgba(255,255,255,0.6); min-height:20px;">--</div>
+            <div id="fc-front-main" style="margin:auto 0; word-break:break-word; font-size:2.8rem;">--</div>
+            <div id="fc-front-sub" style="color:rgba(255,255,255,0.6); min-height:20px; font-size:1.2rem;">--</div>
           </div>
           <div class="card-side card-back" style="padding:25px; text-align:center; display:flex; flex-direction:column; justify-content:space-between; box-sizing:border-box;">
             <span id="fc-back-label" style="color:#b04828; letter-spacing:2px; font-size:0.8rem; font-weight:bold;">BACK</span>
-            <div id="fc-back-main" style="margin:auto 0; word-break:break-word;">--</div>
-            <div id="fc-back-sub" style="color:rgba(255,255,255,0.6); min-height:20px;">--</div>
+            <div id="fc-back-main" style="margin:auto 0; word-break:break-word; font-size:2.8rem;">--</div>
+            <div id="fc-back-sub" style="color:rgba(255,255,255,0.6); min-height:20px; font-size:1.2rem;">--</div>
           </div>
         </div>
       </div>
@@ -322,8 +396,7 @@
         <div id="mt-score" style="font-size:1.1rem; background:rgba(0,0,0,0.4); padding:8px 16px; border-radius:6px; border:1px solid rgba(255,255,255,0.1);">Pairs: 0 / 0</div>
       </div>
 
-      <div id="mt-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:15px; margin-bottom:30px;">
-        </div>
+      <div id="mt-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:15px; margin-bottom:30px;"></div>
 
       <div style="text-align:center;">
         <button id="mt-next" style="display:none; background:#c8911e; color:#090503; padding:15px 40px; font-weight:bold; font-size:1.1rem; border:none; border-radius:6px; cursor:pointer;" onclick="mtStart()">Play Next Round 🎉</button>
@@ -342,16 +415,16 @@
 
         <div style="background:rgba(16,9,4,0.85); padding:30px; border-radius:12px; border:1px solid rgba(200,145,30,0.25);">
           <h4 id="ty-label" class="gold-title" style="margin:0 0 15px 0; font-size:1.05rem; text-transform:uppercase; letter-spacing:1px;">--</h4>
-          <div id="ty-prompt" style="margin:20px 0; min-height:55px; display:flex; align-items:center; gap:15px; flex-wrap:wrap;">--</div>
-          <p id="ty-sub" style="color:rgba(255,255,255,0.5); font-style:italic; margin:0 0 25px 0;">--</p>
+          <div id="ty-prompt" style="margin:20px 0; min-height:55px; font-size:2.5rem; display:flex; align-items:center; gap:15px; flex-wrap:wrap;">--</div>
+          <p id="ty-sub" style="color:rgba(255,255,255,0.5); font-style:italic; margin:0 0 25px 0; font-size:1.1rem;">--</p>
           
           <div style="display:flex; gap:10px; margin-bottom:20px; max-width:600px; width:100%;">
-            <input type="text" id="ty-input" style="flex-grow:1; background:rgba(0,0,0,0.4); border:1px solid #7a2e1a; padding:14px; font-size:1.15rem; border-radius:6px; color:#ffffff;" autocomplete="off">
-            <button id="ty-kb-toggle" style="background:#7a2e1a; border:none; padding:0 18px; border-radius:6px; cursor:pointer; font-size:1.2rem;" title="Toggle Virtual Script Engine Pad" onclick="tyToggleKb()">⌨️</button>
+            <input type="text" id="ty-input" style="flex-grow:1; background:rgba(0,0,0,0.4); border:1px solid #7a2e1a; padding:14px; font-size:1.25rem; border-radius:6px; color:#ffffff;" autocomplete="off">
+            <button id="ty-kb-toggle" style="background:#7a2e1a; border:none; padding:0 18px; border-radius:6px; cursor:pointer; font-size:1.2rem;" title="Toggle Virtual Keyboard" onclick="tyToggleKb()">⌨️</button>
           </div>
 
           <div id="ty-feedback" style="font-size:1.2rem; font-weight:bold; margin-bottom:15px;"></div>
-          <div id="ty-reveal" style="display:none; background:rgba(200,145,30,0.12); border:1px solid rgba(200,145,30,0.25); padding:15px; border-radius:6px; margin-bottom:20px; font-weight:bold; color:#e8b84a;"></div>
+          <div id="ty-reveal" style="display:none; background:rgba(200,145,30,0.12); border:1px solid rgba(200,145,30,0.25); padding:15px; border-radius:6px; margin-bottom:20px; font-weight:bold; color:#e8b84a; font-size:1.4rem;"></div>
 
           <div style="display:flex; gap:12px;">
             <button id="ty-check" style="background:#7a2e1a; border:1px solid #b04828; padding:12px 28px; font-weight:bold; border-radius:6px; cursor:pointer;" onclick="tyCheck()">Submit Entry</button>
@@ -359,7 +432,6 @@
           </div>
         </div>
       </div>
-
       <div id="ty-setup" class="hidden-panel"></div>
     </section>
 
@@ -369,13 +441,13 @@
 
       <div style="background:rgba(16,9,4,0.85); padding:30px; border-radius:12px; border:1px solid rgba(200,145,30,0.25); margin-top:20px;">
         <h4 id="sn-label" class="gold-title" style="margin:0 0 15px 0; text-transform:uppercase; font-size:1.05rem; letter-spacing:1px;">--</h4>
-        <div id="sn-prompt" style="margin:20px 0; font-size:1.5rem; min-height:48px; word-break:break-word;">--</div>
-        <p id="sn-hint" style="color:rgba(255,255,255,0.5); font-style:italic; margin:0 0 25px 0;">--</p>
+        <div id="sn-prompt" style="margin:20px 0; font-size:2.2rem; min-height:48px; word-break:break-word;">--</div>
+        <p id="sn-hint" style="color:rgba(255,255,255,0.5); font-style:italic; margin:0 0 25px 0; font-size:1.1rem;">--</p>
 
-        <input type="text" id="sn-input" style="width:100%; box-sizing:border-box; background:rgba(0,0,0,0.4); border:1px solid #7a2e1a; padding:14px; font-size:1.1rem; border-radius:6px; margin-bottom:20px; color:#ffffff;" autocomplete="off">
+        <input type="text" id="sn-input" style="width:100%; box-sizing:border-box; background:rgba(0,0,0,0.4); border:1px solid #7a2e1a; padding:14px; font-size:1.25rem; border-radius:6px; margin-bottom:20px; color:#ffffff;" autocomplete="off">
         
         <div id="sn-feedback" style="font-size:1.2rem; font-weight:bold; margin-bottom:15px;"></div>
-        <div id="sn-reveal" style="display:none; background:rgba(200,145,30,0.12); border:1px solid rgba(200,145,30,0.25); padding:15px; border-radius:6px; margin-bottom:20px; font-weight:bold; color:#e8b84a;"></div>
+        <div id="sn-reveal" style="display:none; background:rgba(200,145,30,0.12); border:1px solid rgba(200,145,30,0.25); padding:15px; border-radius:6px; margin-bottom:20px; font-weight:bold; color:#e8b84a; font-size:1.4rem;"></div>
 
         <div style="display:flex; gap:12px;">
           <button id="sn-check" style="background:#7a2e1a; border:1px solid #b04828; padding:12px 28px; font-weight:bold; border-radius:6px; cursor:pointer;" onclick="snCheck()">Validate Alignment</button>
@@ -389,13 +461,13 @@
       <h2 class="gold-title">Phonetic Pronunciation Engine</h2>
 
       <div id="sp-compat-note" style="display:none; background:#7a2e1a; border:1px solid #b04828; padding:15px; border-radius:6px; margin-bottom:25px; font-size:0.95rem;">
-        ⚠️ Web Speech Recognition API is not supported on this browser architecture instance. For comprehensive audio analysis, please run the application via desktop versions of Google Chrome or Microsoft Edge.
+        ⚠️ Web Speech Recognition API is not supported on this browser context. Please use desktop versions of Google Chrome or Microsoft Edge.
       </div>
 
       <div style="background:rgba(16,9,4,0.85); padding:30px; border-radius:12px; border:1px solid rgba(200,145,30,0.25);">
         <h4 id="sp-direction-label" class="gold-title" style="margin:0 0 15px 0; font-size:1.05rem; text-transform:uppercase; letter-spacing:1px;">--</h4>
-        <div id="sp-prompt" style="margin:25px 0; min-height:65px; word-break:break-word;">--</div>
-        <p id="sp-expected" style="color:rgba(255,255,255,0.5); font-style:italic; margin:0 0 25px 0;">--</p>
+        <div id="sp-prompt" style="margin:25px 0; min-height:65px; word-break:break-word; font-size:2.4rem;">--</div>
+        <p id="sp-expected" style="color:rgba(255,255,255,0.5); font-style:italic; margin:0 0 25px 0; font-size:1.1rem;">--</p>
 
         <div style="display:flex; gap:12px; margin-bottom:25px; flex-wrap:wrap;">
           <button id="sp-listen-btn" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); padding:12px 22px; border-radius:6px; font-weight:500; cursor:pointer;" onclick="spListen()">🔊 Benchmark Playback</button>
@@ -403,8 +475,8 @@
         </div>
 
         <div style="margin-bottom:25px; background:rgba(0,0,0,0.3); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.08);">
-          <label style="font-size:0.75rem; text-transform:uppercase; color:#c8911e; display:block; margin-bottom:6px; font-weight:bold; letter-spacing:1px;">Live Evaluation Transcript pipeline stream:</label>
-          <div id="sp-transcript" style="min-height:35px; font-size:1.1rem; font-weight:500; color:#ffffff;"></div>
+          <label style="font-size:0.75rem; text-transform:uppercase; color:#c8911e; display:block; margin-bottom:6px; font-weight:bold; letter-spacing:1px;">Live Evaluation Transcript Pipeline:</label>
+          <div id="sp-transcript" style="min-height:35px; font-size:1.15rem; font-weight:500; color:#ffffff;"></div>
         </div>
 
         <div id="sp-score-wrap" style="display:none; background:rgba(0,0,0,0.25); padding:18px; border-radius:6px; margin-bottom:25px; border:1px solid rgba(255,255,255,0.05);">
@@ -429,7 +501,6 @@
       <h2 class="gold-title">Present Progressive Paradigm Matrix</h2>
       
       <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:25px; margin-top:20px; align-items:start;">
-        
         <div style="background:rgba(16,9,4,0.85); padding:25px; border-radius:12px; border:1px solid rgba(200,145,30,0.25);">
           <div style="margin-bottom:15px;">
             <div style="background:rgba(255,255,255,0.1); height:5px; overflow:hidden; border-radius:2px; margin-bottom:5px;"><div id="cj-bar" style="background:#c8911e; width:0%; height:100%;"></div></div>
@@ -437,16 +508,16 @@
           </div>
 
           <div style="margin:20px 0; background:rgba(0,0,0,0.2); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.05);">
-            <h3 style="margin:0 0 8px 0; font-size:1.25rem; font-weight:normal;">Subject Target: <span id="cj-pronoun" class="gold-title" style="font-weight:700;">--</span> (<span id="cj-pron-amh" class="amh-text" style="color:#e8b84a;">--</span>)</h3>
-            <h4 style="margin:0 0 8px 0; font-weight:normal; font-size:1.15rem;">Root Base: <span id="cj-verb-amh" class="amh-text" style="color:#e8b84a;">--</span> / <span id="cj-verb-tr" style="font-style:italic;">--</span></h4>
+            <h3 style="margin:0 0 8px 0; font-size:1.25rem; font-weight:normal;">Subject Target: <span id="cj-pronoun" class="gold-title" style="font-weight:700;">--</span> (<span id="cj-pron-amh" class="amh-text" style="color:#e8b84a; font-size:1.4rem;">--</span>)</h3>
+            <h4 style="margin:0 0 8px 0; font-weight:normal; font-size:1.15rem;">Root Base: <span id="cj-verb-amh" class="amh-text" style="color:#e8b84a; font-size:1.5rem;">--</span> / <span id="cj-verb-tr" style="font-style:italic;">--</span></h4>
             <p style="color:rgba(255,255,255,0.6); font-size:0.95rem; margin:0 0 10px 0;">Meaning: "<span id="cj-verb-en">--</span>"</p>
-            <div id="cj-stem-hint" style="font-size:0.85rem; color:#e8b84a; background:rgba(122,46,26,0.25); border:1px solid rgba(176,72,40,0.3); padding:8px; border-radius:4px; word-break:break-word;">--</div>
+            <div id="cj-stem-hint" style="font-size:0.9rem; color:#e8b84a; background:rgba(122,46,26,0.25); border:1px solid rgba(176,72,40,0.3); padding:8px; border-radius:4px; word-break:break-word;">--</div>
           </div>
 
-          <input type="text" id="cj-input" style="width:100%; box-sizing:border-box; background:rgba(0,0,0,0.4); border:1px solid #7a2e1a; padding:12px; font-size:1.1rem; border-radius:6px; margin-bottom:15px; color:#ffffff;" placeholder="Provide complete conjugated progressive string..." autocomplete="off">
+          <input type="text" id="cj-input" style="width:100%; box-sizing:border-box; background:rgba(0,0,0,0.4); border:1px solid #7a2e1a; padding:12px; font-size:1.2rem; border-radius:6px; margin-bottom:15px; color:#ffffff;" placeholder="Provide complete conjugated progressive string..." autocomplete="off">
 
           <div id="cj-feedback" style="font-size:1.1rem; font-weight:bold; margin-bottom:10px;"></div>
-          <div id="cj-reveal" style="display:none; background:rgba(200,145,30,0.12); border:1px solid rgba(200,145,30,0.25); padding:12px; border-radius:6px; margin-bottom:15px; font-weight:bold; color:#e8b84a;"></div>
+          <div id="cj-reveal" style="display:none; background:rgba(200,145,30,0.12); border:1px solid rgba(200,145,30,0.25); padding:12px; border-radius:6px; margin-bottom:20px; font-weight:bold; color:#e8b84a; font-size:1.3rem;"></div>
 
           <div style="display:flex; gap:12px;">
             <button id="cj-check" style="background:#7a2e1a; border:1px solid #b04828; padding:10px 22px; font-weight:bold; border-radius:6px; cursor:pointer;" onclick="cjCheck()">Verify Suffix Morph</button>
@@ -456,10 +527,8 @@
 
         <div style="background:rgba(9,5,3,0.85); padding:20px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); box-sizing:border-box;">
           <h4 class="gold-title" style="margin:0 0 10px 0; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px; font-size:1.1rem;">Suffix Matrix Blueprint Map</h4>
-          <div id="cj-ref" style="display:flex; flex-direction:column; gap:8px; font-size:0.9rem; max-height:280px; overflow-y:auto;">
-            </div>
+          <div id="cj-ref" style="display:flex; flex-direction:column; gap:8px; font-size:0.95rem; max-height:280px; overflow-y:auto;"></div>
         </div>
-
       </div>
     </section>
 
@@ -467,7 +536,7 @@
       <div style="background:rgba(16,9,4,0.95); max-width:480px; margin:40px auto; padding:40px 25px; border-radius:16px; text-align:center; border:2px solid #c8911e; box-sizing:border-box;">
         <div style="font-size:3.5rem; margin-bottom:15px;">🏆</div>
         <h2 id="suc-msg" class="gold-title" style="font-size:1.8rem; margin:0 0 10px 0;">Module Complete!</h2>
-        <p style="color:rgba(255,255,255,0.75); margin:0 0 30px 0; font-size:1rem;">Your execution matched validation parameters successfully.</p>
+        <p style="color:rgba(255,255,255,0.75); margin:0 0 30px 0; font-size:1rem;">Your metrics successfully passed the core validation sequences.</p>
         <div style="display:flex; flex-direction:column; gap:12px; max-width:260px; margin:0 auto; width:100%;">
           <button id="suc-again" class="gold-enter-btn" style="font-size:1.1rem; padding:12px; border-radius:8px;">Replay Activity Module</button>
           <button id="suc-home" style="background:transparent; border:1px solid rgba(255,255,255,0.25); padding:10px; border-radius:6px; cursor:pointer;" onclick="navTo('selection')">Return to Dashboard Hub</button>
@@ -485,10 +554,89 @@
   <script src="app.js"></script>
 
   <script>
+    // Handles specific directional syncing loops across hidden system nodes
+    function handleDirectionSync(mode, activeBtn) {
+      document.querySelectorAll('#config-direction-row .dir-btn, .tag.dir-btn').forEach(btn => btn.classList.remove('on'));
+      if(activeBtn) activeBtn.classList.add('on');
+      
+      // Mirror the values onto internal hooks inside app.js 
+      const appHooks = {
+        'ae': ['fc-dir-ae', 'ty-dir-ae'],
+        'ea': ['fc-dir-ea', 'ty-dir-ea'],
+        'mix': ['fc-dir-mix', 'ty-dir-mix']
+      };
+      
+      if(appHooks[mode]) {
+        appHooks[mode].forEach(id => {
+          const target = document.getElementById(id);
+          if(target) target.click();
+        });
+      }
+    }
+
+    // Controls checking and unchecking tree levels for Nouns and Verbs
+    function toggleTreeBranch(posType, isChecked) {
+      document.querySelectorAll(`.twig-control-hook[data-pos="${posType}"]`).forEach(checkbox => {
+        checkbox.checked = isChecked;
+      });
+      syncAppFilters();
+    }
+
+    // Handles miscellaneous branches (Adjectives, Interjections, Pronouns, etc.)
+    function toggleOtherBranches(isChecked) {
+      document.querySelectorAll('.twig-control-hook').forEach(checkbox => {
+        const pos = checkbox.getAttribute('data-pos');
+        if (pos !== 'Noun' && pos !== 'Verb') {
+          checkbox.checked = isChecked;
+        }
+      });
+      syncAppFilters();
+    }
+
+    // Feeds selections into the appState matrix filter blocks inside app.js
+    function syncAppFilters() {
+      if (typeof appState === 'undefined') return;
+
+      // Clear out selection arrays safely
+      appState.fc.pos = []; appState.fc.cat = [];
+      appState.ty.pos = []; appState.ty.cat = [];
+      appState.sn.pos = []; appState.sn.cat = [];
+
+      let anyChecked = false;
+
+      document.querySelectorAll('.twig-control-hook:checked').forEach(checkedBox => {
+        anyChecked = true;
+        const pos = checkedBox.getAttribute('data-pos');
+        const cat = checkedBox.getAttribute('data-cat');
+
+        if(!appState.fc.pos.includes(pos)) {
+          appState.fc.pos.push(pos);
+          appState.ty.pos.push(pos);
+          appState.sn.pos.push(pos);
+        }
+        if(!appState.fc.cat.includes(cat)) {
+          appState.fc.cat.push(cat);
+          appState.ty.cat.push(cat);
+          appState.sn.cat.push(cat);
+        }
+      });
+
+      // Catch-all safety: if nothing is checked, fallback gracefully to prevent crashes
+      if (!anyChecked) {
+        appState.fc.pos = ['all']; appState.fc.cat = ['all'];
+        appState.ty.pos = ['all']; appState.ty.cat = ['all'];
+        appState.sn.pos = ['all']; appState.sn.cat = ['all'];
+      }
+    }
+
+    // Initializer routine execution on boot loop instances
     document.addEventListener("DOMContentLoaded", () => {
       if (typeof Keyboard !== "undefined" && typeof Keyboard.build === "function") {
-        Keyboard.build(); /* Build the keyboard DOM elements immediately */
+        Keyboard.build(); /* Build virtual keyboard elements instantly */
       }
+      setTimeout(() => {
+        syncAppFilters(); // Initialize vocabulary trees correctly
+      }, 300);
     });
   </script>
 </body>
