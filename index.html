@@ -1,530 +1,718 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🇪🇹 አማርኛን መማሪያ</title>
-  
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="description" content="Learn Amharic — alphabet, vocabulary, sentences, speaking, and verb conjugation.">
+<title>🇪🇹 - አማርኛን</title>
 
-  <style>
-    /* ═════════════════════════════════════════════════════════════════
-       FONT ARSENAL: AGGRESSIVE EXCLUSIVE ISOLATION 
-       ═════════════════════════════════════════════════════════════════ */
-    /* Force Google Sans exclusively for English text blocks */
-    body, button, input, select, textarea, .eng-text, .kb-title, .progress-text, label, span:not(.amh-text) {
-      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
-    }
-    
-    /* Absolute global priority injection for Abyssinica SIL on ALL Ge'ez characters */
-    .amh-text, 
-    .fidel-char,
-    .fidel-cell,
-    .tile-amh,
-    #quiz-char-display,
-    #cj-pron-amh,
-    #cj-verb-amh,
-    #fc-front-main,
-    #fc-back-main,
-    #ty-prompt,
-    #sn-prompt,
-    #sp-prompt,
-    .kb-key,
-    [data-lang="am"] {
-      font-family: 'Abyssinica SIL', 'Ge'ez', serif !important;
-    }
-    
-    .gold-title {
-      color: #c8911e !important;
-      font-weight: 700;
-    }
+<!-- ════════════════════════════════════════════════════════════════
+     FONTS
+     Abyssinica SIL → all Amharic script (per --font-amh in style.css)
+     DM Sans        → English UI text (Google Sans is not on Google
+                       Fonts, so DM Sans is the closest free match —
+                       this is layered in below without editing style.css)
+════════════════════════════════════════════════════════════════ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Abyssinica+SIL&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
 
-    /* ═════════════════════════════════════════════════════════════════
-       DYNAMIC BACKGROUND STACK (Rebuilt for transparent alpha layering)
-       ═════════════════════════════════════════════════════════════════ */
-    .bg-layer {
-      position: fixed;
-      top: 0; 
-      left: 0; 
-      width: 100vw; 
-      height: 100vh;
-      background-size: cover;
-      background-position: center;
-      z-index: -10; /* Sent completely behind interface content cards */
-      transition: opacity 0.8s ease-in-out;
-    }
-    #bg-a { opacity: 1; }
-    #bg-b { opacity: 0; }
-    
-    /* The Translucent Dark Contrast Hood Overlay */
-    #app-container {
-      min-height: 100vh;
-      width: 100%;
-      position: relative;
-      z-index: 1;
-      box-sizing: border-box;
-      /* Pure solid black base blended with high-opacity mask layer to darken background images */
-      background: linear-gradient(0deg, rgba(9, 5, 3, 0.88), rgba(9, 5, 3, 0.88)), #000000;
-    }
+<!-- ════════════════════════════════════════════════════════════════
+     BASE STYLESHEET — unmodified, exactly as provided
+════════════════════════════════════════════════════════════════ -->
+<link rel="stylesheet" href="css/style.css">
 
-    /* Fallback safety wire in case background links inside your data arrays fail to fetch */
-    body {
-      background-color: #090503 !important;
-    }
+<!-- ════════════════════════════════════════════════════════════════
+     Small additive overrides only — does not edit css/style.css.
+     Loaded after it, so the cascade lets these variables win.
+════════════════════════════════════════════════════════════════ -->
+<style>
+  :root {
+    /* style.css requests 'Google Sans', which isn't a font that can be
+       loaded from Google Fonts — DM Sans is layered in as the visual match */
+    --font-head: 'DM Sans', 'Google Sans', sans-serif;
+    --font-body: 'DM Sans', 'Google Sans', sans-serif;
+  }
 
-    /* ═════════════════════════════════════════════════════════════════
-       INTERACTIVE HIERARCHICAL TREE STRUCTURAL MATRIX
-       ═════════════════════════════════════════════════════════════════ */
-    .custom-tree-card {
-      background: rgba(16, 9, 4, 0.75);
-      border: 1px solid rgba(200, 145, 30, 0.25);
-      border-radius: 12px;
-      padding: 25px;
-      margin-bottom: 25px;
-    }
-    .tree-branch-group {
-      margin-bottom: 25px;
-    }
-    .tree-branch-header {
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: #c8911e;
-      margin-bottom: 12px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .tree-twig-nested-list {
-      list-style: none;
-      padding-left: 20px;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .tree-twig-item {
-      font-size: 1.15rem;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+  /* Keep long-form content from over-stretching on very wide monitors */
+  .content-rail { max-width: 920px; margin: 0 auto; }
 
-    /* ═════════════════════════════════════════════════════════════════
-       CORE APPLICATION MODULE VIEWS
-       ═════════════════════════════════════════════════════════════════ */
-    .section {
-      display: none;
-      width: 100%;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 40px 24px;
-      box-sizing: border-box;
-    }
-    .section.active {
-      display: block !important;
-    }
-    .gateway-hero {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      min-height: 85vh;
-    }
-    .gateway-title {
-      font-size: clamp(2.8rem, 7vw, 5rem);
-      margin: 0 0 12px 0;
-    }
-    .gateway-subtitle {
-      font-size: clamp(1.2rem, 3vw, 2rem);
-      margin: 0 0 45px 0;
-    }
-    .gold-enter-btn {
-      background: #c8911e;
-      color: #090503 !important;
-      font-weight: 700;
-      font-size: 1.3rem;
-      padding: 16px 44px;
-      border: 2px solid #e8b84a;
-      border-radius: 30px;
-      cursor: pointer;
-      box-shadow: 0 5px 20px rgba(200, 145, 30, 0.35);
-      transition: transform 0.2s, background-color 0.2s;
-    }
-    .gold-enter-btn:hover {
-      background: #e8b84a;
-      transform: translateY(-2px);
-    }
-    .study-mode-bar {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
-    }
-    .mode-launch-btn {
-      background: #7a2e1a;
-      border: 1px solid #b04828;
-      padding: 16px 12px;
-      font-size: 1.05rem;
-      font-weight: 500;
-      border-radius: 8px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s;
-    }
-    .mode-launch-btn:hover {
-      background: #b04828;
-      transform: translateY(-2px);
-    }
-    .back-btn-setup {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.2);
-      padding: 10px 18px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 500;
-      margin-bottom: 20px;
-      display: inline-block;
-    }
-    .back-btn-setup:hover {
-      background: rgba(255,255,255,0.15);
-    }
-    .hidden-panel { display: none !important; }
-  </style>
+  /* ── Welcome gate (title screen shown before the app) ───────────── */
+  #welcome-gate {
+    position: fixed; inset: 0; z-index: 500;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px;
+    background: rgba(5,3,1,0.55);
+    backdrop-filter: blur(2px);
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+  }
+  #welcome-gate.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+  .gate-eth {
+    font-family: var(--font-amh);
+    font-size: clamp(40px, 9vw, 78px);
+    color: var(--gold-l);
+    line-height: 1.25;
+    text-shadow: 0 0 50px rgba(200,145,30,0.55);
+  }
+  .gate-sub {
+    font-family: var(--font-head);
+    font-size: clamp(14px, 2.6vw, 19px);
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--ivory);
+    margin-top: 10px;
+  }
+  .gate-rule {
+    width: 180px; height: 1px; margin: 20px auto;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .gate-tag {
+    font-size: 15px; font-style: italic; color: var(--ivory-dim);
+    max-width: 440px; line-height: 1.7; margin-bottom: 30px;
+  }
+  .gate-enter-btn {
+    background: linear-gradient(135deg, var(--gold-l), var(--gold));
+    border: none; color: #1a0f04;
+    font-family: var(--font-head); font-weight: 600;
+    font-size: 17px; letter-spacing: 1px;
+    padding: 15px 42px; border-radius: 40px;
+    cursor: pointer; transition: all 0.28s;
+    box-shadow: 0 6px 26px rgba(200,145,30,0.35);
+  }
+  .gate-enter-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(200,145,30,0.5); }
+  .gate-flag { font-size: 13px; color: var(--ivory-dim); margin-top: 22px; letter-spacing: 1px; }
+
+  /* ── Back-to-Home pill, reused across mode sections ─────────────── */
+  .back-home-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+    color: var(--ivory-dim); padding: 8px 16px; border-radius: 20px;
+    font-size: 13px; cursor: pointer; transition: all 0.2s; margin-bottom: 18px;
+  }
+  .back-home-btn:hover { border-color: var(--gold); color: var(--gold-l); }
+
+  /* ── Home hub: mode buttons made unmistakably primary ───────────── */
+  .home-eyebrow {
+    font-size: 12px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gold); text-align: center; margin-bottom: 6px;
+  }
+
+  /* ── Direction + mode-select rows wrap cleanly on small screens ──── */
+  .dir-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+
+  @media (max-width: 480px) {
+    .gate-enter-btn { padding: 13px 32px; font-size: 15px; }
+    .dir-row .dir-btn { flex: 1 1 auto; text-align: center; }
+  }
+</style>
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇪🇹</text></svg>">
 </head>
 <body>
 
-  <div id="bg-a" class="bg-layer"></div>
-  <div id="bg-b" class="bg-layer"></div>
+<!-- ════════════════════════════════════════════════════════════════
+     WELCOME GATE — title page shown first
+════════════════════════════════════════════════════════════════ -->
+<div id="welcome-gate">
+  <div class="gate-eth">አማርኛን መምራት</div>
+  <div class="gate-sub">Mastering Amharic</div>
+  <div class="gate-rule"></div>
+  <p class="gate-tag">
+    Ethiopia's ancient tongue — spoken by over 57 million people.
+    Learn the Fidel alphabet, build vocabulary, form sentences, and practice speaking aloud.
+  </p>
+  <button class="gate-enter-btn" id="gate-enter-btn">Enter the Site →</button>
+  <div class="gate-flag">🇪🇹 Full audio &amp; speech features work best in Chrome or Edge</div>
+</div>
 
-  <div id="app-container">
+<!-- ════════════════════════════════════════════════════════════════
+     BACKGROUND CROSSFADE LAYERS
+════════════════════════════════════════════════════════════════ -->
+<div id="bg-a"></div>
+<div id="bg-b"></div>
+<div id="bg-overlay"></div>
 
-    <section id="sec-home" class="section active">
-      <div class="gateway-hero">
-        <h1 class="gateway-title gold-title">አማርኛን መምራት</h1>
-        <p class="gateway-subtitle">Mastering Amharic</p>
-        <button class="gold-enter-btn" onclick="navTo('selection')">Enter the site</button>
+<!-- ════════════════════════════════════════════════════════════════
+     APP LAYOUT
+════════════════════════════════════════════════════════════════ -->
+<div id="layout">
+
+  <!-- ───────────────────────── SIDEBAR (desktop) ───────────────────────── -->
+  <nav class="sidebar" aria-label="Main navigation">
+
+    <div class="sidebar-brand" onclick="navTo('home')" role="button" tabindex="0"
+         onkeydown="if(event.key==='Enter')navTo('home')" aria-label="Go to home">
+      <span class="brand-eth">ቋንቋ</span>
+      <span class="brand-en">Mastering Amharic</span>
+    </div>
+
+    <div class="sidebar-nav">
+      <a class="nav-item active" data-target="home" onclick="navTo('home')" tabindex="0" role="menuitem">
+        <span class="nav-icon">🏠</span><span class="nav-label">Home</span>
+      </a>
+      <a class="nav-item" data-target="fidel" onclick="navTo('fidel')" tabindex="0" role="menuitem">
+        <span class="nav-icon" style="font-family:var(--font-amh)">ሀ</span><span class="nav-label">Fidel</span>
+      </a>
+      <a class="nav-item" data-target="flashcards" onclick="navTo('flashcards')" tabindex="0" role="menuitem">
+        <span class="nav-icon">🃏</span><span class="nav-label">Flashcards</span>
+      </a>
+      <a class="nav-item" data-target="matching" onclick="navTo('matching')" tabindex="0" role="menuitem">
+        <span class="nav-icon">🔗</span><span class="nav-label">Matching</span>
+      </a>
+      <a class="nav-item" data-target="typing" onclick="navTo('typing')" tabindex="0" role="menuitem">
+        <span class="nav-icon">✍️</span><span class="nav-label">Writing</span>
+      </a>
+      <a class="nav-item" data-target="sentences" onclick="navTo('sentences')" tabindex="0" role="menuitem">
+        <span class="nav-icon">💬</span><span class="nav-label">Sentences</span>
+      </a>
+      <a class="nav-item" data-target="speaking" onclick="navTo('speaking')" tabindex="0" role="menuitem">
+        <span class="nav-icon">🎙️</span><span class="nav-label">Speaking</span>
+      </a>
+      <a class="nav-item" data-target="conjugation" onclick="navTo('conjugation')" tabindex="0" role="menuitem">
+        <span class="nav-icon">🔤</span><span class="nav-label">Conjugation</span>
+      </a>
+    </div>
+
+    <div class="sidebar-footer">
+      <div>🇪🇹 Ethiopia's ancient tongue</div>
+      <div style="margin-top:6px;font-size:10px;line-height:1.6">
+        Audio &amp; speech features need<br><strong>Chrome</strong> or <strong>Edge</strong>.
       </div>
-    </section>
+    </div>
+  </nav>
 
-    <section id="sec-selection" class="section">
-      <h2 class="gold-title" style="font-size: 2rem; margin-bottom: 25px;">Configuration Dashboard</h2>
-      
-      <div class="custom-tree-card">
-        <div class="gold-title" style="font-size:1.35rem; margin-bottom:15px; border-bottom:1px solid rgba(200,145,30,0.2); padding-bottom:8px;">1. Choose Translation Challenge Track</div>
-        
-        <div id="fc-dir" style="margin-bottom: 12px;"></div>
-        
-        <div class="hidden-panel">
-          <div id="ty-dir-row"></div>
-          <div id="sn-dir-row"></div>
-          <div id="sp-dir-row"></div>
+  <!-- ───────────────────────── MAIN CONTENT ───────────────────────── -->
+  <main class="main">
+
+    <!-- ═══════════════════════ ① HOME / HUB ═══════════════════════ -->
+    <section id="sec-home" class="section active" aria-label="Home">
+      <div class="content-rail">
+
+        <div class="home-hero">
+          <span class="home-eth">አማርኛን መምራት</span>
+          <span class="home-sub">Mastering Amharic</span>
+          <div class="home-rule"></div>
+          <p class="home-tagline">Choose what you'd like to study</p>
         </div>
+
+        <div class="home-eyebrow">Study Modes</div>
+        <div class="home-grid">
+
+          <div class="home-card" onclick="navTo('fidel')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')navTo('fidel')">
+            <div class="home-card-icon" style="font-family:var(--font-amh)">ሀ</div>
+            <div class="home-card-title">Fidel Alphabet</div>
+            <div class="home-card-desc">Learn all 31 consonant families across 7 vowel orders, with audio and a quiz</div>
+          </div>
+
+          <div class="home-card" onclick="navTo('flashcards')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')navTo('flashcards')">
+            <div class="home-card-icon">🃏</div>
+            <div class="home-card-title">Flashcards</div>
+            <div class="home-card-desc">Flip through vocabulary by part of speech and category, with spoken audio</div>
+          </div>
+
+          <div class="home-card" onclick="navTo('matching')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')navTo('matching')">
+            <div class="home-card-icon">🔗</div>
+            <div class="home-card-title">Matching</div>
+            <div class="home-card-desc">Match Amharic words to their English meanings against the clock</div>
+          </div>
+
+          <div class="home-card" onclick="navTo('typing')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')navTo('typing')">
+            <div class="home-card-icon">✍️</div>
+            <div class="home-card-title">Writing</div>
+            <div class="home-card-desc">Type translations using English or the on-screen Amharic keyboard</div>
+          </div>
+
+          <div class="home-card" onclick="navTo('sentences')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')navTo('sentences')">
+            <div class="home-card-icon">💬</div>
+            <div class="home-card-title">Sentences</div>
+            <div class="home-card-desc">Translate freshly generated sentences using the present progressive tense</div>
+          </div>
+
+          <div class="home-card" onclick="navTo('speaking')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')navTo('speaking')">
+            <div class="home-card-icon">🎙️</div>
+            <div class="home-card-title">Speaking</div>
+            <div class="home-card-desc">Hear or read a word, then speak the translation aloud for a live score</div>
+          </div>
+
+        </div>
+
+        <!-- Conjugation gets its own callout since it isn't filtered by vocabulary -->
+        <div class="home-card" onclick="navTo('conjugation')" role="button" tabindex="0"
+             onkeydown="if(event.key==='Enter')navTo('conjugation')"
+             style="max-width:460px;margin:22px auto 0">
+          <div class="home-card-icon">🔤</div>
+          <div class="home-card-title">Verb Conjugation</div>
+          <div class="home-card-desc">Master the present progressive form across all 8 subject pronouns</div>
+        </div>
+
+        <div style="margin-top:32px;padding:18px 22px;background:rgba(200,145,30,0.07);border:1px solid rgba(200,145,30,0.22);border-radius:6px;max-width:680px;margin-left:auto;margin-right:auto">
+          <p style="font-size:13px;color:var(--ivory-dim);line-height:1.85;text-align:center">
+            <strong style="color:var(--gold-l)">New here?</strong>
+            Start with the <span onclick="navTo('fidel')" style="color:var(--gold);cursor:pointer;text-decoration:underline">Fidel Alphabet</span>,
+            then build vocabulary with <span onclick="navTo('flashcards')" style="color:var(--gold);cursor:pointer;text-decoration:underline">Flashcards</span>.
+            Inside Flashcards, Matching, and Writing you can narrow practice by part of speech and category,
+            and choose a translation direction before you begin.
+          </p>
+        </div>
+
       </div>
+    </section><!-- /#sec-home -->
 
-      <div class="custom-tree-card">
-        <div class="gold-title" style="font-size:1.35rem; margin-bottom:15px; border-bottom:1px solid rgba(200,145,30,0.2); padding-bottom:8px;">2. Select Vocabulary Groups &amp; Categories Hierarchy</div>
-        
-        <div class="tree-branch-group">
-          <div class="tree-branch-header">Noun</div>
-          <ul class="tree-twig-nested-list">
-            <li class="tree-twig-item"><span>•</span> Body</li>
-            <li class="tree-twig-item"><span>•</span> Numbers</li>
-            <li class="tree-twig-item"><span>•</span> Family &amp; Relationships</li>
-            <li class="tree-twig-item"><span>•</span> Food &amp; Drink</li>
-            <li class="tree-twig-item"><span>•</span> Places, Nature &amp; Space</li>
-            <li class="tree-twig-item"><span>•</span> Time &amp; Calendar</li>
-            <li class="tree-twig-item"><span>•</span> Objects &amp; Materials</li>
-          </ul>
+
+    <!-- ═══════════════════════ ② FIDEL ═══════════════════════ -->
+    <section id="sec-fidel" class="section" aria-label="Fidel alphabet">
+      <div class="content-rail">
+
+        <button class="back-home-btn" onclick="navTo('home')">← All Modes</button>
+
+        <div class="section-header">
+          <h2>Fidel — The Ethiopic Alphabet</h2>
+          <p>
+            Amharic is written in the Ge'ez script. Each character is a syllable — a consonant joined
+            to one of 7 vowels — giving 31 families × 7 orders. Click any character to hear it and see its romanization.
+          </p>
         </div>
 
-        <div class="tree-branch-group">
-          <div class="tree-branch-header">Verb</div>
-          <ul class="tree-twig-nested-list">
-            <li class="tree-twig-item"><span>•</span> Regular (Action Verbs)</li>
-            <li class="tree-twig-item"><span>•</span> Irregular / Grammatical Auxiliary</li>
-          </ul>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px">
+          <span style="font-size:12px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-right:4px;align-self:center">Vowels:</span>
+          <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">① ä = uh</span>
+          <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">② u = oo</span>
+          <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">③ i = ee</span>
+          <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">④ a = ah</span>
+          <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">⑤ ē = ay</span>
+          <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">⑥ ɨ = ih</span>
+          <span style="font-size:12px;background:rgba(200,145,30,0.1);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ivory-dim)">⑦ o = oh</span>
         </div>
 
-        <div class="tree-branch-group">
-          <div class="tree-branch-header">Other Categories</div>
-          <ul class="tree-twig-nested-list">
-            <li class="tree-twig-item"><span>•</span> Adjectives &amp; Colors</li>
-            <li class="tree-twig-item"><span>•</span> Pronouns Matrix</li>
-            <li class="tree-twig-item"><span>•</span> Greetings &amp; Goodbyes</li>
-            <li class="tree-twig-item"><span>•</span> Prepositions &amp; Conjunctions</li>
-          </ul>
+        <div class="fidel-mode-btns">
+          <button id="fidel-browse" class="mode-tab active" onclick="fidelMode('browse')">📖 Browse Chart</button>
+          <button id="fidel-quiz-btn" class="mode-tab" onclick="fidelMode('quiz')">📝 Quiz Me</button>
         </div>
 
-        <div id="fc-filter" style="margin-top:20px; border-top:1px dashed rgba(255,255,255,0.15); padding-top:15px;"></div>
+        <div id="fidel-chart-wrap">
+          <div id="fidel-chart"></div>
 
-        <div class="hidden-panel">
-          <div id="mt-filter"></div>
-          <div id="ty-filter"></div>
-          <div id="sn-filter"></div>
-        </div>
-      </div>
-
-      <div class="custom-tree-card">
-        <div class="gold-title" style="font-size:1.35rem; margin-bottom:18px; border-bottom:1px solid rgba(200,145,30,0.2); padding-bottom:8px;">3. Launch Target System Core Engine</div>
-        <div class="study-mode-bar">
-          <button class="mode-launch-btn" onclick="navTo('fidel')">𓏟 Fidel Chart</button>
-          <button class="mode-launch-btn" onclick="fcStart(); navTo('flashcards');">🗂️ Flashcards</button>
-          <button class="mode-launch-btn" onclick="mtStart(); navTo('matching')">🧩 Matching</button>
-          <button class="mode-launch-btn" onclick="tyStart(); navTo('typing')">⌨️ Writing</button>
-          <button class="mode-launch-btn" onclick="navTo('sentences')">🌿 Sentences</button>
-          <button class="mode-launch-btn" onclick="navTo('speaking')">🎙️ Speaking</button>
-          <button class="mode-launch-btn" style="background:#5e3a07; border-color:#c8911e;" onclick="navTo('conjugation')">⚙️ Conjugation</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="sec-fidel" class="section">
-      <button class="back-btn-setup" onclick="navTo('selection')">← Back to Dashboard</button>
-      
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:15px;">
-        <h2 class="gold-title" style="margin:0;">Ge'ez Alphabet (Fidel) Matrix</h2>
-        <div style="display:flex; gap:8px;">
-          <button id="fidel-browse" class="tag on" onclick="fidelMode('browse')">Browse Table</button>
-          <button id="fidel-quiz-btn" class="tag" onclick="fidelMode('quiz')">Interactive Quiz</button>
-        </div>
-      </div>
-
-      <div id="fidel-chart-wrap">
-        <div id="fidel-chart" style="overflow-x:auto; padding:10px; background:rgba(0,0,0,0.4); border-radius:8px;"></div>
-        <div id="fidel-info-panel" style="margin-top:20px; padding:20px; background:rgba(200,145,30,0.12); border:1px solid rgba(200,145,30,0.25); border-radius:8px;">
-          <div style="display:flex; gap:25px; align-items:center;">
-            <div id="fidel-info-char" class="large-char amh-text" style="font-size:3.5rem; color:#e8b84a; line-height:1;">--</div>
-            <div>
-              <h3 id="fidel-info-rom" class="gold-title" style="margin:0 0 5px 0; font-size:1.4rem;">--</h3>
-              <p id="fidel-info-row" style="margin:0; color:rgba(255,255,255,0.75);">Click any cell row matrix layout above to read phonetic markers.</p>
+          <div id="fidel-info-panel" class="fidel-info-panel">
+            <div id="fidel-info-char" class="fidel-info-char">ሀ</div>
+            <div class="fidel-info-det">
+              <div id="fidel-info-rom" class="fidel-info-rom">he</div>
+              <div id="fidel-info-row" class="fidel-info-row">H family · 1st order</div>
+              <button class="btn-ghost" style="margin-top:10px;font-size:13px;padding:7px 16px"
+                onclick="Audio.speakText(document.getElementById('fidel-info-char').textContent,'am-ET')">🔊 Hear it</button>
             </div>
           </div>
         </div>
-      </div>
 
-      <div id="fidel-quiz-wrap" style="display:none; flex-direction:column; gap:20px;">
-        <div style="background:rgba(16,9,4,0.85); border:1px solid rgba(200,145,30,0.2); padding:35px; border-radius:12px; text-align:center; max-width:500px; margin:0 auto; width:100%; box-sizing:border-box;">
-          <div id="fidel-quiz-score" style="font-size:1.1rem; font-weight:bold; margin-bottom:15px; letter-spacing:1px;">Score: 0 / 0</div>
-          <div id="quiz-char-display" class="amh-text" style="font-size:5.5rem; margin:20px 0; color:#e8b84a; line-height:1;">?</div>
-          <div id="quiz-options" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; margin-top:25px;"></div>
-          <div id="quiz-feedback" style="font-size:1.2rem; font-weight:bold; margin-top:20px; min-height:24px;"></div>
+        <div id="fidel-quiz-wrap">
+          <div id="fidel-quiz-score" class="quiz-score">Score: 0 / 0</div>
+          <p style="color:var(--ivory-dim);font-size:14px;margin-bottom:4px">Select the correct romanization:</p>
+          <div id="quiz-char-display" class="quiz-char-display">ሀ</div>
+          <div id="quiz-options" class="quiz-options"></div>
+          <div id="quiz-feedback" class="quiz-feedback"></div>
         </div>
+
       </div>
-    </section>
+    </section><!-- /#sec-fidel -->
 
-    <section id="sec-flashcards" class="section">
-      <button class="back-btn-setup" onclick="navTo('selection')">← Back to Dashboard</button>
-      <h2 class="gold-title">Active Vocabulary Flashcards</h2>
 
-      <div id="fc-card-wrap" style="margin:30px auto; max-width:500px; width:100%;">
-        <div id="fc-card" class="flashcard" style="min-height:280px; cursor:pointer;" onclick="fcFlip()">
-          <div class="card-side card-front" style="padding:25px; text-align:center; display:flex; flex-direction:column; justify-content:space-between; box-sizing:border-box;">
-            <span id="fc-front-label" style="color:#c8911e; letter-spacing:2px; font-size:0.8rem; font-weight:bold;">FRONT</span>
-            <div id="fc-front-main" class="amh-text" style="margin:auto 0; word-break:break-word; font-size:3rem;">--</div>
-            <div id="fc-front-sub" style="color:rgba(255,255,255,0.6); min-height:20px; font-size:1.2rem;">--</div>
+    <!-- ═══════════════════════ ③ FLASHCARDS ═══════════════════════ -->
+    <section id="sec-flashcards" class="section" aria-label="Flashcards">
+      <div class="content-rail">
+
+        <button class="back-home-btn" onclick="navTo('home')">← All Modes</button>
+
+        <div class="section-header">
+          <h2>Flashcards</h2>
+          <p>Choose a Part of Speech and Category to narrow the deck, pick a direction, then press Start. Click the card to flip it, and 🔊 to hear it spoken.</p>
+        </div>
+
+        <div id="fc-filter" class="filter-panel"></div>
+
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap">
+          <div id="fc-dir" class="dir-row" style="margin:0">
+            <button class="dir-btn on" data-dir="ae" onclick="fcSetDir('ae')">Amharic → English</button>
+            <button class="dir-btn"    data-dir="ea" onclick="fcSetDir('ea')">English → Amharic</button>
+            <button class="dir-btn"    data-dir="mix" onclick="fcSetDir('mix')">🔀 Mix</button>
           </div>
-          <div class="card-side card-back" style="padding:25px; text-align:center; display:flex; flex-direction:column; justify-content:space-between; box-sizing:border-box;">
-            <span id="fc-back-label" style="color:#b04828; letter-spacing:2px; font-size:0.8rem; font-weight:bold;">BACK</span>
-            <div id="fc-back-main" style="margin:auto 0; word-break:break-word; font-size:3rem;">--</div>
-            <div id="fc-back-sub" style="color:rgba(255,255,255,0.6); min-height:20px; font-size:1.2rem;">--</div>
-          </div>
-        </div>
-      </div>
-
-      <div style="display:flex; justify-content:space-between; align-items:center; max-width:500px; margin:0 auto; gap:20px;">
-        <button id="fc-prev" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); padding:10px 18px; border-radius:6px; cursor:pointer;" onclick="fcPrev()">← Prev</button>
-        <div style="flex-grow:1; text-align:center;">
-          <div style="background:rgba(255,255,255,0.1); height:6px; border-radius:3px; margin-bottom:6px; overflow:hidden;">
-            <div id="fc-bar" style="width:0%; background:#c8911e; height:100%; transition:width 0.2s;"></div>
-          </div>
-          <span id="fc-prog" class="progress-text" style="font-size:0.85rem; color:rgba(255,255,255,0.6);">0 / 0</span>
-        </div>
-        <button id="fc-next" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); padding:10px 18px; border-radius:6px; cursor:pointer;" onclick="fcNext()">Next →</button>
-      </div>
-    </section>
-
-    <section id="sec-matching" class="section">
-      <button class="back-btn-setup" onclick="navTo('selection')">← Back to Dashboard</button>
-      
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; flex-wrap:wrap; gap:15px;">
-        <h2 class="gold-title" style="margin:0;">Semantic Matching Pairs</h2>
-        <div id="mt-score" style="font-size:1.1rem; background:rgba(0,0,0,0.4); padding:8px 16px; border-radius:6px; border:1px solid rgba(255,255,255,0.1);">Pairs: 0 / 0</div>
-      </div>
-
-      <div id="mt-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:15px; margin-bottom:30px;"></div>
-
-      <div style="text-align:center;">
-        <button id="mt-next" style="display:none; background:#c8911e; color:#090503; padding:15px 40px; font-weight:bold; font-size:1.1rem; border:none; border-radius:6px; cursor:pointer;" onclick="mtStart()">Play Next Round 🎉</button>
-      </div>
-    </section>
-
-    <section id="sec-typing" class="section">
-      <button class="back-btn-setup" onclick="tyBack(); navTo('selection');">← Back to Dashboard</button>
-      <h2 class="gold-title">Orthographical Writing Arena</h2>
-      
-      <div id="ty-section-main" style="margin-top:20px;">
-        <div style="margin-bottom:20px;">
-          <div style="background:rgba(255,255,255,0.1); height:6px; overflow:hidden; border-radius:3px; margin-bottom:6px;"><div id="ty-bar" style="background:#c8911e; width:0%; height:100%;"></div></div>
-          <span id="ty-prog" class="progress-text" style="font-size:0.85rem; color:rgba(255,255,255,0.6);">0 / 0</span>
+          <button class="btn-primary" onclick="fcStart()" style="padding:10px 22px;font-size:15px">Start →</button>
         </div>
 
-        <div style="background:rgba(16,9,4,0.85); padding:30px; border-radius:12px; border:1px solid rgba(200,145,30,0.25);">
-          <h4 id="ty-label" class="gold-title" style="margin:0 0 15px 0; font-size:1.05rem; text-transform:uppercase; letter-spacing:1px;">--</h4>
-          <div id="ty-prompt" style="margin:20px 0; min-height:55px; font-size:2.6rem; display:flex; align-items:center; gap:15px; flex-wrap:wrap;">--</div>
-          <p id="ty-sub" style="color:rgba(255,255,255,0.5); font-style:italic; margin:0 0 25px 0; font-size:1.1rem;">--</p>
-          
-          <div style="display:flex; gap:10px; margin-bottom:20px; max-width:600px; width:100%;">
-            <input type="text" id="ty-input" style="flex-grow:1; background:rgba(0,0,0,0.4); border:1px solid #7a2e1a; padding:14px; font-size:1.25rem; border-radius:6px; color:#ffffff;" autocomplete="off">
-            <button id="ty-kb-toggle" style="background:#7a2e1a; border:none; padding:0 18px; border-radius:6px; cursor:pointer; font-size:1.2rem;" title="Toggle Keyboard" onclick="tyToggleKb()">⌨️</button>
-          </div>
-
-          <div id="ty-feedback" style="font-size:1.2rem; font-weight:bold; margin-bottom:15px;"></div>
-          <div id="ty-reveal" style="display:none; background:rgba(200,145,30,0.12); border:1px solid rgba(200,145,30,0.25); padding:15px; border-radius:6px; margin-bottom:20px; font-weight:bold; color:#e8b84a; font-size:1.4rem;"></div>
-
-          <div style="display:flex; gap:12px;">
-            <button id="ty-check" style="background:#7a2e1a; border:1px solid #b04828; padding:12px 28px; font-weight:bold; border-radius:6px; cursor:pointer;" onclick="tyCheck()">Submit Entry</button>
-            <button id="ty-next" style="display:none; background:#c8911e; color:#090503; padding:12px 28px; font-weight:bold; border-radius:6px; cursor:pointer;" onclick="tyNext()">Next Question →</button>
-          </div>
-        </div>
-      </div>
-      <div id="ty-setup" class="hidden-panel"></div>
-    </section>
-
-    <section id="sec-sentences" class="section">
-      <button class="back-btn-setup" onclick="navTo('selection')">← Back to Dashboard</button>
-      <h2 class="gold-title">Syntactic Sentence Sandbox</h2>
-
-      <div style="background:rgba(16,9,4,0.85); padding:30px; border-radius:12px; border:1px solid rgba(200,145,30,0.25); margin-top:20px;">
-        <h4 id="sn-label" class="gold-title" style="margin:0 0 15px 0; text-transform:uppercase; font-size:1.05rem; letter-spacing:1px;">--</h4>
-        <div id="sn-prompt" style="margin:20px 0; font-size:2.2rem; min-height:48px; word-break:break-word;">--</div>
-        <p id="sn-hint" style="color:rgba(255,255,255,0.5); font-style:italic; margin:0 0 25px 0; font-size:1.1rem;">--</p>
-
-        <input type="text" id="sn-input" style="width:100%; box-sizing:border-box; background:rgba(0,0,0,0.4); border:1px solid #7a2e1a; padding:14px; font-size:1.25rem; border-radius:6px; margin-bottom:20px; color:#ffffff;" autocomplete="off">
-        
-        <div id="sn-feedback" style="font-size:1.2rem; font-weight:bold; margin-bottom:15px;"></div>
-        <div id="sn-reveal" style="display:none; background:rgba(200,145,30,0.12); border:1px solid rgba(200,145,30,0.25); padding:15px; border-radius:6px; margin-bottom:20px; font-weight:bold; color:#e8b84a; font-size:1.4rem;"></div>
-
-        <div style="display:flex; gap:12px;">
-          <button id="sn-check" style="background:#7a2e1a; border:1px solid #b04828; padding:12px 28px; font-weight:bold; border-radius:6px; cursor:pointer;" onclick="snCheck()">Validate Alignment</button>
-          <button id="sn-next" style="display:none; background:#c8911e; color:#090503; padding:12px 28px; font-weight:bold; border-radius:6px; cursor:pointer;" onclick="snNext()">Advance Sequence →</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="sec-speaking" class="section">
-      <button class="back-btn-setup" onclick="navTo('selection')">← Back to Dashboard</button>
-      <h2 class="gold-title">Phonetic Pronunciation Engine</h2>
-
-      <div id="sp-compat-note" style="display:none; background:#7a2e1a; border:1px solid #b04828; padding:15px; border-radius:6px; margin-bottom:25px; font-size:0.95rem;">
-        ⚠️ Web Speech Recognition API is not supported on this browser context instance. Run via Google Chrome or Microsoft Edge.
-      </div>
-
-      <div style="background:rgba(16,9,4,0.85); padding:30px; border-radius:12px; border:1px solid rgba(200,145,30,0.25);">
-        <h4 id="sp-direction-label" class="gold-title" style="margin:0 0 15px 0; font-size:1.05rem; text-transform:uppercase; letter-spacing:1px;">--</h4>
-        <div id="sp-prompt" style="margin:25px 0; min-height:65px; word-break:break-word; font-size:2.5rem;">--</div>
-        <p id="sp-expected" style="color:rgba(255,255,255,0.5); font-style:italic; margin:0 0 25px 0; font-size:1.1rem;">--</p>
-
-        <div style="display:flex; gap:12px; margin-bottom:25px; flex-wrap:wrap;">
-          <button id="sp-listen-btn" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); padding:12px 22px; border-radius:6px; font-weight:500; cursor:pointer;" onclick="spListen()">🔊 Benchmark Playback</button>
-          <button id="sp-mic-btn" style="background:#7a2e1a; border:1px solid #b04828; padding:12px 22px; border-radius:6px; font-weight:500; cursor:pointer;" onclick="spToggleRec()">🎙️ Start Speaking</button>
+        <div class="progress-wrap">
+          <div class="progress-meta"><span class="progress-txt" id="fc-prog">0 / 0</span></div>
+          <div class="progress-bar"><div class="progress-fill" id="fc-bar" style="width:0%"></div></div>
         </div>
 
-        <div style="margin-bottom:25px; background:rgba(0,0,0,0.3); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.08);">
-          <label style="font-size:0.75rem; text-transform:uppercase; color:#c8911e; display:block; margin-bottom:6px; font-weight:bold; letter-spacing:1px;">Live Evaluation Transcript Pipeline:</label>
-          <div id="sp-transcript" style="min-height:35px; font-size:1.15rem; font-weight:500; color:#ffffff;"></div>
-        </div>
-
-        <div id="sp-score-wrap" style="display:none; background:rgba(0,0,0,0.25); padding:18px; border-radius:6px; margin-bottom:25px; border:1px solid rgba(255,255,255,0.05);">
-          <label style="font-size:0.8rem; display:block; margin-bottom:8px; color:rgba(255,255,255,0.6);">Phonetic Evaluation Match Score Matrix:</label>
-          <div style="background:rgba(255,255,255,0.1); height:8px; border-radius:4px; overflow:hidden; margin-bottom:8px;">
-            <div id="sp-score-bar" style="width:0%; height:100%; transition:width 0.3s;"></div>
-          </div>
-          <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.05rem;">
-            <span id="sp-score-txt">0%</span>
-            <span id="sp-score-msg" style="color:#e8b84a;">--</span>
+        <div id="fc-card-wrap" style="margin-top:18px">
+          <div class="fc-wrap" onclick="fcFlip()" role="button" tabindex="0" aria-label="Flip flashcard"
+               onkeydown="if(event.key==='Enter'||event.key===' ')fcFlip()">
+            <div class="flashcard" id="fc-card">
+              <div class="card-face front">
+                <div class="card-label" id="fc-front-label">AMHARIC</div>
+                <div class="card-main" id="fc-front-main">
+                  <span style="color:var(--ivory-dim);font-style:italic;font-size:15px">Press Start to begin</span>
+                </div>
+                <div class="card-sub" id="fc-front-sub"></div>
+              </div>
+              <div class="card-face back">
+                <div class="card-label" id="fc-back-label">ENGLISH</div>
+                <div class="card-main" id="fc-back-main"></div>
+                <div class="card-sub" id="fc-back-sub"></div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;">
-          <button id="sp-next" style="background:transparent; border:1px solid rgba(255,255,255,0.25); padding:10px 20px; border-radius:6px; cursor:pointer; color:rgba(255,255,255,0.8);" onclick="spNext()">Skip / Load Next Item ⏭</button>
-        </div>
-      </div>
-    </section>
+        <p class="fc-hint">Click the card to flip · 🔊 plays the Amharic pronunciation</p>
 
-    <section id="sec-conjugation" class="section">
-      <button class="back-btn-setup" onclick="navTo('selection')">← Back to Dashboard</button>
-      <h2 class="gold-title">Present Progressive Paradigm Matrix</h2>
-      
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:25px; margin-top:20px; align-items:start;">
-        <div style="background:rgba(16,9,4,0.85); padding:25px; border-radius:12px; border:1px solid rgba(200,145,30,0.25);">
-          <div style="margin-bottom:15px;">
-            <div style="background:rgba(255,255,255,0.1); height:5px; overflow:hidden; border-radius:2px; margin-bottom:5px;"><div id="cj-bar" style="background:#c8911e; width:0%; height:100%;"></div></div>
-            <span id="cj-prog" class="progress-text" style="font-size:0.8rem; color:rgba(255,255,255,0.5);">0 / 0</span>
+        <div class="fc-nav">
+          <button class="btn-ghost" id="fc-prev" onclick="fcPrev()" disabled>← Previous</button>
+          <button class="btn-ghost" id="fc-next" onclick="fcNext()">Next →</button>
+        </div>
+
+      </div>
+    </section><!-- /#sec-flashcards -->
+
+
+    <!-- ═══════════════════════ ④ MATCHING ═══════════════════════ -->
+    <section id="sec-matching" class="section" aria-label="Matching game">
+      <div class="content-rail">
+
+        <button class="back-home-btn" onclick="navTo('home')">← All Modes</button>
+
+        <div class="section-header">
+          <h2>Matching Game</h2>
+          <p>Filter the word pool below, then start a round. Click two tiles to pair an Amharic word with its English meaning — a correct match plays its pronunciation.</p>
+        </div>
+
+        <div id="mt-filter" class="filter-panel"></div>
+
+        <div class="mt-top">
+          <button class="btn-primary" onclick="mtStart()">Start Round →</button>
+          <span id="mt-score" class="mt-score">Pairs: 0 / 8</span>
+        </div>
+
+        <div id="mt-grid" aria-live="polite"></div>
+
+        <div id="mt-next" style="display:none;text-align:center;padding:24px 0">
+          <div style="font-size:26px;margin-bottom:14px">🌟 Round Complete!</div>
+          <p style="color:var(--ivory-dim);font-size:15px;margin-bottom:16px">Every pair matched — great work!</p>
+          <button class="btn-gold" onclick="mtStart()">🔄 Next Round</button>
+        </div>
+
+      </div>
+    </section><!-- /#sec-matching -->
+
+
+    <!-- ═══════════════════════ ⑤ WRITING / TYPING ═══════════════════════ -->
+    <section id="sec-typing" class="section" aria-label="Writing practice">
+      <div class="content-rail">
+
+        <button class="back-home-btn" onclick="navTo('home')">← All Modes</button>
+
+        <div class="section-header">
+          <h2>Writing Practice</h2>
+          <p>Type translations from memory. When writing Amharic script, tap ⌨️ to open the on-screen Ethiopic keyboard.</p>
+        </div>
+
+        <div id="ty-setup">
+          <div id="ty-filter" class="filter-panel"></div>
+
+          <div style="margin-bottom:6px"><span class="filter-label">Direction</span></div>
+          <div id="ty-dir-row" class="dir-row">
+            <button class="dir-btn on" onclick="tySetDir('ae',this)">Amharic → Type English</button>
+            <button class="dir-btn"    onclick="tySetDir('ea',this)">English → Type Amharic</button>
+            <button class="dir-btn"    onclick="tySetDir('mix',this)">🔀 Mix Both</button>
           </div>
 
-          <div style="margin:20px 0; background:rgba(0,0,0,0.2); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.05);">
-            <h3 style="margin:0 0 8px 0; font-size:1.25rem; font-weight:normal;">Subject Target: <span id="cj-pronoun" class="gold-title" style="font-weight:700;">--</span> (<span id="cj-pron-amh" class="amh-text" style="color:#e8b84a; font-size:1.5rem;">--</span>)</h3>
-            <h4 style="margin:0 0 8px 0; font-weight:normal; font-size:1.15rem;">Root Base: <span id="cj-verb-amh" class="amh-text" style="color:#e8b84a; font-size:1.6rem;">--</span> / <span id="cj-verb-tr" style="font-style:italic;">--</span></h4>
-            <p style="color:rgba(255,255,255,0.6); font-size:0.95rem; margin:0 0 10px 0;">Meaning: "<span id="cj-verb-en">--</span>"</p>
-            <div id="cj-stem-hint" style="font-size:0.9rem; color:#e8b84a; background:rgba(122,46,26,0.25); border:1px solid rgba(176,72,40,0.3); padding:8px; border-radius:4px; word-break:break-word;">--</div>
+          <button class="btn-primary" onclick="tyStart()">Begin Writing Practice →</button>
+        </div>
+
+        <div id="ty-section-main" style="display:none">
+
+          <div class="progress-wrap" style="margin-bottom:16px">
+            <div class="progress-meta"><span class="progress-txt" id="ty-prog">1 / 10</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="ty-bar" style="width:10%"></div></div>
           </div>
 
-          <input type="text" id="cj-input" style="width:100%; box-sizing:border-box; background:rgba(0,0,0,0.4); border:1px solid #7a2e1a; padding:12px; font-size:1.2rem; border-radius:6px; margin-bottom:15px; color:#ffffff;" placeholder="Provide complete conjugated progressive string..." autocomplete="off">
+          <div class="ty-prompt-card glass">
+            <div class="ty-label" id="ty-label">TRANSLATE TO ENGLISH</div>
+            <div id="ty-prompt" style="min-height:64px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap"></div>
+            <div class="ty-sub" id="ty-sub"></div>
+          </div>
 
-          <div id="cj-feedback" style="font-size:1.1rem; font-weight:bold; margin-bottom:10px;"></div>
-          <div id="cj-reveal" style="display:none; background:rgba(200,145,30,0.12); border:1px solid rgba(200,145,30,0.25); padding:12px; border-radius:6px; margin-bottom:20px; font-weight:bold; color:#e8b84a; font-size:1.3rem;"></div>
+          <div class="ty-input-area" style="margin-top:14px">
+            <div style="display:flex;gap:8px;align-items:stretch">
+              <input type="text" class="game-input" id="ty-input" placeholder="Type your answer…"
+                     autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                     aria-label="Translation answer">
+              <button class="btn-ghost" onclick="tyToggleKb()" title="Toggle Amharic keyboard"
+                      aria-label="Toggle Amharic keyboard" style="flex-shrink:0;padding:0 14px;font-size:20px;border-radius:var(--radius)">⌨️</button>
+            </div>
 
-          <div style="display:flex; gap:12px;">
-            <button id="cj-check" style="background:#7a2e1a; border:1px solid #b04828; padding:10px 22px; font-weight:bold; border-radius:6px; cursor:pointer;" onclick="cjCheck()">Verify Suffix Morph</button>
-            <button id="cj-next" style="display:none; background:#c8911e; color:#090503; padding:10px 22px; font-weight:bold; border-radius:6px; cursor:pointer;" onclick="cjNext()">Next Paradigm →</button>
+            <div class="ty-controls">
+              <button class="btn-primary" onclick="tyCheck()">Check ✓</button>
+              <button class="btn-ghost"   onclick="tyNext()">Skip →</button>
+              <button class="btn-ghost"   onclick="tyBack()" style="margin-left:auto;font-size:13px">← Filters</button>
+            </div>
+
+            <div class="feedback" id="ty-feedback" aria-live="polite"></div>
+            <div class="reveal-text" id="ty-reveal" style="display:none" aria-live="polite"></div>
+
+            <button class="btn-gold" id="ty-next" onclick="tyNext()" style="display:none;margin-top:12px">Next →</button>
           </div>
         </div>
 
-        <div style="background:rgba(9,5,3,0.85); padding:20px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); box-sizing:border-box;">
-          <h4 class="gold-title" style="margin:0 0 10px 0; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px; font-size:1.1rem;">Suffix Matrix Blueprint Map</h4>
-          <div id="cj-ref" style="display:flex; flex-direction:column; gap:8px; font-size:0.95rem; max-height:280px; overflow-y:auto;"></div>
-        </div>
       </div>
-    </section>
+    </section><!-- /#sec-typing -->
 
-    <section id="sec-success" class="section">
-      <div style="background:rgba(16,9,4,0.95); max-width:480px; margin:40px auto; padding:40px 25px; border-radius:16px; text-align:center; border:2px solid #c8911e; box-sizing:border-box;">
-        <div style="font-size:3.5rem; margin-bottom:15px;">🏆</div>
-        <h2 id="suc-msg" class="gold-title" style="font-size:1.8rem; margin:0 0 10px 0;">Module Complete!</h2>
-        <p style="color:rgba(255,255,255,0.75); margin:0 0 30px 0; font-size:1rem;">Your execution matched parameters successfully.</p>
-        <div style="display:flex; flex-direction:column; gap:12px; max-width:260px; margin:0 auto; width:100%;">
-          <button id="suc-again" class="gold-enter-btn" style="font-size:1.1rem; padding:12px; border-radius:8px;">Replay Activity Module</button>
-          <button id="suc-home" style="background:transparent; border:1px solid rgba(255,255,255,0.25); padding:10px; border-radius:6px; cursor:pointer;" onclick="navTo('selection')">Return to Dashboard Hub</button>
+
+    <!-- ═══════════════════════ ⑥ SENTENCES ═══════════════════════ -->
+    <section id="sec-sentences" class="section" aria-label="Sentence practice">
+      <div class="content-rail">
+
+        <button class="back-home-btn" onclick="navTo('home')">← All Modes</button>
+
+        <div class="section-header">
+          <h2>Sentence Practice</h2>
+          <p>Translate freshly generated sentences using the Amharic present progressive tense. Answer in romanized Amharic, e.g. <em style="color:var(--gold-l)">ine lij iyyefelleghu new</em>.</p>
         </div>
-      </div>
-    </section>
 
+        <div class="sn-reference">
+          <strong style="color:var(--gold)">Formula:</strong>
+          <span style="color:var(--gold-l)"> iyye</span> + [stem] + [suffix] + <span style="color:var(--gold-l)"> new</span>
+          &nbsp;·&nbsp; <strong style="color:var(--gold)">Word order:</strong> Subject · Object · Verb
+          <br>
+          <span style="font-size:12px;color:var(--ivory-dim)">
+            Suffixes: I=hu · You(m)=h · You(f)=sh · He=e · She=ech · We=en · You(pl)=achihu · They=achew
+            — drop the leading "e" from ech/en if the stem ends in a vowel.
+          </span>
+        </div>
+
+        <div id="sn-dir-row" class="dir-row">
+          <button class="dir-btn on" onclick="snSetDir('toAmh',this)">English → Romanized Amharic</button>
+          <button class="dir-btn"    onclick="snSetDir('toEng',this)">Romanized Amharic → English</button>
+        </div>
+
+        <div class="sn-card glass">
+          <div class="sn-label" id="sn-label">TRANSLATE TO AMHARIC (romanized)</div>
+          <div id="sn-prompt" style="font-size:clamp(17px,3.5vw,26px);margin:14px 0;line-height:1.5;min-height:48px"></div>
+          <div class="sn-hint" id="sn-hint">Hint: [subject] + [object] + iyye[stem][suffix] new</div>
+        </div>
+
+        <div class="ty-input-area" style="margin-top:14px">
+          <input type="text" class="game-input" id="sn-input" placeholder="e.g. ine lij iyyefelleghu new"
+                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                 aria-label="Sentence translation answer">
+
+          <div class="ty-controls">
+            <button class="btn-primary" onclick="snCheck()">Check ✓</button>
+            <button class="btn-ghost"   onclick="snNext()">New Sentence 🔄</button>
+          </div>
+
+          <div class="feedback" id="sn-feedback" aria-live="polite"></div>
+          <div class="reveal-text" id="sn-reveal" style="display:none" aria-live="polite"></div>
+
+          <button class="btn-gold" id="sn-next" onclick="snNext()" style="display:none;margin-top:12px">Next Sentence →</button>
+        </div>
+
+      </div>
+    </section><!-- /#sec-sentences -->
+
+
+    <!-- ═══════════════════════ ⑦ SPEAKING ═══════════════════════ -->
+    <section id="sec-speaking" class="section" aria-label="Speaking practice">
+      <div class="content-rail">
+
+        <button class="back-home-btn" onclick="navTo('home')">← All Modes</button>
+
+        <div class="section-header">
+          <h2>Speaking Practice</h2>
+          <p>Hear or read a word, then speak the translation aloud. Your speech is transcribed live and scored. Works best in <strong>Chrome</strong> or <strong>Edge</strong>.</p>
+        </div>
+
+        <div id="sp-compat-note" class="sp-compat-note" role="alert">
+          ⚠️ Speech recognition isn't available in this browser. Please switch to <strong>Chrome</strong> or <strong>Edge</strong>.
+        </div>
+
+        <div id="sp-dir-row" class="dir-row">
+          <button class="dir-btn on" onclick="spSetDir('listenAmh',this)">🔊 Hear Amharic → Speak English</button>
+          <button class="dir-btn" onclick="spSetDir('speakAmh',this)">📖 Read English → Speak Amharic</button>
+        </div>
+
+        <div class="sp-card glass">
+          <div id="sp-direction-label" class="sp-dir-label">LISTEN · THEN SPEAK THE ENGLISH TRANSLATION</div>
+          <div id="sp-prompt" style="min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;margin:16px 0"></div>
+          <div id="sp-expected" class="sp-expected"></div>
+          <button id="sp-listen-btn" class="btn-ghost" onclick="spListen()" style="margin-top:14px;font-size:14px;padding:8px 20px">🔊 Play Audio Again</button>
+        </div>
+
+        <div style="text-align:center;margin:24px 0 10px">
+          <button id="sp-mic-btn" class="sp-mic-btn" onclick="spToggleRec()" aria-label="Start speaking">🎙️ Start Speaking</button>
+          <p style="color:var(--ivory-dim);font-size:12px;margin-top:10px;letter-spacing:0.5px">PRESS · SPEAK · GET A SCORE</p>
+        </div>
+
+        <div id="sp-transcript" class="sp-transcript" aria-live="polite">Ready — press the microphone to begin</div>
+
+        <div id="sp-score-wrap" style="display:none;margin-top:20px" aria-live="polite">
+          <div class="sp-score-bar-track"><div id="sp-score-bar" class="sp-score-bar" style="width:0%"></div></div>
+          <div class="sp-score-row" style="margin-top:8px">
+            <span id="sp-score-txt" class="sp-score-txt">0%</span>
+            <span id="sp-score-msg" class="sp-score-msg"></span>
+          </div>
+        </div>
+
+        <div style="margin-top:22px">
+          <button class="btn-primary" onclick="spNext()">Next Word →</button>
+        </div>
+
+      </div>
+    </section><!-- /#sec-speaking -->
+
+
+    <!-- ═══════════════════════ ⑧ CONJUGATION ═══════════════════════ -->
+    <section id="sec-conjugation" class="section" aria-label="Verb conjugation">
+      <div class="content-rail">
+
+        <button class="back-home-btn" onclick="navTo('home')">← All Modes</button>
+
+        <div class="section-header">
+          <h2>Verb Conjugation</h2>
+          <p>Type the present progressive form in romanized Amharic:
+            <strong style="color:var(--gold-l)">iyye + [stem] + [suffix] + new</strong>.
+            The reference panel lists all 8 suffix forms.</p>
+        </div>
+
+        <div class="cj-layout">
+          <div>
+            <div class="progress-wrap" style="margin-bottom:18px">
+              <div class="progress-meta"><span class="progress-txt" id="cj-prog">1 / 20</span></div>
+              <div class="progress-bar"><div class="progress-fill" id="cj-bar" style="width:5%"></div></div>
+            </div>
+
+            <div class="cj-card glass">
+              <div class="cj-pronoun-block">
+                <div class="cj-p-label">SUBJECT</div>
+                <div id="cj-pronoun" class="cj-p-main">I</div>
+                <div id="cj-pron-amh" class="cj-p-amh">እኔ</div>
+              </div>
+
+              <div class="cj-verb-block">
+                <div id="cj-verb-amh" class="cj-v-amh">መሄድ</div>
+                <div id="cj-verb-tr"  class="cj-v-tr">mehēd</div>
+                <div id="cj-verb-en"  class="cj-v-en">to go</div>
+              </div>
+
+              <div id="cj-stem-hint" class="cj-stem-hint">Stem: "hēd"</div>
+
+              <div class="ty-input-area">
+                <input type="text" class="game-input" id="cj-input" placeholder='e.g. "iyyehēdhu new"'
+                       autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                       aria-label="Conjugated verb form">
+
+                <div class="ty-controls">
+                  <button class="btn-primary" onclick="cjCheck()">Check ✓</button>
+                  <button class="btn-ghost"   onclick="cjNext()">Skip →</button>
+                </div>
+
+                <div class="feedback" id="cj-feedback" aria-live="polite"></div>
+                <div class="reveal-text" id="cj-reveal" style="display:none" aria-live="polite"></div>
+
+                <button class="btn-gold" id="cj-next" onclick="cjNext()" style="display:none;margin-top:12px">Next →</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="cj-ref-panel glass">
+            <div class="cj-ref-title">📖 SUFFIX REFERENCE</div>
+            <p style="font-size:12px;color:var(--ivory-dim);margin-bottom:12px;line-height:1.8">
+              <span style="color:var(--gold-l)">iyye</span> + stem + <strong style="color:var(--ivory)">suffix</strong> + <span style="color:var(--gold-l)"> new</span><br>
+              <em>Stem ends in a vowel? Drop the leading "e" from -ech and -en.</em>
+            </p>
+            <div id="cj-ref"></div>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- /#sec-conjugation -->
+
+
+    <!-- ═══════════════════════ ⑨ SUCCESS ═══════════════════════ -->
+    <section id="sec-success" class="section" aria-label="Success" aria-live="polite">
+      <div class="suc-star" aria-hidden="true">🌟</div>
+      <h1 class="suc-title">Well Done!</h1>
+      <div class="suc-amh">ጎበዝ! — gobez!</div>
+      <p class="suc-msg" id="suc-msg">Set complete!</p>
+      <div class="suc-btns">
+        <button class="btn-primary" id="suc-again">Practice Again</button>
+        <button class="btn-ghost"   id="suc-home" onclick="navTo('home')">← All Modes</button>
+      </div>
+    </section><!-- /#sec-success -->
+
+  </main>
+</div><!-- /#layout -->
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     MOBILE BOTTOM NAVIGATION
+════════════════════════════════════════════════════════════════ -->
+<nav class="bottom-nav" aria-label="Mobile navigation">
+  <div class="bottom-nav-item active" data-target="home" onclick="navTo('home')" role="menuitem" tabindex="0">
+    <span class="nav-icon">🏠</span><span>Home</span>
   </div>
+  <div class="bottom-nav-item" data-target="fidel" onclick="navTo('fidel')" role="menuitem" tabindex="0">
+    <span class="nav-icon" style="font-family:var(--font-amh)">ሀ</span><span>Fidel</span>
+  </div>
+  <div class="bottom-nav-item" data-target="flashcards" onclick="navTo('flashcards')" role="menuitem" tabindex="0">
+    <span class="nav-icon">🃏</span><span>Cards</span>
+  </div>
+  <div class="bottom-nav-item" data-target="matching" onclick="navTo('matching')" role="menuitem" tabindex="0">
+    <span class="nav-icon">🔗</span><span>Match</span>
+  </div>
+  <div class="bottom-nav-item" data-target="typing" onclick="navTo('typing')" role="menuitem" tabindex="0">
+    <span class="nav-icon">✍️</span><span>Write</span>
+  </div>
+  <div class="bottom-nav-item" data-target="sentences" onclick="navTo('sentences')" role="menuitem" tabindex="0">
+    <span class="nav-icon">💬</span><span>Sentences</span>
+  </div>
+  <div class="bottom-nav-item" data-target="speaking" onclick="navTo('speaking')" role="menuitem" tabindex="0">
+    <span class="nav-icon">🎙️</span><span>Speak</span>
+  </div>
+  <div class="bottom-nav-item" data-target="conjugation" onclick="navTo('conjugation')" role="menuitem" tabindex="0">
+    <span class="nav-icon">🔤</span><span>Conjugate</span>
+  </div>
+</nav>
 
-  <div id="virtual-keyboard-extension-host" class="hidden-panel"></div>
 
-  <script src="data.js"></script>
-  <script src="audio.js"></script>
-  <script src="keyboard.js"></script>
-  <script src="app.js"></script>
+<!-- ════════════════════════════════════════════════════════════════
+     SCRIPTS — order matters: data → (background override) → audio → keyboard → app
+════════════════════════════════════════════════════════════════ -->
+<script src="js/data.js"></script>
+<script>
+  // `backgrounds` is declared with const in data.js, so its contents are
+  // replaced here (not reassigned) rather than editing that file directly.
+  backgrounds.length = 0;
+  backgrounds.push(
+    "https://cdn.britannica.com/23/93423-050-107B2836/obelisk-kingdom-Aksum-Ethiopian-name-city.jpg",
+    "https://momaa.org/wp-content/uploads/2019/10/15941556007_443e1d0fe9_b.png",
+    "https://content.r9cdn.net/rimg/dimg/e9/d3/52a1c197-city-31584-165624937c9.jpg?width=1200&height=630&xhint=1972&yhint=1277&crop=true",
+    "https://www.ena.et/documents/42142/0/addis+ababa+13.jpg/665434fd-0306-6138-8a57-57531560d45d?version=1.0&t=1768997887693&download=true",
+    "https://content.palacemuseum.gov.et/uploads/486614647_122120640440751386_6905596083102292556_n_7e8b38fba2.webp",
+    "https://assets.vogue.com/photos/5ac2b5296493984c240b6822/master/w_1600%2Cc_limit/01-lalibela-ethiopia-is-the-next-machu-picchu.jpg",
+    "https://national-parks.org/wp-content/uploads/2025/10/Simien-Mountains-National-Park.jpg"
+  );
+</script>
+<script src="js/audio.js"></script>
+<script src="js/keyboard.js"></script>
+<script src="js/app.js"></script>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      // 1. Fire virtual script pad generation sequence immediately
-      if (typeof Keyboard !== "undefined" && typeof Keyboard.build === "function") {
-        Keyboard.build();
-      }
+<!-- Welcome gate dismissal — purely presentational, touches no other file -->
+<script>
+  document.getElementById('gate-enter-btn').addEventListener('click', () => {
+    document.getElementById('welcome-gate').classList.add('hidden');
+    if (typeof BG !== 'undefined') BG.change();
+  });
+</script>
 
-      // 2. Fallback execution trap sequence protecting rendering pathways
-      setTimeout(() => {
-        // Enforce safe default category routing mappings if app.js didn't find selections
-        if (typeof appState !== 'undefined') {
-          // Sync internal values to prevent empty array reference crashes
-          if (!appState.fc.pos || appState.fc.pos.length === 0) appState.fc.pos = ['all'];
-          if (!appState.fc.cat || appState.fc.cat.length === 0) appState.fc.cat = ['all'];
-        }
-      }, 500);
-    });
-  </script>
 </body>
 </html>
