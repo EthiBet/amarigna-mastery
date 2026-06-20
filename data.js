@@ -3,13 +3,10 @@
 // =====================================================================
 
 const backgrounds = [
-  "https://cdn.britannica.com/23/93423-050-107B2836/obelisk-kingdom-Aksum-Ethiopian-name-city.jpg",
+  "https://cdn.britannica.com/23/93423-004-EA6EF02B.jpg",
+  "https://nextisafrica.com/sites/default/files/styles/galerie/public/2025-09/AFRIQUEMAGAZINE_466_20250708%20%283%29.pdf-image-020.jpg?h=1fc136cd&itok=mzis_7Xe",
   "https://momaa.org/wp-content/uploads/2019/10/15941556007_443e1d0fe9_b.png",
-  "https://content.r9cdn.net/rimg/dimg/e9/d3/52a1c197-city-31584-165624937c9.jpg?width=1200&height=630&xhint=1972&yhint=1277&crop=true",
-  "https://www.ena.et/documents/42142/0/addis+ababa+13.jpg/665434fd-0306-6138-8a57-57531560d45d?version=1.0&t=1768997887693&download=true",
-  "https://content.palacemuseum.gov.et/uploads/486614647_122120640440751386_6905596083102292556_n_7e8b38fba2.webp",
-  "https://assets.vogue.com/photos/5ac2b5296493984c240b6822/master/w_1600%2Cc_limit/01-lalibela-ethiopia-is-the-next-machu-picchu.jpg",
-  "https://national-parks.org/wp-content/uploads/2025/10/Simien-Mountains-National-Park.jpg"
+  "https://content.palacemuseum.gov.et/uploads/486614647_122120640440751386_6905596083102292556_n_7e8b38fba2.webp"
 ];
 
 // ── 171 vocabulary items ──────────────────────────────────────────
